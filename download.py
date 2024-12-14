@@ -10,7 +10,7 @@ aria2 = aria2p.API(
         secret=""
     )
 )
-
+download_paused = False
 def pauseDownload(_):
     global download_paused
     if download_paused == True:
