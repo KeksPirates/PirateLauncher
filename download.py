@@ -11,19 +11,16 @@ aria2 = aria2p.API(
     )
 )
 
-
-def pauseDownload():
+def pauseDownload(_):
     print("Download is being paused...")
-    aria2.pause_all
+    aria2.pause_all()
 
-def startDownload():
+def startDownload(_):
     download = aria2.add_magnet(magnet_uri)
-
 
 downloads_dir = os.path.join(os.path.expanduser("~"), "Downloads")
 
 subprocess.Popen(["aria2c", "--enable-rpc", "--rpc-listen-all=true", f"--dir={downloads_dir}"])
-
 
 downloads = aria2.get_downloads()
 
@@ -34,7 +31,4 @@ magnet_uri = "magnet:?xt=urn:btih:7FBF03CCC9115260DC50102E5A31E83E91422A79&dn=Re
 
 keyboard.on_press_key("d", startDownload, suppress=False)
 keyboard.on_press_key("s", pauseDownload, suppress=False)
-
-
-
 keyboard.wait("q")
