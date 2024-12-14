@@ -47,5 +47,5 @@ magnet_uri = "magnet:?xt=urn:btih:7FBF03CCC9115260DC50102E5A31E83E91422A79&dn=Re
 
 keyboard.on_press_key("d", startDownload, suppress=False)
 keyboard.on_press_key("s", pauseDownload, suppress=False)
-keyboard.on_press_key("q", pauseDownload, terminate)
+
 keyboard.wait("q")
