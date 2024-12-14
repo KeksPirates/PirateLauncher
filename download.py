@@ -1,6 +1,7 @@
 import aria2p
 import subprocess
 import keyboard
+import os
 
 aria2 = aria2p.API(
     aria2p.Client(
@@ -19,7 +20,9 @@ def startDownload():
     download = aria2.add_magnet(magnet_uri)
 
 
-subprocess.Popen(["aria2c", "--enable-rpc", "--rpc-listen-all=true", "--dir=C:\\Users\\shayaa\\Downloads"])
+downloads_dir = os.path.join(os.path.expanduser("~"), "Downloads")
+
+subprocess.Popen(["aria2c", "--enable-rpc", "--rpc-listen-all=true", f"--dir={downloads_dir}"])
 
 
 downloads = aria2.get_downloads()
