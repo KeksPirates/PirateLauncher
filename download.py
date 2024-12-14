@@ -15,19 +15,17 @@ def pauseDownload(_):
     global download_paused
     if download_paused == True:
        print("Error: Download already paused.") 
-    else:
-        print("Download is being paused...")
-        download_paused = True
-        aria2.pause_all()
+    print("Download is being paused...")
+    download_paused = True
+    aria2.pause_all()
 
 def startDownload(_):
     if download_paused == True:
         aria2.resume_all()
         print("Download Resumed!")
         download_paused = False
-    else:
-        print("Download Started!")
-        download = aria2.add_magnet(magnet_uri)
+    print("Download Started!")
+    download = aria2.add_magnet(magnet_uri)
     
 
 downloads_dir = os.path.join(os.path.expanduser("~"), "Downloads")
