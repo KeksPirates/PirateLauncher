@@ -56,10 +56,5 @@ for download in downloads:
 
 keyboard.on_press_key("d", startDownload, suppress=False)
 keyboard.on_press_key("s", pauseDownload, suppress=False)
-<<<<<<< HEAD
 keyboard.on_press_key("q", pauseDownload, terminate)
 keyboard.wait("q")
-=======
-
-keyboard.wait("q")
->>>>>>> origin/main
