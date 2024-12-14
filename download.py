@@ -10,7 +10,7 @@ aria2 = aria2p.API(
         secret=""
     )
 )
-download_paused = False
+
 def pauseDownload(_):
     global download_paused
     if download_paused == True:
@@ -29,6 +29,7 @@ def startDownload(_):
     else:
         print("Download Started!")
         download = aria2.add_magnet(magnet_uri)
+        download_paused = False
     
 
 downloads_dir = os.path.join(os.path.expanduser("~"), "Downloads")
