@@ -10,29 +10,8 @@ aria2 = aria2p.API(
         secret=""
     )
 )
-download_paused = False
-def pauseDownload(_):
-    global download_paused
-    if download_paused == True:
-       print("Error: Download already paused.") 
-    else:
-        print("Download is being paused...")
-        download_paused = True
-        aria2.pause_all()
 
-def startDownload(_):
-    if download_paused == True:
-        aria2.resume_all()
-        print("Download Resumed!")
-        download_paused = False
-    else:
-        print("Download Started!")
-        download = aria2.add_magnet(magnet_uri)
-    
-
-downloads_dir = os.path.join(os.path.expanduser("~"), "Downloads")
-
-subprocess.Popen(["aria2c", "--enable-rpc", "--rpc-listen-all=true", f"--dir={downloads_dir}"])
+subprocess.Popen(["aria2c", "--enable-rpc", "--rpc-listen-all=true", "--dir=/home/username/Downloads"])
 
 downloads = aria2.get_downloads()
 
