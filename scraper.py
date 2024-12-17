@@ -19,14 +19,31 @@ if response.status_code == 200:
             continue
 
     games = soup.find_all("li")
-    if games:
+    game_titles = [game.text.strip() for game in games]
+
+    if game_titles:
         print("Games Found:")
-        for game in games:
-            print(game.text.strip())
+        for title in game_titles:
+            pass
     else:
         print("No game titles found. Report this on Github.")
 else:
     print(f"Failed to retrieve the page. Status code: {response.status_code}")
+
+def search_games(query, game_titles):
+    results = [title for title in game_titles if query.lower() in title.lower()]
+    return results
+
+search_query = input("Enter a game title to search: ")
+search_results = search_games(search_query, game_titles)
+
+if search_results:
+    print("Search Results:")
+    for result in search_results:
+        print(result)
+else:
+    print("No matching game titles found.")
+    
 # url = "https://cs.rin.ru/"
 # url = "https://gamesdrive.net/"
 # url = "https://gog-games.to/"
@@ -51,7 +68,7 @@ else:
 # url = "https://www.cg-gamespc.com/"
 # url = "https://gamepcfull.com/"
 
-# # Repacks/Torrents
+# Repacks/Torrents
 # url = "https://www.kaoskrew.org/"
 # url = "https://fitgirl-repacks.site/"
 # url = "https://m4ckd0ge-repacks.site/"
