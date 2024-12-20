@@ -2,6 +2,7 @@ import aria2p
 import subprocess
 import keyboard
 import os
+from scraper import uri
 
 aria2 = aria2p.API(
     aria2p.Client(
@@ -35,8 +36,8 @@ def startDownload(_):
 def terminate():
     return
 
-print("Enter Download URL: ")
-uri = input()
+# print("Enter Download URL: ")
+# uri = input()
 
 #Magnet Download
 # downloads_dir = os.path.join(os.path.expanduser("~"), "Downloads")
