@@ -43,7 +43,7 @@ if response.status_code == 200:
         for title in game_titles:
             print(title)
     else:
-        print("No game titles found. Report this on Github.")
+        print("No game titles found. Please report this on Github.")
 else:
     print(f"Failed to retrieve the page. Status code: {response.status_code}")
 
