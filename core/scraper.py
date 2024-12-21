@@ -2,6 +2,18 @@ from bs4 import BeautifulSoup
 import requests
 import re
 
+badphrases = {
+    "About", "Request Games", "Privacy Policy", "Terms & Conditions",
+    "Contact Us", "Reddit", "Back to top button", "Close", "Menu",
+    "Games List", "Search for", "Home", "Categories", "Action",
+    "Adventure", "Anime", "Horror", "Indie", "Multiplayer",
+    "Open World", "Racing", "Shooters", "Simulation", "Sports",
+    "Strategy", "Virtual Reality", "Top Games", "Recent Updates",
+    "FAQ", "FAQs", "All FAQs", "How to Run Games", "Discord", "Switch skin",
+    "All", "0-9", "�"
+}
+badphrases.update({chr(i) for i in range(ord('A'), ord('Z') + 1)})
+
 url = "https://steamrip.com/games-list-page/"
 
 response = requests.get(url)
@@ -16,17 +28,20 @@ if response.status_code == 200:
     for link in links:
         href = link.get("href", "").lower()
         text = link.text.strip()
-        if re.search(r"/discord/", href):
-            continue
-        
         if text:
             games_dict[text] = href
 
     game_titles = list(games_dict.keys())
 
+    for phrase in badphrases:
+        game_titles = [re.sub(rf"\b{re.escape(phrase)}\b", "", title, flags=re.IGNORECASE).strip() for title in game_titles]
+
+
+    game_titles = [re.sub(r'\s+', ' ', title).strip() for title in game_titles if title.strip()]
+
     if game_titles:
         for title in game_titles:
-            pass
+            print(title)
     else:
         print("No game titles found. Report this on Github.")
 else:
@@ -50,54 +65,50 @@ if search_results:
             selected_game = search_results[selection - 1]
             selected_link = games_dict[selected_game]  # Retrieve the link from the dictionary
             print(f"You selected: {selected_game}")
-            print(f"Link: https://steamrip.com{selected_link}")
-        else:
-            print("Invalid selection.")
+            print(f"Link: {selected_link}")
+
+
+            game_url = f"https://steamrip.com{selected_link}"
+            keywords = ["megadb.com", "buzzheavier.com", "gofile.io"]
+
+            def scrape_buzzheavier(url):
+                try:
+                    response = requests.get(url)
+                    response.raise_for_status()
+                    soup = BeautifulSoup(response.text, 'html.parser')
+                    links = soup.find_all('a', href=True)
+                    for link in links:
+                        href = link['href']
+                        full_dl_url = f"https:{href}" if href.startswith("//") else href
+                        if full_dl_url.startswith("https://buzzheavier.com/dl/"):
+                            print(f"Found direct download link: {full_dl_url}")
+                            return
+                    print(f"No direct download link found on {url}")
+                except requests.RequestException as e:
+                    print(f"Failed to fetch {url}: {e}")
+
+            def scrape_links(url):
+                try:
+                    response = requests.get(url)
+                    response.raise_for_status()
+                    soup = BeautifulSoup(response.text, 'html.parser')
+                    links = soup.find_all('a', href=True)
+                    for link in links:
+                        href = link['href']
+                        full_url = f"https:{href}" if href.startswith("//") else href
+                        if any(keyword in full_url for keyword in keywords):
+                            print(f"Found link: {full_url} on site: {url}")
+                            if "buzzheavier.com" in full_url:
+                                scrape_buzzheavier(full_url)
+                except requests.RequestException as e:
+                    print(f"Failed to fetch {url}: {e}")
+
+            scrape_links(game_url)
     except ValueError:
-        print("Invalid input. Please enter a number.")
+        print("Invalid selection.")
 else:
-    print("No matching game titles found.")
-    
-#scrape download links
-game_url = f"https://steamrip.com{selected_link}"
+    print("No results found.")
 
-keywords = ["megadb.com", "buzzheavier.com", "gofile.io"]
-
-def scrape_buzzheavier(url):
-    try:
-        response = requests.get(url)
-        response.raise_for_status()
-        soup = BeautifulSoup(response.text, 'html.parser')
-        links = soup.find_all('a', href=True)
-        for link in links:
-            href = link['href']
-            full_dl_url = f"https:{href}" if href.startswith("//") else href
-            if full_dl_url.startswith("https://buzzheavier.com/dl/"):
-                print(f"Found direct download link: {full_dl_url}")
-                return
-        print(f"No direct download link found on {url}")
-    except requests.RequestException as e:
-        print(f"Failed to fetch {url}: {e}")
-
-
-def scrape_links(url):
-    try:
-        response = requests.get(url)
-        response.raise_for_status()
-        soup = BeautifulSoup(response.text, 'html.parser')
-        links = soup.find_all('a', href=True)
-        for link in links:
-            href = link['href']
-            full_url = f"https:{href}" if href.startswith("//") else href
-            if any(keyword in full_url for keyword in keywords):
-                print(f"Found link: {full_url} on site: {url}")
-                if "buzzheavier.com" in full_url:
-                    scrape_buzzheavier(full_url)
-    except requests.RequestException as e:
-        print(f"Failed to fetch {url}: {e}")
-
-scrape_links(game_url)
-    
 
 # DDL = {
 #     "https://steamrip.com/",
