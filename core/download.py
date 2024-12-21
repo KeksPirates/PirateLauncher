@@ -2,7 +2,7 @@ import aria2p
 import subprocess
 import keyboard
 import os
-from scraper import uri
+from core.scraper import uri
 
 aria2 = aria2p.API(
     aria2p.Client(
