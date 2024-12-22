@@ -95,35 +95,36 @@ game_titles = clean_game_titles(list(games_dict.keys()), badphrases)
 
 if game_titles:
     for title in game_titles:
-        print(title)
+        pass
 else:
     print("No game titles found. Please report this on Github.")
 
-search_query = input("Enter a game title to search: ")
-search_results = search_games(search_query, game_titles)
-
-if search_results:
-    print("Search Results:")
-    for idx, result in enumerate(search_results, start=1):
-        print(f"{idx}. {result}")
-    
-    try:
-        selection = int(input("Select a game by entering the corresponding number: "))
-        if 1 <= selection <= len(search_results):
-            selected_game = search_results[selection - 1]
-            selected_link = games_dict[selected_game]
+def search():
+    search_query = input("Enter a game title to search: ")
+    search_results = search_games(search_query, game_titles)
+    if search_results:
+        print("Search Results:")
+        for idx, result in enumerate(search_results, start=1):
+           print(f"{idx}. {result}")
+        try:
+            selection = int(input("Select a game by entering the corresponding number: "))
+            if 1 <= selection <= len(search_results):
+                selected_game = search_results[selection - 1]
+                selected_link = games_dict[selected_game]
             
-            if selected_game in gog_games:
-                game_url = f"https://gog-games.to/game/{selected_link}"
-            else:
-                game_url = f"https://steamrip.com{selected_link}"
+                if selected_game in gog_games:
+                    game_url = f"https://gog-games.to/game/{selected_link}"
+                else:
+                    game_url = f"https://steamrip.com{selected_link}"
             
-            print(f"You selected: {selected_game}")
-            print(f"Link: {game_url}")
+                print(f"You selected: {selected_game}")
+                print(f"Link: {game_url}")
 
-            keywords = ["megadb.com", "buzzheavier.com", "gofile.io"]
-            scrape_links(game_url, keywords)
-    except ValueError:
-        print("Invalid selection.")
-else:
-    print("No results found.")
+                keywords = ["megadb.com", "buzzheavier.com", "gofile.io"]
+                scrape_links(game_url, keywords)
+        except ValueError:
+            print("Invalid selection.")
+    else:
+        print("No results found.")
+        search()
+search()
