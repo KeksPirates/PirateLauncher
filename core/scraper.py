@@ -14,42 +14,90 @@ badphrases = {
 }
 badphrases.update({chr(i) for i in range(ord('A'), ord('Z') + 1)})
 
-url = "https://steamrip.com/games-list-page/"
+steamrip_url = "https://steamrip.com/games-list-page/"
+gog_games_url = "https://gog-games.to/api/web/all-games"
 
-response = requests.get(url)
+def fetch_steamrip_games(url):
+    response = requests.get(url)
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.text, "html.parser")
+        links = soup.find_all("a")
+        games_dict = {}
+        for link in links:
+            href = link.get("href", "").lower()
+            text = link.text.strip()
+            if text:
+                games_dict[text] = href
+        return games_dict
+    else:
+        print(f"Failed to retrieve the Steamrip page. Status code: {response.status_code}")
+        return {}
 
-if response.status_code == 200:
-    soup = BeautifulSoup(response.text, "html.parser")
+def fetch_gog_games(url):
+    response = requests.get(url)
+    if response.status_code == 200:
+        games = response.json()
+        games_dict = {game['title']: game['slug'] for game in games}
+        return games_dict
+    else:
+        print(f"Failed to retrieve the GOG Games API. Status code: {response.status_code}")
+        return {}
 
-    links = soup.find_all("a")
-    
-    games_dict = {}
-
-    for link in links:
-        href = link.get("href", "").lower()
-        text = link.text.strip()
-        if text:
-            games_dict[text] = href
-
-    game_titles = list(games_dict.keys())
-
+def clean_game_titles(game_titles, badphrases):
     for phrase in badphrases:
         game_titles = [re.sub(rf"\b{re.escape(phrase)}\b", "", title, flags=re.IGNORECASE).strip() for title in game_titles]
-
-
-    game_titles = [re.sub(r'\s+', ' ', title).strip() for title in game_titles if title.strip()]
-
-    if game_titles:
-        for title in game_titles:
-            print(title)
-    else:
-        print("No game titles found. Please report this on Github.")
-else:
-    print(f"Failed to retrieve the page. Status code: {response.status_code}")
+    return [re.sub(r'\s+', ' ', title).strip() for title in game_titles if title.strip()]
 
 def search_games(query, game_titles):
-    results = [title for title in game_titles if query.lower() in title.lower()]
-    return results
+    return [title for title in game_titles if query.lower() in title.lower()]
+
+def scrape_buzzheavier(url):
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        soup = BeautifulSoup(response.text, 'html.parser')
+        links = soup.find_all('a', href=True)
+        for link in links:
+            href = link['href']
+            full_dl_url = f"https:{href}" if href.startswith("//") else href
+            if full_dl_url.startswith("https://buzzheavier.com/dl/"):
+                print(f"Found direct download link: {full_dl_url}")
+                return full_dl_url
+        print(f"No direct download link found on {url}")
+    except requests.RequestException as e:
+        print(f"Failed to fetch {url}: {e}")
+    return None
+
+def scrape_links(url, keywords):
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        soup = BeautifulSoup(response.text, 'html.parser')
+        links = soup.find_all('a', href=True)
+        for link in links:
+            href = link['href']
+            full_url = f"https:{href}" if href.startswith("//") else href
+            if any(keyword in full_url for keyword in keywords):
+                print(f"Found link: {full_url} on site: {url}")
+                if "buzzheavier.com" in full_url:
+                    direct_dl_link = scrape_buzzheavier(full_url)
+                    if direct_dl_link:
+                        print(f"Direct download link: {direct_dl_link}")
+                        return
+    except requests.RequestException as e:
+        print(f"Failed to fetch {url}: {e}")
+
+steamrip_games = fetch_steamrip_games(steamrip_url)
+gog_games = fetch_gog_games(gog_games_url)
+
+games_dict = {**steamrip_games, **gog_games}
+game_titles = clean_game_titles(list(games_dict.keys()), badphrases)
+
+if game_titles:
+    for title in game_titles:
+        print(title)
+else:
+    print("No game titles found. Please report this on Github.")
 
 search_query = input("Enter a game title to search: ")
 search_results = search_games(search_query, game_titles)
@@ -63,93 +111,19 @@ if search_results:
         selection = int(input("Select a game by entering the corresponding number: "))
         if 1 <= selection <= len(search_results):
             selected_game = search_results[selection - 1]
-            selected_link = games_dict[selected_game]  # Retrieve the link from the dictionary
+            selected_link = games_dict[selected_game]
+            
+            if selected_game in gog_games:
+                game_url = f"https://gog-games.to/game/{selected_link}"
+            else:
+                game_url = f"https://steamrip.com{selected_link}"
+            
             print(f"You selected: {selected_game}")
-            print(f"Link: {selected_link}")
+            print(f"Link: {game_url}")
 
-
-            game_url = f"https://steamrip.com{selected_link}"
             keywords = ["megadb.com", "buzzheavier.com", "gofile.io"]
-
-            def scrape_buzzheavier(url):
-                try:
-                    response = requests.get(url)
-                    response.raise_for_status()
-                    soup = BeautifulSoup(response.text, 'html.parser')
-                    links = soup.find_all('a', href=True)
-                    for link in links:
-                        href = link['href']
-                        full_dl_url = f"https:{href}" if href.startswith("//") else href
-                        if full_dl_url.startswith("https://buzzheavier.com/dl/"):
-                            print(f"Found direct download link: {full_dl_url}")
-                            return
-                    print(f"No direct download link found on {url}")
-                except requests.RequestException as e:
-                    print(f"Failed to fetch {url}: {e}")
-
-            def scrape_links(url):
-                try:
-                    response = requests.get(url)
-                    response.raise_for_status()
-                    soup = BeautifulSoup(response.text, 'html.parser')
-                    links = soup.find_all('a', href=True)
-                    for link in links:
-                        href = link['href']
-                        full_url = f"https:{href}" if href.startswith("//") else href
-                        if any(keyword in full_url for keyword in keywords):
-                            print(f"Found link: {full_url} on site: {url}")
-                            if "buzzheavier.com" in full_url:
-                                scrape_buzzheavier(full_url)
-                except requests.RequestException as e:
-                    print(f"Failed to fetch {url}: {e}")
-
-            scrape_links(game_url)
+            scrape_links(game_url, keywords)
     except ValueError:
         print("Invalid selection.")
 else:
     print("No results found.")
-
-
-# DDL = {
-#     "https://steamrip.com/",
-#     "https://cs.rin.ru/",
-#     "https://gamesdrive.net/",
-#     "https://gog-games.to/",
-#     "https://forum.torrminatorr.com/",
-#     "https://ankergames.net/",
-#     "https://www.ovagames.com/",
-#     "https://online-fix.me/",
-#     "https://gamebounty.world/",
-#     "https://steamgg.net/",
-#     "https://g4u.to/",
-#     "https://appnetica.com/",
-#     "https://atopgames.com/",
-#     "https://games4u.org/",
-#     "https://rexagames.com/",
-#     "https://cr4ckpass.online/",
-#     "https://getfreegames.net/",
-#     "https://gload.to/",
-#     "https://steamunderground.net/",
-#     "https://worldofpcgames.com/",
-#     "http://www.leechinghell.pw/",
-#     "https://awtdg.site/",
-#     "https://www.cg-gamespc.com/"
-#     "https://gamepcfull.com/",
-# }
-
-# # Repacks/Torrents
-# re_tor = {
-#     "https://www.kaoskrew.org/",
-#     "https://fitgirl-repacks.site/",
-#     "https://m4ckd0ge-repacks.site/",
-#     "https://byxatab.com/",
-#     "https://digital-zone.xyz/",
-#     "https://elamigos.site/",
-#     "https://dodi-repacks.site/",
-#     "https://www.tiny-repacks.win/",
-#     "https://freegogpcgames.com/",
-#     "https://www.magipack.games/",
-#     "https://collectionchamber.blogspot.com/",
-#     "https://archive.org/details/classicpcgames",
-#     "https://websites.umich.edu/~archive/",
-# }
