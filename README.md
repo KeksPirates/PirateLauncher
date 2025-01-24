@@ -1,3 +1,11 @@
+> [!NOTE]
+> This project is currently
+> **discontinued** due to
+> lack of time. Contributions are
+> still appreciated. 
+
+
+
 # PirateLauncher - A Download Manager/Launcher
 
 ## Description
