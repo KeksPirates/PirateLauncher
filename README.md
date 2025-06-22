@@ -57,9 +57,6 @@ Press `d` to start the predefined download, `s` to pause, and `q` to quit.
 - Aria2 must be installed and accessible from your command line.
 - This tool is for educational purposes only. Use it responsibly.
 
-## License
-PirateLauncher is licensed under the MIT License. Refer to the LICENSE file for more information.
-
 ---
 
 **Disclaimer:** PirateLauncher is intended for legal and ethical use only. Ensure compliance with applicable laws and regulations when using this tool.
