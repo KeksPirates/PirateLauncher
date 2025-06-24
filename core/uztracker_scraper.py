@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+import curses
 
 search = input("Enter the name of the program you want to search for: ")
 url = "https://uztracker.net/tracker.php?nm=" # placeholder url for now
@@ -29,20 +30,25 @@ def scrape_uztracker():
         print(f"Failed to fetch {search_url}: {e}")
         return None
 
-def get_post_title():
+def get_post_title(soup):
     maintitle = soup.find(class_='tt-text')
     if maintitle:
         print("Program found:", maintitle.text) 
     else:
         print("Program not found")
 
-
-def get_magnet_link():
-    magnet_link = soup.find('a', href=lambda x: x and x.startswith('magnet:')) # credits to claude for helping me with lambda. 
-    if magnet_link:
-        print("Magnet Link found:", magnet_link['href'])
-    else:
-        print("Magnet Link not Found!")
+def get_magnet_link(post_url="https://uztracker.net/viewtopic.php?t=23897"):
+    try:
+        response = requests.get(post_url)
+        response.raise_for_status()
+        soup = BeautifulSoup(response.text, 'html.parser')
+        magnet_link = soup.find('a', href=lambda x: x and x.startswith('magnet:'))
+        if magnet_link:
+            print("Magnet Link found:", magnet_link['href'])
+        else:
+            print("Magnet Link not Found!")
+    except requests.RequestException as e:
+        print(f"Failed to fetch {post_url}: {e}")
 
   # What x and x.startswith('magnet:') Does
 
@@ -52,8 +58,7 @@ def get_magnet_link():
 
 if __name__ == "__main__":
     soup = scrape_uztracker()
-
-if response.status_code == 200:
-    get_post_title()
-    get_magnet_link()
+    if soup:
+        get_post_title(soup)
+        get_magnet_link()
     
