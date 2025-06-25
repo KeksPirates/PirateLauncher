@@ -19,7 +19,7 @@ def scrape_uztracker():
             if link.has_attr('href'):
                 href = link['href']
                 post_url = f"https:{href}" if isinstance(href, str) and href.startswith("//") else href
-                if isinstance(post_url, str) and post_url.startswith("./viewtopic.php?t="): # please figure out why this .startswith filter is not working
+                if isinstance(post_url, str) and post_url.startswith("./viewtopic.php?t="):
                     post_url = f"https://uztracker.net{post_url[1:]}"
                     print(f"Found post link: {post_url}")
                     found_links = True
@@ -55,6 +55,8 @@ def get_magnet_link(post_url="https://uztracker.net/viewtopic.php?t=23897"):
   # x - check if x exists (not None/empty)
   # and - if x exists, THEN check the next part
   # x.startswith('magnet:') - does x start with "magnet:"?
+
+post_url = scrape_uztracker
 
 if __name__ == "__main__":
     soup = scrape_uztracker()
