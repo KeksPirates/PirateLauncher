@@ -12,7 +12,6 @@ def scrape_uztracker():
     print(search_url)
     try:
         response = requests.get(search_url)
-        response.raise_for_status()
         soup = BeautifulSoup(response.text, 'html.parser')
         links = soup.find_all('a')
         found_links = False
@@ -20,7 +19,8 @@ def scrape_uztracker():
             if link.has_attr('href'):
                 href = link['href']
                 post_url = f"https:{href}" if isinstance(href, str) and href.startswith("//") else href
-                if isinstance(post_url, str) and post_url.startswith("https://uztracker.net/viewtopic.php?t="): # please figure out why this .startswith filter is not working
+                if isinstance(post_url, str) and post_url.startswith("./viewtopic.php?t="): # please figure out why this .startswith filter is not working
+                    post_url = f"https://uztracker.net{post_url[1:]}"
                     print(f"Found post link: {post_url}")
                     found_links = True
         if not found_links:
