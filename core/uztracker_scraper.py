@@ -1,6 +1,5 @@
 import requests
 from bs4 import BeautifulSoup
-import curses
 
 search = input("Enter the name of the program you want to search for: ")
 url = "https://uztracker.net/tracker.php?nm=" # placeholder url for now
@@ -18,11 +17,13 @@ def scrape_uztracker():
         for link in links:
             if link.has_attr('href'):
                 href = link['href']
+                global post_url
                 post_url = f"https:{href}" if isinstance(href, str) and href.startswith("//") else href
                 if isinstance(post_url, str) and post_url.startswith("./viewtopic.php?t="):
                     post_url = f"https://uztracker.net{post_url[1:]}"
-                    print(f"Found post link: {post_url}")
+                    # print(f"Found post link: {post_url}")
                     found_links = True
+                    get_post_title(post_url)
         if not found_links:
             print(f"No post link found on {search_url}")
         return soup
@@ -30,7 +31,9 @@ def scrape_uztracker():
         print(f"Failed to fetch {search_url}: {e}")
         return None
 
-def get_post_title(soup):
+def get_post_title(post_url):
+    response = requests.get(post_url)
+    soup = BeautifulSoup(response.text, 'html.parser')
     maintitle = soup.find(class_='tt-text')
     if maintitle:
         print("Program found:", maintitle.text) 
@@ -56,11 +59,8 @@ def get_magnet_link(post_url="https://uztracker.net/viewtopic.php?t=23897"):
   # and - if x exists, THEN check the next part
   # x.startswith('magnet:') - does x start with "magnet:"?
 
-post_url = scrape_uztracker
-
 if __name__ == "__main__":
     soup = scrape_uztracker()
     if soup:
-        get_post_title(soup)
         get_magnet_link()
     
