@@ -11,21 +11,14 @@ def scrape_uztracker():
     print(search_url)
     try:
         response = requests.get(search_url)
+        response.raise_for_status()
         soup = BeautifulSoup(response.text, 'html.parser')
-        links = soup.find_all('a')
-        found_links = False
+        links = soup.find_all('a', class_="genmed tLink", href=lambda x: x and x.startswith('./viewtopic'))
         for link in links:
-            if link.has_attr('href'):
-                href = link['href']
-                global post_url
-                post_url = f"https:{href}" if isinstance(href, str) and href.startswith("//") else href
-                if isinstance(post_url, str) and post_url.startswith("./viewtopic.php?t="):
-                    post_url = f"https://uztracker.net{post_url[1:]}"
-                    # print(f"Found post link: {post_url}")
-                    found_links = True
-                    get_post_title(post_url)
-        if not found_links:
-            print(f"No post link found on {search_url}")
+            if link.b:
+                print("Result found:", link.b.text, "|", link['href'])
+            else:
+                print("No Results found.")
         return soup
     except requests.RequestException as e:
         print(f"Failed to fetch {search_url}: {e}")
@@ -59,8 +52,9 @@ def get_magnet_link(post_url="https://uztracker.net/viewtopic.php?t=23897"):
   # and - if x exists, THEN check the next part
   # x.startswith('magnet:') - does x start with "magnet:"?
 
+
+
+
 if __name__ == "__main__":
     soup = scrape_uztracker()
-    if soup:
-        get_magnet_link()
     
