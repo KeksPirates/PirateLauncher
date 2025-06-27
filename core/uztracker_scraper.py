@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 
+
 search = input("Enter the name of the program you want to search for: ")
 url = "https://uztracker.net/tracker.php?nm=" # placeholder url for now
 response = requests.get(url) # get da content from da url
@@ -9,6 +10,7 @@ soup = BeautifulSoup(response.content, 'html.parser') # create bs object
 def scrape_uztracker():
     search_url = url + search
     print(search_url)
+    result = False
     try:
         response = requests.get(search_url)
         response.raise_for_status()
@@ -18,8 +20,9 @@ def scrape_uztracker():
             if link.b:
                 print("Result found:", link.b.text, "|", link['href'])
                 result = True
+                
         if not result:
-            print(f"No Results found for {search}")
+            print(f'No Results found for "{search}"')
             
         return soup
     except requests.RequestException as e:
