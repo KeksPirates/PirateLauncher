@@ -17,8 +17,10 @@ def scrape_uztracker():
         for link in links:
             if link.b:
                 print("Result found:", link.b.text, "|", link['href'])
-            else:
-                print("No Results found.")
+                result = True
+        if not result:
+            print(f"No Results found for {search}")
+            
         return soup
     except requests.RequestException as e:
         print(f"Failed to fetch {search_url}: {e}")
