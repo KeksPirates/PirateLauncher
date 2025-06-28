@@ -1,13 +1,14 @@
 import requests
 from bs4 import BeautifulSoup
 
-search = input("Enter the name of the program you want to search for: ")
-url = "https://uztracker.net/tracker.php?nm=" # placeholder url for now
-response = requests.get(url) # get da content from da url
+global url_uztracker
+url_uztracker = "https://uztracker.net/tracker.php?nm=" # placeholder url for now
+response = requests.get(url_uztracker) # get da content from da url
 soup = BeautifulSoup(response.content, 'html.parser') # create bs object
 
 def scrape_uztracker():
-    search_url = url + search
+    search = input("Enter the name of the program you want to search for: ")
+    search_url = url_uztracker + search
     print(search_url)
     result = False
     global results
@@ -30,36 +31,37 @@ def scrape_uztracker():
             print(f'No Results found for "{search}"')
             return
             
-        select_program()
-        return soup
+        selection = input("Enter the Number of the Program you want to download: ")
+
+
+        try:
+            index = int(selection) - 1
+            if 0 <= index < len(results): # note for myself: py starts counting at 0; check if number is not negative, check if number is not more than list length.
+                selected = "https://uztracker.net/" + results[index].lstrip("./")
+                post_url = selected
+                return selected
+            else:
+                print("Invalid Selection.")
+
+
+        except ValueError:
+            print(Exception)
+            return
+
     except requests.RequestException as e:
         print(f"Failed to fetch {search_url}: {e}")
         return None
 
 def get_post_title(post_url):
+    response = requests.get(post_url)
     soup = BeautifulSoup(response.text, 'html.parser')
     maintitle = soup.find(class_='tt-text')
     if maintitle:
-        print(maintitle.text) 
+        return maintitle.text
     else:
         print("Program not found")
 
-def select_program():
-    selection = input("Enter the Number of the Program you want to download: ")
-    try:
-        index = int(selection) - 1
-        if 0 <= index < len(results): # note for myself: py starts counting at 0; check if number is not negative, check if number is not more than list length.
-            selected = "https://uztracker.net/" + results[index].lstrip("./")
-            post_url = selected
-            get_magnet_link(post_url)
-        else:
-            print("Invalid Selection.")
-
-
-    except ValueError:
-        print(Exception)
-        return
-
+    
 def get_magnet_link(post_url):
     try:
         response = requests.get(post_url)
@@ -67,7 +69,7 @@ def get_magnet_link(post_url):
         soup = BeautifulSoup(response.text, 'html.parser')
         magnet_link = soup.find('a', href=lambda x: x and x.startswith('magnet:'))
         if magnet_link:
-            print("Magnet Link found:", magnet_link['href'])
+            return magnet_link['href']
         else:
             print("Magnet Link not Found!")
     except requests.RequestException as e:
@@ -83,6 +85,10 @@ def get_magnet_link(post_url):
 
 
 if __name__ == "__main__":
-    soup = scrape_uztracker()
+    selected = scrape_uztracker()
+    maintitle = get_post_title(selected)
+    magnetlink = get_magnet_link(selected)
+    print(maintitle)
+    print(magnetlink)
     
     
