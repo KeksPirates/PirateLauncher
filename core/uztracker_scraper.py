@@ -52,9 +52,12 @@ def select_program():
             selected = "https://uztracker.net/" + results[index].lstrip("./")
             post_url = selected
             get_magnet_link(post_url)
+        else:
+            print("Invalid Selection.")
+
 
     except ValueError:
-        print("Invalid Selection.")
+        print(Exception)
         return
 
 def get_magnet_link(post_url):
