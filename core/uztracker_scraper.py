@@ -6,13 +6,15 @@ url_uztracker = "https://uztracker.net/tracker.php?nm=" # placeholder url for no
 response = requests.get(url_uztracker) # get da content from da url
 soup = BeautifulSoup(response.content, 'html.parser') # create bs object
 
-def scrape_uztracker():
-    search = input("Enter the name of the program you want to search for: ")
+def scrape_uztracker(search):
     search_url = url_uztracker + search
     print(search_url)
     result = False
     global results
+    global resulttitles
     results = []
+    resulttitles = []
+
     try:
         resultCount = 0
         response = requests.get(search_url)
@@ -22,31 +24,20 @@ def scrape_uztracker():
         for link in links:
             if link.b:
                 resultCount += 1
-                print(f"Result found: ({resultCount}) {link.b.text} | {link['href']}")
+                
+                # print(f"Result found: ({resultCount}) {link.b.text} | {link['href']}")
                 results.append(link['href'])
+                resulttitles.append(link.b.text)
                 result = True
                 
+        if result:
+            return resulttitles
                 
         if not result:
             print(f'No Results found for "{search}"')
             return
             
-        selection = input("Enter the Number of the Program you want to download: ")
-
-
-        try:
-            index = int(selection) - 1
-            if 0 <= index < len(results): # note for myself: py starts counting at 0; check if number is not negative, check if number is not more than list length.
-                selected = "https://uztracker.net/" + results[index].lstrip("./")
-                post_url = selected
-                return selected
-            else:
-                print("Invalid Selection.")
-
-
-        except ValueError:
-            print(Exception)
-            return
+        
 
     except requests.RequestException as e:
         print(f"Failed to fetch {search_url}: {e}")
@@ -60,6 +51,24 @@ def get_post_title(post_url):
         return maintitle.text
     else:
         print("Program not found")
+
+
+def select_program():
+    selection = input("Enter the Number of the Program you want to download: ")
+
+
+    try:
+        index = int(selection) - 1
+        if 0 <= index < len(results): # note for myself: py starts counting at 0; check if number is not negative, check if number is not more than list length.
+            selected = "https://uztracker.net/" + results[index].lstrip("./")
+            post_url = selected
+            return selected
+        else:
+            print("Invalid Selection.")
+
+    except ValueError:
+        print(Exception)
+        return
 
     
 def get_magnet_link(post_url):

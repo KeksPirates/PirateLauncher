@@ -2,10 +2,14 @@ from PySide6 import QtWidgets
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QLayoutItem, QLineEdit, QWidget, QVBoxLayout, QHBoxLayout, QListWidget, QListWidgetItem, QLabel, QPushButton
 import sys
+from uztracker_scraper import scrape_uztracker
+
 
 class MainWindow(QtWidgets.QMainWindow, QWidget):
     def __init__(self):
         super().__init__()
+        searchresults = []
+
         self.setWindowTitle("Software Manager")
         self.setGeometry(100, 100, 800, 600)
 
@@ -27,7 +31,7 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         containerLayout.addWidget(self.searchbar)
         
         containerLayout.addWidget(self.softwareList)
-        self.softwareList.addItems(["Software A", "Software B", "Software C", "Software D"])
+        self.softwareList.addItems(searchresults)
 
         containerLayout.addWidget(self.button)
         self.button.clicked.connect(lambda: print(f"Downloading {self.softwareList.currentItem().text()}"))
@@ -39,12 +43,23 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
 
     def return_pressed(self):
         search_text = self.searchbar.text()
+        global searchresults
+        self.searchresults = scrape_uztracker(search_text)
+        self.softwareList.clear()
+        if self.searchresults:
+            self.softwareList.addItems(self.searchresults)
         print("User searched for:", search_text)
 
-if __name__ == "__main__":
+
+
+def run_gui():
     app = QtWidgets.QApplication([])
 
     widget = MainWindow()
     widget.show()
 
     sys.exit(app.exec())
+
+
+if __name__ == "__main__":
+    run_gui()
