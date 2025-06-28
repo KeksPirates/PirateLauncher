@@ -11,19 +11,27 @@ def scrape_uztracker():
     search_url = url + search
     print(search_url)
     result = False
+    global results
+    results = []
     try:
+        resultCount = 0
         response = requests.get(search_url)
         response.raise_for_status()
         soup = BeautifulSoup(response.text, 'html.parser')
         links = soup.find_all('a', class_="genmed tLink", href=lambda x: x and x.startswith('./viewtopic'))
         for link in links:
             if link.b:
-                print("Result found:", link.b.text, "|", link['href'])
+                resultCount += 1
+                print(f"Result found: ({resultCount}) {link.b.text} | {link['href']}")
+                results.append(link['href'])
                 result = True
+                
                 
         if not result:
             print(f'No Results found for "{search}"')
+            return
             
+        select_program()
         return soup
     except requests.RequestException as e:
         print(f"Failed to fetch {search_url}: {e}")
@@ -38,7 +46,20 @@ def get_post_title(post_url):
     else:
         print("Program not found")
 
-def get_magnet_link(post_url="https://uztracker.net/viewtopic.php?t=23897"):
+def select_program():
+    selection = input("Enter the Number of the Program you want to download: ")
+    try:
+        index = int(selection) - 1
+        if 0 <= index < len(results): # note for myself: py starts counting at 0; check if number is not negative, check if number is not more than list length.
+            selected = "https://uztracker.net/" + results[index].lstrip("./")
+            post_url = selected
+            get_magnet_link(post_url)
+
+    except ValueError:
+        print("Invalid Selection.")
+        return
+
+def get_magnet_link(post_url):
     try:
         response = requests.get(post_url)
         response.raise_for_status()
@@ -62,4 +83,5 @@ def get_magnet_link(post_url="https://uztracker.net/viewtopic.php?t=23897"):
 
 if __name__ == "__main__":
     soup = scrape_uztracker()
+    
     
