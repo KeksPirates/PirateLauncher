@@ -33,8 +33,10 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         containerLayout.addWidget(self.softwareList)
         self.softwareList.addItems(searchresults)
 
+        
         containerLayout.addWidget(self.button)
-        self.button.clicked.connect(lambda: print(f"Downloading {self.softwareList.currentItem().text()}"))
+        self.button.clicked.connect(lambda: print(f"Downloading {self.softwareList.currentItem().text()}"), )
+        
 
         container.setLayout(containerLayout)
         self.setCentralWidget(container)
@@ -43,12 +45,13 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
 
     def return_pressed(self):
         search_text = self.searchbar.text()
-        global searchresults
-        self.searchresults = scrape_uztracker(search_text)
+        self.postnames, self.postlinks = scrape_uztracker(search_text)
         self.softwareList.clear()
-        if self.searchresults:
-            self.softwareList.addItems(self.searchresults)
+        if self.postnames:
+            self.softwareList.addItems(self.postnames)
         print("User searched for:", search_text)
+
+    
 
 
 

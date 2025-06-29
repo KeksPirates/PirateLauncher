@@ -31,14 +31,12 @@ def scrape_uztracker(search):
                 result = True
                 
         if result:
-            return resulttitles
+            return resulttitles, results
                 
         if not result:
             print(f'No Results found for "{search}"')
             return
-            
         
-
     except requests.RequestException as e:
         print(f"Failed to fetch {search_url}: {e}")
         return None
@@ -94,7 +92,8 @@ def get_magnet_link(post_url):
 
 
 if __name__ == "__main__":
-    selected = scrape_uztracker()
+    search_input = input("Enter the Name of the Program you want to search for: ")
+    selected = scrape_uztracker(search_input)
     maintitle = get_post_title(selected)
     magnetlink = get_magnet_link(selected)
     print(maintitle)
