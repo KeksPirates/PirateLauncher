@@ -91,12 +91,6 @@ def get_magnet_link(post_url):
 
 
 
-if __name__ == "__main__":
-    search_input = input("Enter the Name of the Program you want to search for: ")
-    selected = scrape_uztracker(search_input)
-    maintitle = get_post_title(selected)
-    magnetlink = get_magnet_link(selected)
-    print(maintitle)
-    print(magnetlink)
+
     
     
