@@ -1,6 +1,7 @@
 import aria2p
+import os
 import subprocess
-# nig
+
 
 def run_aria2p():
 
@@ -17,4 +18,4 @@ def run_aria2p():
     subprocess.Popen(["aria2c", "--enable-rpc", "--rpc-listen-all=true", f"--dir={downloads_dir}"])
 
     
-    return aria2p
+    return aria2

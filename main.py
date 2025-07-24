@@ -1,5 +1,8 @@
 from ui.clinterface import asciititle;
-from core.uztracker_scraper import scrape_uztracker;
+from core.uztracker_scraper import scrape_uztracker
+from core.uztracker_scraper import get_magnet_link
+from core.downloading.download import start_client
+from core.downloading.download import add_magnet
 import os
 
 
@@ -52,5 +55,10 @@ if __name__ == "__main__":
     results = search()
     selected = select_result(results)
     print(selected)
+    uri = get_magnet_link(selected)
+    start_client()
+    add_magnet(uri)
+
+
 
 
