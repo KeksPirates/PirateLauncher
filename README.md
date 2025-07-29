@@ -1,7 +1,7 @@
-# PirateLauncher - A Download Manager/Launcher
+# SoftwareManager - A Download Manager/Launcher
 
 ## Description
-PirateLauncher is a Python-based GUI/TUI tool that simplifies downloading and managing pirated software from various sources.
+SoftwareManager is a Python-based GUI/TUI tool that simplifies downloading and managing pirated software from various sources.
 
 ## Features
 - Start downloads via a predefined magnet URI.
@@ -23,32 +23,12 @@ PirateLauncher is a Python-based GUI/TUI tool that simplifies downloading and ma
    brew install aria2      # For macOS
    choco install aria2     # For Windows
    ```
-4. Install the required Python libraries:
-   ```bash
-   pip install aria2p keyboard
-   ```
-
-## Usage
-1. Clone or download PirateLauncher to your local machine.
-2. Run the launcher:
-   ```bash
-   python pirate_launcher.py
-   ```
-3. Use the following keyboard controls:
-   - Press **`d`** to start/resume a download.
-   - Press **`s`** to pause all downloads.
-   - Press **`q`** to quit the launcher.
-
-
-## Configuration
-- To use a different magnet URI, update the `magnet_uri` variable in the script.
-- Ensure the RPC port (default: 6800) is open and accessible.
 
 ## Example
-Run the following command to launch PirateLauncher and control downloads:
+Run the following command to launch SoftwareManager and control downloads:
 
 ```bash
-python pirate_launcher.py
+python main.py
 ```
 
 Press `d` to start the predefined download, `s` to pause, and `q` to quit.
@@ -59,5 +39,5 @@ Press `d` to start the predefined download, `s` to pause, and `q` to quit.
 
 ---
 
-**Disclaimer:** PirateLauncher is intended for legal and ethical use only. Ensure compliance with applicable laws and regulations when using this tool.
+**Disclaimer:** SoftwareManager is intended for legal and ethical use only. Ensure compliance with applicable laws and regulations when using this tool.
 
