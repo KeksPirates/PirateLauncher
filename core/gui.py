@@ -1,6 +1,6 @@
 from PySide6 import QtWidgets
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QLayoutItem, QLineEdit, QWidget, QVBoxLayout, QHBoxLayout, QListWidget, QListWidgetItem, QLabel, QPushButton
+from PySide6.QtWidgets import QLineEdit, QWidget, QVBoxLayout, QListWidget
 import sys
 from uztracker_scraper import scrape_uztracker
 
