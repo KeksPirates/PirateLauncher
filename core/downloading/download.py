@@ -1,7 +1,4 @@
 from .aria2p_server import run_aria2p
-import aria2p
-import subprocess
-import os
 # from .scraper import uri
 def start_client():
     global aria2

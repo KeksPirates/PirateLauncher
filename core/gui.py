@@ -3,6 +3,8 @@ from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QLineEdit, QWidget, QVBoxLayout, QListWidget
 import sys
 from uztracker_scraper import scrape_uztracker
+from uztracker_scraper import get_magnet_link
+# from downloading.download import run_aria2p
 
 
 class MainWindow(QtWidgets.QMainWindow, QWidget):
@@ -33,10 +35,8 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         containerLayout.addWidget(self.softwareList)
         self.softwareList.addItems(searchresults)
 
-        
         containerLayout.addWidget(self.button)
-        self.button.clicked.connect(lambda: print(f"Downloading {self.softwareList.currentItem().text()}"), )
-        
+        self.button.clicked.connect(lambda: function())
 
         container.setLayout(containerLayout)
         self.setCentralWidget(container)
