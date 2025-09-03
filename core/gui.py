@@ -52,9 +52,9 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         toolbar.setLayoutDirection(Qt.RightToLeft)
         
         if darkdetect.isDark():
-            settings_action = QAction(QIcon("assets/settings_dark.png"), "Settings", self)
+            settings_action = QAction(QIcon("core/assets/settings_dark.png"), "Settings", self)
         else:
-            settings_action = QAction(QIcon("assets/settings.png"), "Settings", self)
+            settings_action = QAction(QIcon("core/assets/settings.png"), "Settings", self)
 
         settings_action.triggered.connect(self.open_settings)
         toolbar.addAction(settings_action)
