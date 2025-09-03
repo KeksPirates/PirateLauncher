@@ -1,7 +1,9 @@
 from PySide6 import QtWidgets
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QLineEdit, QWidget, QVBoxLayout, QListWidget
+from PySide6.QtWidgets import QLineEdit, QWidget, QVBoxLayout, QListWidget, QToolBar
+from PySide6.QtGui import QIcon, QAction, QPalette
 import sys
+import darkdetect
 from uztracker_scraper import scrape_uztracker
 from uztracker_scraper import get_magnet_link
 from downloading.download import start_client
@@ -44,6 +46,23 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         self.setCentralWidget(container)
 
         containerLayout.setAlignment(Qt.AlignmentFlag.AlignBottom)
+
+        toolbar = QToolBar("Main Toolbar")
+        self.addToolBar(toolbar)
+        self.setLayoutDirection(Qt.RightToLeft)
+        
+        if darkdetect.isDark():
+            settings_action = QAction(QIcon("assets/settings.png"), "Settings", self)
+        else:
+            settings_action = QAction(QIcon("assets/settings_dark.png"), "Settings", self)
+
+        settings_action.triggered.connect(self.open_settings)
+        toolbar.addAction(settings_action)
+
+        toolbar.setMovable(False)
+
+    def open_settings(self):
+        print("Settings clicked")
 
     
 
