@@ -2,7 +2,6 @@ from PySide6 import QtWidgets
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QLineEdit, QWidget, QVBoxLayout, QListWidget, QToolBar
 from PySide6.QtGui import QIcon, QAction
-import sys
 import darkdetect
 from core.scraping.uztracker_scraper import scrape_uztracker
 from core.scraping.uztracker_scraper import get_magnet_link

@@ -1,4 +1,4 @@
-from core.gui import MainWindow
+from core.ui.gui import MainWindow
 from PySide6 import QtWidgets
 import qdarktheme
 import darkdetect
