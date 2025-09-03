@@ -1,0 +1,79 @@
+name: Build Executables
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "1.0"
+        required: true
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.x"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Build executable
+        run: pyinstaller --onefile app.py
+
+      - name: Rename executable
+        run: |
+          if [[ "$RUNNER_OS" == "Windows" ]]; then
+            mv dist/app.exe dist/app-windows.exe
+          elif [[ "$RUNNER_OS" == "Linux" ]]; then
+            mv dist/app dist/app-linux
+          elif [[ "$RUNNER_OS" == "macOS" ]]; then
+            mv dist/app dist/app-macos
+          fi
+        shell: bash
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-${{ matrix.os }}
+          path: dist/*
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download all build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          merge-multiple: true
+
+      - name: List downloaded files (Debugging)
+        run: ls -R
+
+      - name: Make files executable (Linux/Mac)
+        run: chmod +x app-* || true
+
+      # - name: Create GitHub Release
+      #   uses: softprops/action-gh-release@v2
+      #   with:
+      #     tag_name: ${{ github.event.inputs.version }}
+      #     name: Release ${{ github.event.inputs.version }}
+      #     draft: false
+      #     prerelease: false
+      #     files: |
+      #       app-linux
+      #       app-windows.exe
+      #       app-macos
