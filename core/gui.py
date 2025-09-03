@@ -70,7 +70,7 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         item = self.softwareList.currentItem()
         if item is not None:
             print(f"Downloading {self.softwareList.currentItem().text()}")
-            get_item_index(self.softwareList.currentItem().text(), self.postnames, self.postlinks)
+            self.get_item_index(self.softwareList.currentItem().text(), self.postnames, self.postlinks)
         else:
             print("No item selected for download.")
 
@@ -92,7 +92,7 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         print("User searched for:", search_text)
 
 
-def get_item_index(item, list, listlinks):
+    def get_item_index(self, item, list, listlinks):
         position = list.index(item)
         if 0 <= position < len(listlinks): # note for myself: py starts counting at 0; check if number is not negative, check if number is not more than list length.
             selected = "https://uztracker.net/" + listlinks[position].lstrip("./")
