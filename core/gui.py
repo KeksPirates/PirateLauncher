@@ -4,10 +4,10 @@ from PySide6.QtWidgets import QLineEdit, QWidget, QVBoxLayout, QListWidget, QToo
 from PySide6.QtGui import QIcon, QAction
 import sys
 import darkdetect
-from uztracker_scraper import scrape_uztracker
-from uztracker_scraper import get_magnet_link
-from downloading.download import start_client
-from downloading.download import add_magnet
+from core.uztracker_scraper import scrape_uztracker
+from core.uztracker_scraper import get_magnet_link
+from core.downloading.download import start_client
+from core.downloading.download import add_magnet
 
 
 class MainWindow(QtWidgets.QMainWindow, QWidget):
