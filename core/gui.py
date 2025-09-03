@@ -4,7 +4,8 @@ from PySide6.QtWidgets import QLineEdit, QWidget, QVBoxLayout, QListWidget
 import sys
 from uztracker_scraper import scrape_uztracker
 from uztracker_scraper import get_magnet_link
-# from downloading.download import run_aria2p
+from downloading.download import start_client
+from downloading.download import add_magnet
 
 
 class MainWindow(QtWidgets.QMainWindow, QWidget):
@@ -36,7 +37,7 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         self.softwareList.addItems(searchresults)
 
         containerLayout.addWidget(self.button)
-        self.button.clicked.connect(lambda: function())
+        self.button.clicked.connect(lambda: get_item_index(self.softwareList.currentItem().text(), self.postnames, self.postlinks))
 
         container.setLayout(containerLayout)
         self.setCentralWidget(container)
@@ -53,6 +54,16 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
 
     
 
+def get_item_index(item, list, listlinks):
+    position = list.index(item)
+    if 0 <= position < len(listlinks): # note for myself: py starts counting at 0; check if number is not negative, check if number is not more than list length.
+        selected = "https://uztracker.net/" + listlinks[position].lstrip("./")
+        post_url = selected
+        print(selected)
+        selected_magnet = get_magnet_link(selected)
+        add_magnet(selected_magnet)
+
+
 
 
 def run_gui():
@@ -65,4 +76,5 @@ def run_gui():
 
 
 if __name__ == "__main__":
+    start_client()
     run_gui()
