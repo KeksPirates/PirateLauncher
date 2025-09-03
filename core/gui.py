@@ -4,8 +4,8 @@ from PySide6.QtWidgets import QLineEdit, QWidget, QVBoxLayout, QListWidget, QToo
 from PySide6.QtGui import QIcon, QAction
 import sys
 import darkdetect
-from core.uztracker_scraper import scrape_uztracker
-from core.uztracker_scraper import get_magnet_link
+from core.scraping.uztracker_scraper import scrape_uztracker
+from core.scraping.uztracker_scraper import get_magnet_link
 from core.downloading.download import start_client
 from core.downloading.download import add_magnet
 
@@ -102,15 +102,3 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
             selected_magnet = get_magnet_link(selected)
             start_client()
             add_magnet(selected_magnet)
-
-def run_gui():
-    app = QtWidgets.QApplication([])
-
-    widget = MainWindow()
-    widget.show()
-
-    sys.exit(app.exec())
-
-
-if __name__ == "__main__":
-    run_gui()

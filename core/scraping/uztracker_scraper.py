@@ -50,24 +50,6 @@ def get_post_title(post_url):
     else:
         print("Program not found")
 
-
-def select_program():
-    selection = input("Enter the Number of the Program you want to download: ")
-
-
-    try:
-        index = int(selection) - 1
-        if 0 <= index < len(results): # note for myself: py starts counting at 0; check if number is not negative, check if number is not more than list length.
-            selected = "https://uztracker.net/" + results[index].lstrip("./")
-            post_url = selected
-            return selected
-        else:
-            print("Invalid Selection.")
-
-    except ValueError:
-        print(Exception)
-        return
-
     
 def get_magnet_link(post_url):
     try:
@@ -82,21 +64,8 @@ def get_magnet_link(post_url):
     except requests.RequestException as e:
         print(f"Failed to fetch {post_url}: {e}")
 
-  # What x and x.startswith('magnet:') Does
-
-  # x - check if x exists (not None/empty)
-  # and - if x exists, THEN check the next part
-  # x.startswith('magnet:') - does x start with "magnet:"?
-
-
-
-
-if __name__ == "__main__":
-    search_input = input("Enter the Name of the Program you want to search for: ")
-    selected = scrape_uztracker(search_input)
-    maintitle = get_post_title(selected)
-    magnetlink = get_magnet_link(selected)
-    print(maintitle)
-    print(magnetlink)
-    
+# What x and x.startswith('magnet:') Does
+# x - check if x exists (not None/empty)
+# and - if x exists, THEN check the next part
+# x.startswith('magnet:') - does x start with "magnet:"?
     
