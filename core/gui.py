@@ -1,7 +1,7 @@
 from PySide6 import QtWidgets
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QLineEdit, QWidget, QVBoxLayout, QListWidget, QToolBar
-from PySide6.QtGui import QIcon, QAction, QPalette
+from PySide6.QtGui import QIcon, QAction
 import sys
 import darkdetect
 from uztracker_scraper import scrape_uztracker
@@ -52,9 +52,9 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         self.setLayoutDirection(Qt.RightToLeft)
         
         if darkdetect.isDark():
-            settings_action = QAction(QIcon("assets/settings.png"), "Settings", self)
-        else:
             settings_action = QAction(QIcon("assets/settings_dark.png"), "Settings", self)
+        else:
+            settings_action = QAction(QIcon("assets/settings.png"), "Settings", self)
 
         settings_action.triggered.connect(self.open_settings)
         toolbar.addAction(settings_action)
