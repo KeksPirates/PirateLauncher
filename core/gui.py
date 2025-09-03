@@ -37,12 +37,32 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         self.softwareList.addItems(searchresults)
 
         containerLayout.addWidget(self.button)
-        self.button.clicked.connect(lambda: get_item_index(self.softwareList.currentItem().text(), self.postnames, self.postlinks))
+        self.button.clicked.connect(lambda: self.download_selected())
+        self.button.clicked.connect(lambda: self.get_selected_item())
 
         container.setLayout(containerLayout)
         self.setCentralWidget(container)
 
         containerLayout.setAlignment(Qt.AlignmentFlag.AlignBottom)
+
+    
+
+    def download_selected(self):
+        item = self.softwareList.currentItem()
+        if item is not None:
+            print(f"Downloading {self.softwareList.currentItem().text()}")
+            get_item_index(self.softwareList.currentItem().text(), self.postnames, self.postlinks)
+        else:
+            print("No item selected for download.")
+
+
+    def get_selected_item(self):
+        item = self.softwareList.currentItem()
+        if item is not None:
+            return item.text()
+        return ""
+    
+    
 
     def return_pressed(self):
         search_text = self.searchbar.text()
@@ -52,19 +72,15 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
             self.softwareList.addItems(self.postnames)
         print("User searched for:", search_text)
 
-    
 
 def get_item_index(item, list, listlinks):
-    position = list.index(item)
-    if 0 <= position < len(listlinks): # note for myself: py starts counting at 0; check if number is not negative, check if number is not more than list length.
-        selected = "https://uztracker.net/" + listlinks[position].lstrip("./")
-        post_url = selected
-        print(selected)
-        selected_magnet = get_magnet_link(selected)
-        add_magnet(selected_magnet)
-
-
-
+        position = list.index(item)
+        if 0 <= position < len(listlinks): # note for myself: py starts counting at 0; check if number is not negative, check if number is not more than list length.
+            selected = "https://uztracker.net/" + listlinks[position].lstrip("./")
+            post_url = selected
+            print(selected)
+            selected_magnet = get_magnet_link(selected)
+            add_magnet(selected_magnet)
 
 def run_gui():
     app = QtWidgets.QApplication([])
