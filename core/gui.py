@@ -49,7 +49,7 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
 
         toolbar = QToolBar("Main Toolbar")
         self.addToolBar(toolbar)
-        self.setLayoutDirection(Qt.RightToLeft)
+        toolbar.setLayoutDirection(Qt.RightToLeft)
         
         if darkdetect.isDark():
             settings_action = QAction(QIcon("assets/settings_dark.png"), "Settings", self)
