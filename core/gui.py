@@ -99,6 +99,7 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
             post_url = selected
             print(selected)
             selected_magnet = get_magnet_link(selected)
+            start_client()
             add_magnet(selected_magnet)
 
 def run_gui():
@@ -111,5 +112,4 @@ def run_gui():
 
 
 if __name__ == "__main__":
-    start_client()
     run_gui()
