@@ -12,6 +12,7 @@ from core.downloading.download import add_magnet
 
 class MainWindow(QtWidgets.QMainWindow, QWidget):
     def __init__(self):
+        global settings_action
         super().__init__()
         searchresults = []
 

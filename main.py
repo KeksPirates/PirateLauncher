@@ -1,6 +1,9 @@
 from core.gui import run_gui as gui
 from core.gui import MainWindow
+from PySide6.QtGui import QIcon, QAction
 from PySide6 import QtWidgets
+import qdarktheme
+import darkdetect
 import sys
 
 
@@ -9,6 +12,10 @@ import sys
 
 def run_gui():
     app = QtWidgets.QApplication([])
+    if darkdetect.isDark:
+        app.setStyleSheet(qdarktheme.load_stylesheet("dark"))
+    else:
+        app.setStyleSheet(qdarktheme.load_stylesheet("light"))
     widget = MainWindow()
     widget.show()
     sys.exit(app.exec())
