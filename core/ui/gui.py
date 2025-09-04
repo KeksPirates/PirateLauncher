@@ -1,6 +1,6 @@
 from PySide6 import QtWidgets
-from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QLineEdit, QWidget, QVBoxLayout, QListWidget, QToolBar, QDialogButtonBox, QRadioButton, QGroupBox, QDialog, QVBoxLayout, QLabel
+from PySide6.QtCore import QSize, Qt
+from PySide6.QtWidgets import QLineEdit, QPushButton, QWidget, QVBoxLayout, QListWidget, QToolBar, QDialogButtonBox, QRadioButton, QGroupBox, QDialog, QVBoxLayout, QLabel, QHBoxLayout
 from PySide6.QtGui import QIcon, QAction
 import darkdetect
 from core.scraping.uztracker_scraper import scrape_uztracker
@@ -65,7 +65,8 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         print("Settings dialog opened")
         dialog = QDialog(self)
         dialog.setWindowTitle("test")
-        dialog.adjustSize()
+        dialog.setFixedSize(400, 300)
+
 
         dialog.setLayout(QVBoxLayout())
         label = QLabel("This is a settings dialog.")
@@ -73,7 +74,26 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         dialog.layout().addWidget(label)
         dialog.layout().addWidget(QtWidgets.QPushButton("Close", clicked=dialog.close))
 
+        layout = QHBoxLayout()
+
+        save_btn = QPushButton("Save")
+        cancel_btn = QPushButton("Cancel")
+        save_btn.clicked.connect(self.save_settings)
+        cancel_btn.clicked.connect(dialog.reject)
+        layout.addWidget(save_btn)
+        layout.addWidget(cancel_btn)
+        layout.addLayout(layout)
+
+        self.setLayout(QVBoxLayout())
+        layout.addLayout(layout)
+        dialog.layout().addLayout(layout)
+
+        
         dialog.exec()
+
+    def save_settings(self):
+        pass
+
 
     def download_selected(self):
         item = self.softwareList.currentItem()
