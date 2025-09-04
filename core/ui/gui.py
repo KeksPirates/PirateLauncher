@@ -1,6 +1,6 @@
 from PySide6 import QtWidgets
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QLineEdit, QWidget, QVBoxLayout, QListWidget, QToolBar
+from PySide6.QtWidgets import QLineEdit, QWidget, QVBoxLayout, QListWidget, QToolBar, QDialogButtonBox, QRadioButton, QGroupBox, QDialog, QVBoxLayout, QLabel
 from PySide6.QtGui import QIcon, QAction
 import darkdetect
 from core.scraping.uztracker_scraper import scrape_uztracker
@@ -56,15 +56,24 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         else:
             settings_action = QAction(QIcon("core/assets/settings.png"), "Settings", self)
 
-        settings_action.triggered.connect(self.open_settings)
+        settings_action.triggered.connect(self.settings_dialog)
         toolbar.addAction(settings_action)
 
         toolbar.setMovable(False)
 
-    def open_settings(self):
-        print("Settings clicked")
+    def settings_dialog(self):
+        print("Settings dialog opened")
+        dialog = QDialog(self)
+        dialog.setWindowTitle("test")
+        dialog.adjustSize()
 
-    
+        dialog.setLayout(QVBoxLayout())
+        label = QLabel("This is a settings dialog.")
+        QtWidgets.QPushButton("Close", clicked=dialog.close)
+        dialog.layout().addWidget(label)
+        dialog.layout().addWidget(QtWidgets.QPushButton("Close", clicked=dialog.close))
+
+        dialog.exec()
 
     def download_selected(self):
         item = self.softwareList.currentItem()
