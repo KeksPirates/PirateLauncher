@@ -63,6 +63,8 @@ def get_magnet_link(post_url, debug):
         soup = BeautifulSoup(response.text, 'html.parser')
         magnet_link = soup.find('a', href=lambda x: x and x.startswith('magnet:'))
         if magnet_link:
+            if debug:
+                print("Magnet Link Retrieved: ", magnet_link['href'])
             return magnet_link['href']
         else:
             if debug:
