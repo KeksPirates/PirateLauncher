@@ -6,9 +6,10 @@ url_uztracker = "https://uztracker.net/tracker.php?nm=" # placeholder url for no
 response = requests.get(url_uztracker) # get da content from da url
 soup = BeautifulSoup(response.content, 'html.parser') # create bs object
 
-def scrape_uztracker(search):
+def scrape_uztracker(search, debug):
     search_url = url_uztracker + search
-    print(search_url)
+    if debug:
+        print(search_url)
     result = False
     global results
     global resulttitles
@@ -34,24 +35,28 @@ def scrape_uztracker(search):
             return resulttitles, results
                 
         if not result:
-            print(f'No Results found for "{search}"')
+            if debug:
+                print(f'No Results found for "{search}"')
+            # add popup in gui for no result
             return
         
     except requests.RequestException as e:
-        print(f"Failed to fetch {search_url}: {e}")
+        if result:
+            print(f"Failed to fetch {search_url}: {e}")
         return None
 
-def get_post_title(post_url):
+def get_post_title(post_url, debug):
     response = requests.get(post_url)
     soup = BeautifulSoup(response.text, 'html.parser')
     maintitle = soup.find(class_='tt-text')
     if maintitle:
         return maintitle.text
     else:
-        print("Program not found")
+        if debug:
+            print("Program not found")
 
     
-def get_magnet_link(post_url):
+def get_magnet_link(post_url, debug):
     try:
         response = requests.get(post_url)
         response.raise_for_status()
@@ -60,9 +65,11 @@ def get_magnet_link(post_url):
         if magnet_link:
             return magnet_link['href']
         else:
-            print("Magnet Link not Found!")
+            if debug:
+                print("Magnet Link not Found!")
     except requests.RequestException as e:
-        print(f"Failed to fetch {post_url}: {e}")
+        if debug:
+            print(f"Failed to fetch {post_url}: {e}")
 
 # What x and x.startswith('magnet:') Does
 # x - check if x exists (not None/empty)

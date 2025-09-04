@@ -9,6 +9,12 @@ from core.downloading.download import start_client
 from core.downloading.download import add_magnet
 
 
+def state_debug(setting):
+    global debug
+    if setting is True:
+        debug = True
+    else:
+        debug = False
 class MainWindow(QtWidgets.QMainWindow, QWidget):
     def __init__(self):
         global settings_action
@@ -62,15 +68,17 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         toolbar.setMovable(False)
 
     def settings_dialog(self):
-        print("Settings dialog opened")
+        if debug:
+            print("Settings dialog opened")
         dialog = QDialog(self)
-        dialog.setWindowTitle("test")
+        dialog.setWindowTitle("Settings")
         dialog.setFixedSize(400, 300)
 
 
         dialog.setLayout(QVBoxLayout())
         label = QLabel("This is a settings dialog.")
         QtWidgets.QPushButton("Close", clicked=dialog.close)
+        # close button
         dialog.layout().addWidget(label)
         dialog.layout().addWidget(QtWidgets.QPushButton("Close", clicked=dialog.close))
 
@@ -98,10 +106,13 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
     def download_selected(self):
         item = self.softwareList.currentItem()
         if item is not None:
-            print(f"Downloading {self.softwareList.currentItem().text()}")
+            if debug:
+                print(f"Downloading {self.softwareList.currentItem().text()}")
             self.get_item_index(self.softwareList.currentItem().text(), self.postnames, self.postlinks)
         else:
-            print("No item selected for download.")
+            if debug:
+                print("No item selected for download.")
+            # add gui notification for no item selected
 
 
     def get_selected_item(self):
@@ -114,11 +125,12 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
 
     def return_pressed(self):
         search_text = self.searchbar.text()
-        self.postnames, self.postlinks = scrape_uztracker(search_text)
+        self.postnames, self.postlinks = scrape_uztracker(search_text, debug)
         self.softwareList.clear()
         if self.postnames:
             self.softwareList.addItems(self.postnames)
-        print("User searched for:", search_text)
+        if debug:
+            print("User searched for:", search_text)
 
 
     def get_item_index(self, item, list, listlinks):
@@ -126,7 +138,8 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         if 0 <= position < len(listlinks): # note for myself: py starts counting at 0; check if number is not negative, check if number is not more than list length.
             selected = "https://uztracker.net/" + listlinks[position].lstrip("./")
             post_url = selected
-            print(selected)
-            selected_magnet = get_magnet_link(selected)
+            if debug:
+                print("Selected URL: ", selected)
+            selected_magnet = get_magnet_link(selected, debug)
             start_client()
             add_magnet(selected_magnet)
