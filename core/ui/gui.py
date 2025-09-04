@@ -32,8 +32,7 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         self.searchbar.setPlaceholderText("Search for software...")
         self.searchbar.setClearButtonEnabled(True)
         self.searchbar.setMinimumHeight(30)
-        self.searchbar.returnPressed.connect(self.return_pressed)
-
+        self.searchbar.returnPressed.connect(self.return_pressed) # Triggers scraping functions on enter
         self.button = QtWidgets.QPushButton("Download")
         self.softwareList = QListWidget()
 
@@ -45,6 +44,7 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         self.softwareList.addItems(searchresults)
 
         containerLayout.addWidget(self.button)
+        # download button triggers
         self.button.clicked.connect(lambda: self.download_selected())
         self.button.clicked.connect(lambda: self.get_selected_item())
 
