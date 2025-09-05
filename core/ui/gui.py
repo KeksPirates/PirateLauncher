@@ -1,5 +1,5 @@
 from PySide6 import QtWidgets
-from PySide6.QtCore import QSize, Qt
+from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QLineEdit, QPushButton, QWidget, QVBoxLayout, QListWidget, QToolBar, QDialogButtonBox, QRadioButton, QGroupBox, QDialog, QVBoxLayout, QLabel, QHBoxLayout
 from PySide6.QtGui import QIcon, QAction
 import darkdetect
@@ -90,10 +90,8 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         cancel_btn.clicked.connect(dialog.reject)
         layout.addWidget(save_btn)
         layout.addWidget(cancel_btn)
-        layout.addLayout(layout)
 
         self.setLayout(QVBoxLayout())
-        layout.addLayout(layout)
         dialog.layout().addLayout(layout)
 
         
