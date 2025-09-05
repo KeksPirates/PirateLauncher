@@ -4,9 +4,8 @@ from PySide6.QtWidgets import QLineEdit, QPushButton, QWidget, QVBoxLayout, QLis
 from PySide6.QtGui import QIcon, QAction
 import darkdetect
 from core.scraping.uztracker_scraper import scrape_uztracker
-from core.scraping.uztracker_scraper import get_magnet_link
-from core.downloading.download import start_client
-from core.downloading.download import add_magnet
+from core.scraping.uztracker_scraper import get_item_index
+
 
 
 def state_debug(setting):
@@ -106,7 +105,7 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         if item is not None:
             if debug:
                 print(f"Downloading {self.softwareList.currentItem().text()}")
-            self.get_item_index(self.softwareList.currentItem().text(), self.postnames, self.postlinks)
+            get_item_index(self.softwareList.currentItem().text(), self.postnames, self.postlinks, debug)
         else:
             if debug:
                 print("No item selected for download.")
@@ -131,13 +130,4 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
             print("User searched for:", search_text)
 
 
-    def get_item_index(self, item, list, listlinks):
-        position = list.index(item)
-        if 0 <= position < len(listlinks): # note for myself: py starts counting at 0; check if number is not negative, check if number is not more than list length.
-            selected = "https://uztracker.net/" + listlinks[position].lstrip("./")
-            post_url = selected
-            if debug:
-                print("Selected URL: ", selected)
-            selected_magnet = get_magnet_link(selected, debug)
-            start_client()
-            add_magnet(selected_magnet)
+
