@@ -52,10 +52,8 @@ def scrape_uztracker(search, debug):
                 return resulttitles, results
                     
             if not result:
-                if debug:
-                    print(f'No Results found for "{search}"')
                 # add popup in gui for no result
-                return
+                return None
             
         except requests.RequestException as e:
             if result:

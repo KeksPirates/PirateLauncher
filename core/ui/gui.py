@@ -122,12 +122,19 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
 
     def return_pressed(self):
         search_text = self.searchbar.text()
-        self.postnames, self.postlinks = scrape_uztracker(search_text, debug)
-        self.softwareList.clear()
-        if self.postnames:
-            self.softwareList.addItems(self.postnames)
         if debug:
             print("User searched for:", search_text)
+        
+        response = scrape_uztracker(search_text, debug)
+        if response:
+            self.postnames, self.postlinks = response
+            self.softwareList.clear()
+            if self.postnames:
+                self.softwareList.addItems(self.postnames)
+        elif debug:
+            print(f"No Results found for \"{search_text}\"")
+
+        
 
 
 
