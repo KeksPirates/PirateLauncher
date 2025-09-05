@@ -1,18 +1,23 @@
 import requests
+import asyncio
 from bs4 import BeautifulSoup
 
 global url_uztracker
 global up
 url_uztracker = "https://uztracker.net/tracker.php?nm=" # placeholder url for now
-try:
-    response = requests.get(url_uztracker) # get da content from da url
-    soup = BeautifulSoup(response.content, 'html.parser') # create bs object
-    up = True
-except requests.exceptions.RequestException as e:
-    print(f"\nRequest Exception on {url_uztracker}:")
-    print(e)
-    print("\nIs the Site down?")
-    up = False
+
+async def init_uztracker():
+    try:
+        response = requests.get(url_uztracker) # get da content from da url
+        soup = BeautifulSoup(response.content, 'html.parser') # create bs object
+        up = True
+    except requests.exceptions.RequestException as e:
+        print(f"\nRequest Exception on {url_uztracker}:")
+        print(e)
+        print("\nIs the Site down?")
+        up = False
+
+asyncio.run(init_uztracker())
 
 def scrape_uztracker(search, debug):
     if up:
