@@ -27,6 +27,7 @@ SoftwareManager is a Python-based GUI/TUI tool that simplifies downloading and m
    ```
 
 ## Notes
+- If you want to host your own server, clone the server branch of this repo, enter your cookie for rutracker.org and run server.py
 - This tool is for educational purposes only. Use it responsibly.
 
 ---
