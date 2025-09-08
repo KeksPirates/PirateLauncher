@@ -1,6 +1,8 @@
 from flask import Flask
 import requests
+import os
 from bs4 import BeautifulSoup
+from dotenv import load_dotenv
 
 app = Flask(__name__)
 
@@ -10,8 +12,10 @@ url_rutracker = "https://rutracker.org/forum/tracker.php?nm=" # placeholder url 
 
 debug = False
 
+load_dotenv()
+
 cookies = {
-    "bb_session": "YOUR_COOKIE"
+    "bb_session": os.getenv("bb_session")
 }
 
 headers = {
@@ -78,6 +82,7 @@ def scrape_rutracker(search_term):
     else:
         print("Error: Rutracker down")
         return "Error: Rutracker down"
+    
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080)
