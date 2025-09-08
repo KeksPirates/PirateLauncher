@@ -5,7 +5,8 @@ from PySide6.QtGui import QIcon, QAction
 import darkdetect
 import requests
 from core.scraping.uztracker_scraper import scrape_uztracker
-from core.scraping.uztracker_scraper import get_magnet_link
+from core.scraping.rutracker_scraper import scrape_rutracker
+from core.scraping.utils import get_magnet_link
 from core.downloading.download import start_client
 from core.downloading.download import add_magnet
 
@@ -16,16 +17,17 @@ def state_debug(setting):
     else:
         debug = False
 
-def choose_tracker():
-    global rutracker
-    choice = input("use rutracker? (y/n): ")
+def choose_tracker(): # TEMP SOLUTION: WORK ON GUI IMPL NEXT
+    global tracker
+    print("Choose Tracker:")
+    choice = input("(rutracker / uztracker) > ")
     print(choice)
-    if choice.lower() == 'y':
-        print("Using rutracker...")
-        rutracker = True
-    else:
-        print("Using uztracker...")
-        rutracker = False
+    if choice.lower() == "rutracker":
+        print("using rutracker...")
+        tracker = "rutracker"
+    if choice.lower() == "uztracker":
+        print("using uztracker...")
+        tracker = "uztracker"
 
 
 class MainWindow(QtWidgets.QMainWindow, QWidget):
@@ -116,26 +118,17 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
 
     def download_selected(self):
         item = self.softwareList.currentItem()
-        if rutracker == True:
-            if item is not None:
-                if debug:
-                    print(f"Downloading {self.softwareList.currentItem().text()}")
-                self.get_item_index(self.softwareList.currentItem().text(), self.postnames_rutracker, self.postlinks_rutracker, debug)
-            else:
-                if debug:
-                    print("No item selected for download.")
+        if item is not None:
+            if debug:
+                print(f"Downloading {self.softwareList.currentItem().text()}")
+            self.get_item_index(self.softwareList.currentItem().text(), self.postnames, self.postlinks, debug)
         else:
-            if item is not None:
-                if debug:
-                    print(f"Downloading {self.softwareList.currentItem().text()}")
-                self.get_item_index(self.softwareList.currentItem().text(), self.postnames_uztracker, self.postlinks_uztracker, debug)
-            else:
-                    if debug:
-                        print("No item selected for download.")
+            if debug:
+                print("No item selected for download.")
             # add gui notification for no item selected
 
 
-    def get_selected_item(self):
+    def get_selected_item(self): 
         item = self.softwareList.currentItem()
         if item is not None:
             return item.text()
@@ -143,39 +136,29 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
 
 
     def return_pressed(self):
-        if rutracker == True:
-            global postnames
-            global postlinks
-            search_text = self.searchbar.text()
-            search = requests.get(f"https://pizzasucht.net/search/{search_text}")
-            self.softwareList.clear()
-            data = search.json()
-            self.postnames_rutracker = data["titles"]
-            for self.postnames_rutracker in data["titles"]:
-                self.softwareList.addItem(self.postnames_rutracker)
-            self.postnames_rutracker = data["titles"]
-            self.postlinks_rutracker = data["links"]
-        else:
-            search_text = self.searchbar.text()
-            if debug:
-                print("User searched for:", search_text)
-            
+        search_text = self.searchbar.text()
+        if debug:
+            print("User searched for:", search_text)
+        if tracker == "uztracker":
             response = scrape_uztracker(search_text, debug)
-            if response:
-                self.postnames_uztracker, self.postlinks_uztracker = response
-                self.softwareList.clear()
-                if self.postnames_uztracker:
-                    self.softwareList.addItems(self.postnames_uztracker)
-            elif debug:
-                print(f"No Results found for \"{search_text}\"")
+        if tracker == "rutracker":
+            response = scrape_rutracker(search_text)
+        if response:
+            self.postnames, self.postlinks = response
+            self.softwareList.clear()
+            if self.postnames:
+                self.softwareList.addItems(self.postnames)
+        elif debug:
+            print(f"No Results found for \"{search_text}\"")
 
     def get_item_index(self, item, list, listlinks, debug):
         position = list.index(item)
         if 0 <= position < len(listlinks): # note for myself: py starts counting at 0; check if number is not negative, check if number is not more than list length.
-            if rutracker == True:
-                selected = listlinks[position]
-            else:
+            if tracker == "uztracker":
                 selected = "https://uztracker.net/" + listlinks[position].lstrip("./")
+            if tracker == "rutracker":                
+                selected = listlinks[position]
+
             if debug:
                 print("Selected URL: ", selected)
             selected_magnet = get_magnet_link(selected, debug)
