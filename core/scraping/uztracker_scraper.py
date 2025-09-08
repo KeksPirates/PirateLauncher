@@ -103,6 +103,7 @@ def get_magnet_link(post_url, debug):
 # x - check if x exists (not None/empty)
 # and - if x exists, THEN check the next part
 # x.startswith('magnet:') - does x start with "magnet:"?
+<<<<<<< HEAD
     
 
 
@@ -116,3 +117,5 @@ def get_item_index(item, list, listlinks, debug):
         selected_magnet = get_magnet_link(selected, debug)
         start_client()
         add_magnet(selected_magnet)
+=======
+>>>>>>> af99e99 (added rutracker as option. check full message)
