@@ -1,12 +1,13 @@
 from PySide6 import QtWidgets
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QLineEdit, QPushButton, QWidget, QVBoxLayout, QListWidget, QToolBar, QDialogButtonBox, QRadioButton, QGroupBox, QDialog, QVBoxLayout, QLabel, QHBoxLayout
+from PySide6.QtWidgets import QLineEdit, QPushButton, QWidget, QVBoxLayout, QListWidget, QToolBar, QDialog, QVBoxLayout, QLabel, QHBoxLayout
 from PySide6.QtGui import QIcon, QAction
 import darkdetect
 import requests
 from core.scraping.uztracker_scraper import scrape_uztracker
-from core.scraping.uztracker_scraper import get_item_index
-
+from core.scraping.uztracker_scraper import get_magnet_link
+from core.downloading.download import start_client
+from core.downloading.download import add_magnet
 
 def state_debug(setting):
     global debug
@@ -115,12 +116,6 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
 
     def download_selected(self):
         item = self.softwareList.currentItem()
-<<<<<<< HEAD
-        if item is not None:
-            if debug:
-                print(f"Downloading {self.softwareList.currentItem().text()}")
-            get_item_index(self.softwareList.currentItem().text(), self.postnames, self.postlinks, debug)
-=======
         if rutracker == True:
             if item is not None:
                 if debug:
@@ -129,7 +124,6 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
             else:
                 if debug:
                     print("No item selected for download.")
->>>>>>> af99e99 (added rutracker as option. check full message)
         else:
             if item is not None:
                 if debug:
@@ -149,25 +143,6 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
 
 
     def return_pressed(self):
-<<<<<<< HEAD
-        search_text = self.searchbar.text()
-        if debug:
-            print("User searched for:", search_text)
-        
-        response = scrape_uztracker(search_text, debug)
-        if response:
-            self.postnames, self.postlinks = response
-            self.softwareList.clear()
-            if self.postnames:
-                self.softwareList.addItems(self.postnames)
-        elif debug:
-            print(f"No Results found for \"{search_text}\"")
-
-        
-
-
-
-=======
         if rutracker == True:
             global postnames
             global postlinks
@@ -206,4 +181,3 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
             selected_magnet = get_magnet_link(selected, debug)
             start_client()
             add_magnet(selected_magnet)
->>>>>>> af99e99 (added rutracker as option. check full message)

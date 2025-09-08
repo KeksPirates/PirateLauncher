@@ -1,8 +1,6 @@
 import requests
 import asyncio
 from bs4 import BeautifulSoup
-from ..downloading.download import start_client
-from ..downloading.download import add_magnet
 
 global url_uztracker
 url_uztracker = "https://uztracker.net/tracker.php?nm=" # placeholder url for now
@@ -103,19 +101,3 @@ def get_magnet_link(post_url, debug):
 # x - check if x exists (not None/empty)
 # and - if x exists, THEN check the next part
 # x.startswith('magnet:') - does x start with "magnet:"?
-<<<<<<< HEAD
-    
-
-
-def get_item_index(item, list, listlinks, debug):
-    position = list.index(item)
-    if 0 <= position < len(listlinks): # note for myself: py starts counting at 0; check if number is not negative, check if number is not more than list length.
-        selected = "https://uztracker.net/" + listlinks[position].lstrip("./")
-        post_url = selected
-        if debug:
-            print("Selected URL: ", selected)
-        selected_magnet = get_magnet_link(selected, debug)
-        start_client()
-        add_magnet(selected_magnet)
-=======
->>>>>>> af99e99 (added rutracker as option. check full message)
