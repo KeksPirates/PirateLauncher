@@ -1,6 +1,6 @@
 from PySide6 import QtWidgets
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QLineEdit, QPushButton, QWidget, QVBoxLayout, QListWidget, QToolBar, QDialog, QVBoxLayout, QLabel, QHBoxLayout
+from PySide6.QtWidgets import QLineEdit, QPushButton, QWidget, QVBoxLayout, QListWidget, QToolBar, QDialog, QVBoxLayout, QLabel, QHBoxLayout,QComboBox
 from PySide6.QtGui import QIcon, QAction
 import darkdetect
 import requests
@@ -17,17 +17,8 @@ def state_debug(setting):
     else:
         debug = False
 
-def choose_tracker(): # TEMP SOLUTION: WORK ON GUI IMPL NEXT
-    global tracker
-    print("Choose Tracker:")
-    choice = input("(rutracker / uztracker) > ")
-    print(choice)
-    if choice.lower() == "rutracker":
-        print("using rutracker...")
-        tracker = "rutracker"
-    if choice.lower() == "uztracker":
-        print("using uztracker...")
-        tracker = "uztracker"
+global tracker
+tracker = "rutracker" # default tracker
 
 
 class MainWindow(QtWidgets.QMainWindow, QWidget):
@@ -72,6 +63,11 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         self.addToolBar(toolbar)
         toolbar.setLayoutDirection(Qt.RightToLeft)
         
+        self.tracker_list = QComboBox()
+        self.tracker_list.addItems(["rutracker", "uztracker"])
+        self.tracker_list.activated.connect(self.set_tracker)
+
+
         if darkdetect.isDark():
             settings_action = QAction(QIcon("core/assets/settings_dark.png"), "Settings", self)
         else:
@@ -79,8 +75,13 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
 
         settings_action.triggered.connect(self.settings_dialog)
         toolbar.addAction(settings_action)
+        toolbar.addWidget(self.tracker_list)
 
         toolbar.setMovable(False)
+
+    def set_tracker(self, _):
+        global tracker
+        tracker = self.tracker_list.currentText()
 
     def settings_dialog(self):
         if debug:
