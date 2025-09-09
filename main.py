@@ -11,7 +11,7 @@ debug = True
 def run_gui():
     state_debug(debug)
     app = QtWidgets.QApplication([])
-    if darkdetect.isDark():
+    if darkdetect.isDark:
         app.setStyleSheet(qdarktheme.load_stylesheet("dark"))
     else:
         app.setStyleSheet(qdarktheme.load_stylesheet("light"))
