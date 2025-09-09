@@ -4,14 +4,14 @@
 SoftwareManager is a Python-based GUI/TUI tool that simplifies downloading and managing free software from various sources.
 
 ## Features
-- VPN Binding
-- Bandwidth/Download speed limiting
+- VPN Binding (impl. soon)
+- Bandwidth/Download speed limiting (impl. soon)
 - UI Theming
 - Start downloads via a predefined magnet URI.
-- View detailed download information (name, speed, and status).
+- View detailed download information (name, speed, and status). (improved impl. soon)
 
 ## Installation
-1. Download the binary file for your operating system from releases
+1. Download the binary file for your operating system from releases 
    https://github.com/KeksPirates/SoftwareManager/releases
 2. Run the file
 
@@ -27,7 +27,7 @@ SoftwareManager is a Python-based GUI/TUI tool that simplifies downloading and m
    ```
 
 ## Notes
-- If you want to host your own server, clone the server branch of this repo, enter your cookie for rutracker.org and run server.py
+- If you want to host your own server, clone the server branch of this repo, enter your cookie for rutracker.org and run server.py. Detailed Instructions on how to get your rutracker cookie are in the README of its branch.
 - This tool is for educational purposes only. Use it responsibly.
 
 ---
