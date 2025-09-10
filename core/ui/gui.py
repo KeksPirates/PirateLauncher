@@ -143,13 +143,13 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         if tracker == "uztracker":
             response = scrape_uztracker(search_text, debug)
         if tracker == "rutracker":
-            response = scrape_rutracker(search_text)
+            response = scrape_rutracker(search_text, debug)
         if response:
             self.postnames, self.postlinks = response
             self.softwareList.clear()
             if self.postnames:
                 self.softwareList.addItems(self.postnames)
-        elif debug:
+        if not response:
             print(f"No Results found for \"{search_text}\"")
 
     def get_item_index(self, item, list, listlinks, debug):

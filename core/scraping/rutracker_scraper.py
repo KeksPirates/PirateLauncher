@@ -3,12 +3,22 @@ import requests
 server = "https://pizzasucht.net"
 
 
-def scrape_rutracker(search_text):
+def scrape_rutracker(search_text, debug):
     search = requests.get(f"{server}/search/{search_text}")
-    data = search.json()
-    resulttitles = data["titles"]
-    resultlinks = data["links"]
-    return resulttitles, resultlinks
+    if search:
+        try:
+            data = search.json()
+            resulttitles = data["titles"]
+            resultlinks = data["links"]
+            return resulttitles, resultlinks
+        except Exception:
+            if debug:
+                print("No results found / No response from server")
+            return None
+
+    else:
+        return None
+        
 
 
-# This Function utilizes the SoftwareManager Server - Source Code can be found in the "Server" branch.
+# This function utilizes the SoftwareManager server - source code can be found under the "server" branch.

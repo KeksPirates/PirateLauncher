@@ -28,7 +28,7 @@ def scrape_uztracker(search, debug):
         result = False
         global results
         global resulttitles
-        results = []
+        results = [] 
         resulttitles = []
 
         try:
