@@ -144,6 +144,10 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
 
     def return_pressed(self):
         search_text = self.searchbar.text()
+        if search_text == "":
+            if debug:
+                print("Error: Can't search for nothing")
+            return
         if debug:
             print("User searched for:", search_text)
         if tracker == "uztracker":
