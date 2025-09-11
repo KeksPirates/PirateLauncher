@@ -14,3 +14,17 @@
 7. Save the `.env` file.
 
 Your session cookie is now set up for use with the Server.
+
+# Server Setup Recommendations
+
+On our VPS, we use Gunicorn to run our Flask server, with Nginx as a reverse proxy. If you want to run the server just for yourself, this isn't needed. You can simply run it directly with Flask:
+
+```bash
+python3 server.py```
+
+> [!NOTE]
+> The server runs on Port 8080 by default.
+> You can change that by modifying the "Port" variable 
+> in the server.py file
+
+
