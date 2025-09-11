@@ -55,7 +55,6 @@ def scrape_rutracker(search_term):
             resultCount = 0
             response = scraper.get(search_url, cookies=cookies, headers=headers)
             print(response.status_code)
-            print(response.text[:500])  
             response.raise_for_status()
 
             # soup = BeautifulSoup(response.content, 'html.parser')
