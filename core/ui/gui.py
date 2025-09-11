@@ -3,7 +3,7 @@ from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QLineEdit, QPushButton, QWidget, QVBoxLayout, QListWidget, QToolBar, QDialog, QVBoxLayout, QLabel, QHBoxLayout,QComboBox
 from PySide6.QtGui import QIcon, QAction
 import darkdetect
-import requests
+import threading
 from core.scraping.uztracker_scraper import scrape_uztracker
 from core.scraping.rutracker_scraper import scrape_rutracker
 from core.scraping.utils import get_magnet_link
@@ -38,7 +38,13 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         self.searchbar.setPlaceholderText("Search for software...")
         self.searchbar.setClearButtonEnabled(True)
         self.searchbar.setMinimumHeight(30)
-        self.searchbar.returnPressed.connect(self.return_pressed) # Triggers scraping functions on enter
+
+
+        thread_search = threading.Thread(target=self.return_pressed)
+
+        
+
+        self.searchbar.returnPressed.connect(lambda: self.run_search(threading.Thread(target=self.return_pressed))) # Triggers scraping function thread on enter
         self.button = QtWidgets.QPushButton("Download")
         self.softwareList = QListWidget()
 
@@ -165,3 +171,6 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
             selected_magnet = get_magnet_link(selected, debug)
             start_client()
             add_magnet(selected_magnet)
+
+    def run_search(self, thread):
+            thread.start()

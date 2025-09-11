@@ -1,6 +1,6 @@
 import requests
 
-server = "https://pizzasucht.net"
+server = "http://vps-e512cfa0.vps.ovh.net:8080"
 
 
 def scrape_rutracker(search_text, debug):
