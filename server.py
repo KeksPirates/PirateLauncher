@@ -1,4 +1,5 @@
 from flask import Flask
+import cloudscraper
 import requests
 import os
 from bs4 import BeautifulSoup
@@ -14,6 +15,8 @@ debug = False
 
 load_dotenv()
 
+scraper = cloudscraper.create_scraper()
+
 cookies = {
     "bb_session": os.getenv("bb_session")
 }
@@ -23,7 +26,7 @@ headers = {
 }
 
 try:
-    response = requests.get(url_rutracker, cookies=cookies, headers=headers) # get da content from da url
+    response = scraper.get(url_rutracker, cookies=cookies, headers=headers) # get da content from da url
     #print(response.content);
     soup = BeautifulSoup(response.content, 'html.parser') # create bs object
     up = True
@@ -50,7 +53,7 @@ def scrape_rutracker(search_term):
 
         try:
             resultCount = 0
-            response = requests.get(search_url, cookies=cookies, headers=headers)
+            response = scraper.get(search_url, cookies=cookies, headers=headers)
             print(response.status_code)
             print(response.text[:500])  
             response.raise_for_status()

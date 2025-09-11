@@ -1,4 +1,5 @@
 flask
-requests
 bs4
 python-dotenv
+cloudscraper
+requests
