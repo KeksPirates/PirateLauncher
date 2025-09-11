@@ -1,12 +1,9 @@
 # SoftwareManager - A Download Manager/Launcher
-
-## Description
 SoftwareManager is a Python-based GUI/TUI tool that simplifies downloading and managing free software from various sources.
 
 ## Features
 - VPN Binding (impl. soon)
 - Bandwidth/Download speed limiting (impl. soon)
-- UI Theming
 - Start downloads via a predefined magnet URI.
 - View detailed download information (name, speed, and status). (improved impl. soon)
 
