@@ -12,10 +12,22 @@ def run_aria2p():
             secret=""
         )
     )
-
-
-    downloads_dir = os.path.join(os.path.expanduser("~"), "Downloads")
-    subprocess.Popen(["aria2c", "--enable-rpc", "--rpc-listen-all=true", f"--dir={downloads_dir}"])
-
     
     return aria2
+
+def aria2server():
+    downloads_dir = os.path.join(os.path.expanduser("~"), "Downloads")
+
+    cmd = [
+        "aria2c",
+        "--enable-rpc",
+        "--disable-ipv6", # added this since it caused problems with vpns
+        "--rpc-listen-all",
+        "--rpc-listen-port=6800",
+        f"--dir={downloads_dir}"
+    ]
+
+
+    
+    aria2server = subprocess.Popen(cmd)
+    return aria2server

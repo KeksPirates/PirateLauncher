@@ -1,6 +1,6 @@
 import requests
 
-server = "http://vps-e512cfa0.vps.ovh.net:8080"
+server = "http://vps-e512cfa0.vps.ovh.net"
 
 
 def scrape_rutracker(search_text, debug):
