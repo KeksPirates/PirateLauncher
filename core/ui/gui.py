@@ -1,14 +1,30 @@
 from PySide6 import QtWidgets
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QLineEdit, QPushButton, QWidget, QVBoxLayout, QListWidget, QToolBar, QDialog, QVBoxLayout, QLabel, QHBoxLayout,QComboBox
+from PySide6.QtWidgets import (
+    QLineEdit, 
+    QPushButton, 
+    QWidget, 
+    QVBoxLayout, 
+    QListWidget, 
+    QToolBar, 
+    QDialog, 
+    QLabel, 
+    QHBoxLayout,
+    QComboBox, 
+    QSpinBox,
+    )
 from PySide6.QtGui import QIcon, QAction
 import darkdetect
 import threading
+import time
 from core.scraping.uztracker_scraper import scrape_uztracker
 from core.scraping.rutracker_scraper import scrape_rutracker
 from core.scraping.utils import get_magnet_link
 from core.downloading.download import start_client
 from core.downloading.download import add_magnet
+from core.downloading.aria2p_server import set_threads
+
+
 
 def state_debug(setting):
     global debug
@@ -17,8 +33,16 @@ def state_debug(setting):
     else:
         debug = False
 
+
+def pass_aria(aria):
+    global aria2process
+    aria2process = aria
+
+
+
 global tracker
 tracker = "rutracker" # default tracker
+
 
 
 class MainWindow(QtWidgets.QMainWindow, QWidget):
@@ -38,10 +62,6 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         self.searchbar.setPlaceholderText("Search for software...")
         self.searchbar.setClearButtonEnabled(True)
         self.searchbar.setMinimumHeight(30)
-
-
-        thread_search = threading.Thread(target=self.return_pressed)
-
         
 
         self.searchbar.returnPressed.connect(lambda: self.run_search(threading.Thread(target=self.return_pressed))) # Triggers scraping function thread on enter
@@ -90,37 +110,93 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         tracker = self.tracker_list.currentText()
 
     def settings_dialog(self):
+
+        
+
         if debug:
             print("Settings dialog opened")
         dialog = QDialog(self)
         dialog.setWindowTitle("Settings")
-        dialog.setFixedSize(400, 300)
+        dialog.setFixedSize(400, 200)
 
 
         dialog.setLayout(QVBoxLayout())
-        label = QLabel("This is a settings dialog.")
-        QtWidgets.QPushButton("Close", clicked=dialog.close)
-        # close button
-        dialog.layout().addWidget(label)
-        dialog.layout().addWidget(QtWidgets.QPushButton("Close", clicked=dialog.close))
+        dialog.layout().addWidget(QLabel("Settings"))
 
-        layout = QHBoxLayout()
+        def close_settings():
+            dialog.reject()
+        
+        ##################
+        # THREAD SETTING #
+        ##################
+        thread_box = QSpinBox()
+        thread_box.setMinimum(1)
+        thread_box.setMaximum(16)
+        thread_box.setValue(4)
+        
+
+        # container for tight space
+        thread_container = QWidget()
+        thread_layout = QVBoxLayout()
+
+        thread_layout.addWidget(QLabel("Threads:"))
+        thread_layout.addWidget(thread_box)
+        thread_container.setLayout(thread_layout)
+        thread_container.setMaximumHeight(80)
+        
+
+        # Dimensions
+        thread_box.setFixedWidth(90)
+        thread_box.setFixedHeight(30)
+
+        dialog.layout().addWidget(thread_container)
+
+
+
+
+        # dialog.layout().addWidget(QtWidgets.QPushButton("Close", clicked=dialog.close))
+
+        layout = QHBoxLayout() # layout for buttons
 
         save_btn = QPushButton("Save")
         cancel_btn = QPushButton("Cancel")
-        save_btn.clicked.connect(self.save_settings)
-        cancel_btn.clicked.connect(dialog.reject)
-        layout.addWidget(save_btn)
-        layout.addWidget(cancel_btn)
+        save_btn.clicked.connect(lambda: self.save_settings(thread_box.value(), close_settings))
 
-        self.setLayout(QVBoxLayout())
+    
+
+        cancel_btn.clicked.connect(dialog.reject)
+        print(thread_box.value())
+        layout.addWidget(cancel_btn)
+        layout.addWidget(save_btn)
+        
+
         dialog.layout().addLayout(layout)
 
         
         dialog.exec()
 
-    def save_settings(self):
-        pass
+    def restart_aria2c(self):
+        import main # had to do this because of circle import :(
+        import signal
+        import atexit
+        global aria2process
+        main.kill_aria2server(aria2process)
+        aria2process.wait()
+        aria2process = main.run_aria2server()
+        signal.signal(signal.SIGINT, main.keyboardinterrupthandler)
+        atexit.unregister(main.kill_aria2server)
+        atexit.register(main.kill_aria2server, aria2process)
+
+
+
+    def save_settings(self, thread_count, close):
+        set_threads(thread_count)
+        self.restart_aria2c()
+        close()
+
+
+    
+
 
 
     def download_selected(self):

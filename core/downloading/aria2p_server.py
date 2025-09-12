@@ -15,6 +15,15 @@ def run_aria2p():
     
     return aria2
 
+t = 4 # default value
+
+def set_threads(threads):
+    global t
+    t = threads
+
+
+
+
 def aria2server():
     downloads_dir = os.path.join(os.path.expanduser("~"), "Downloads")
 
@@ -24,7 +33,9 @@ def aria2server():
         "--disable-ipv6", # added this since it caused problems with vpns
         "--rpc-listen-all",
         "--rpc-listen-port=6800",
-        f"--dir={downloads_dir}"
+        f"--dir={downloads_dir}",
+        "-x", str(t),
+        "-s", str(t),
     ]
 
 
