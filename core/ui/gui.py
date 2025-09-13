@@ -64,7 +64,7 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         self.searchbar.setMinimumHeight(30)
         
 
-        self.searchbar.returnPressed.connect(lambda: self.run_search(threading.Thread(target=self.return_pressed))) # Triggers scraping function thread on enter
+        self.searchbar.returnPressed.connect(lambda: self.run_thread(threading.Thread(target=self.return_pressed))) # Triggers scraping function thread on enter
         self.button = QtWidgets.QPushButton("Download")
         self.softwareList = QListWidget()
 
@@ -77,8 +77,7 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
 
         containerLayout.addWidget(self.button)
         # download button triggers
-        self.button.clicked.connect(lambda: self.download_selected())
-        self.button.clicked.connect(lambda: self.get_selected_item())
+        self.button.clicked.connect(lambda: self.run_thread(threading.Thread(target=self.download_selected)))
 
         container.setLayout(containerLayout)
         self.setCentralWidget(container)
@@ -187,35 +186,21 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         atexit.unregister(main.kill_aria2server)
         atexit.register(main.kill_aria2server, aria2process)
 
-
-
     def save_settings(self, thread_count, close):
         set_threads(thread_count)
         self.restart_aria2c()
         close()
-
-
-    
-
-
 
     def download_selected(self):
         item = self.softwareList.currentItem()
         if item is not None:
             if debug:
                 print(f"Downloading {self.softwareList.currentItem().text()}")
-            self.get_item_index(self.softwareList.currentItem().text(), self.postnames, self.postlinks, debug)
+            self.run_thread(threading.Thread(target=self.get_item_index, args=(self.softwareList.currentItem().text(), self.postnames, self.postlinks, debug)))
         else:
             if debug:
                 print("No item selected for download.")
             # add gui notification for no item selected
-
-
-    def get_selected_item(self): 
-        item = self.softwareList.currentItem()
-        if item is not None:
-            return item.text()
-        return ""
 
 
     def return_pressed(self):
@@ -252,5 +237,5 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
             start_client()
             add_magnet(selected_magnet)
 
-    def run_search(self, thread):
+    def run_thread(self, thread):
             thread.start()
