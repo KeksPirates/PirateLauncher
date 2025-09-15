@@ -5,7 +5,6 @@ from core.downloading.aria2p_server import aria2server
 from PySide6 import QtWidgets
 import qdarktheme
 import darkdetect
-import subprocess
 import signal
 import atexit
 import sys

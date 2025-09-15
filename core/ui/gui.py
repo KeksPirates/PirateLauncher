@@ -16,7 +16,6 @@ from PySide6.QtWidgets import (
 from PySide6.QtGui import QIcon, QAction
 import darkdetect
 import threading
-import time
 from core.scraping.uztracker_scraper import scrape_uztracker
 from core.scraping.rutracker_scraper import scrape_rutracker
 from core.scraping.utils import get_magnet_link
