@@ -40,8 +40,6 @@ def scrape_uztracker(search, debug):
             for link in links:
                 if link.b:
                     resultCount += 1
-                    
-                    # print(f"Result found: ({resultCount}) {link.b.text} | {link['href']}")
                     results.append(link['href'])
                     resulttitles.append(link.b.text)
                     result = True

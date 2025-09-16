@@ -221,6 +221,7 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
                 self.softwareList.addItems(self.postnames)
         if not response:
             print(f"No Results found for \"{search_text}\"")
+        self.softwareList.addItem("No Results")
 
     def get_item_index(self, item, list, listlinks, debug):
         position = list.index(item)
