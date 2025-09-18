@@ -12,11 +12,11 @@ from PySide6.QtWidgets import (
     QHBoxLayout,
     QComboBox, 
     QSpinBox,
+    QTabWidget,
     )
 from PySide6.QtGui import QIcon, QAction
 import darkdetect
 import threading
-import time
 from core.scraping.uztracker_scraper import scrape_uztracker
 from core.scraping.rutracker_scraper import scrape_rutracker
 from core.scraping.utils import get_magnet_link
@@ -81,6 +81,35 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
 
         container.setLayout(containerLayout)
         self.setCentralWidget(container)
+
+        # Tabs
+        self.tabs = QTabWidget()
+        
+        # Tab 1
+        self.tab1 = QWidget()
+        self.tab1_layout = QVBoxLayout()
+        self.tab1_layout.addWidget(self.searchbar)
+        self.tab1_layout.addWidget(self.softwareList)
+        self.tab1.setLayout(self.tab1_layout)
+        self.tabs.addTab(self.tab1,"Tab 1")
+
+        # Tab 2
+        self.tab2 = QWidget()
+        self.tab2_layout = QVBoxLayout()
+        self.tab2_layout.addWidget(self.searchbar)
+        self.tab2_layout.addWidget(self.softwareList)
+        self.tab2.setLayout(self.tab2_layout)
+        self.tabs.addTab(self.tab2,"Tab 2")
+
+        # Tab 3
+        self.tab3 = QWidget()
+        self.tab3_layout = QVBoxLayout()
+        self.tab3_layout.addWidget(self.searchbar)
+        self.tab3_layout.addWidget(self.softwareList)
+        self.tab3.setLayout(self.tab3_layout)
+        self.tabs.addTab(self.tab3,"Tab 3")
+
+        containerLayout.addWidget(self.tabs)
 
         containerLayout.setAlignment(Qt.AlignmentFlag.AlignBottom)
 
