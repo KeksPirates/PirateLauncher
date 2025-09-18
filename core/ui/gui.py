@@ -12,6 +12,7 @@ from PySide6.QtWidgets import (
     QHBoxLayout,
     QComboBox, 
     QSpinBox,
+    QTabWidget,
     )
 from PySide6.QtGui import QIcon, QAction
 import darkdetect
@@ -66,6 +67,49 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         self.searchbar.returnPressed.connect(lambda: self.run_thread(threading.Thread(target=self.return_pressed))) # Triggers scraping function thread on enter
         self.button = QtWidgets.QPushButton("Download")
         self.softwareList = QListWidget()
+
+        container = QWidget()
+        containerLayout = QVBoxLayout()
+        containerLayout.addWidget(self.searchbar)
+        
+        containerLayout.addWidget(self.softwareList)
+        self.softwareList.addItems(searchresults)
+
+        containerLayout.addWidget(self.button)
+        # download button triggers
+        self.button.clicked.connect(lambda: self.run_thread(threading.Thread(target=self.download_selected)))
+
+        container.setLayout(containerLayout)
+        self.setCentralWidget(container)
+
+        # Tabs
+        self.tabs = QTabWidget()
+        
+        # Tab 1
+        self.tab1 = QWidget()
+        self.tab1_layout = QVBoxLayout()
+        self.tab1_layout.addWidget(self.searchbar)
+        self.tab1_layout.addWidget(self.softwareList)
+        self.tab1.setLayout(self.tab1_layout)
+        self.tabs.addTab(self.tab1,"Tab 1")
+
+        # Tab 2
+        self.tab2 = QWidget()
+        self.tab2_layout = QVBoxLayout()
+        self.tab2_layout.addWidget(self.searchbar)
+        self.tab2_layout.addWidget(self.softwareList)
+        self.tab2.setLayout(self.tab2_layout)
+        self.tabs.addTab(self.tab2,"Tab 2")
+
+        # Tab 3
+        self.tab3 = QWidget()
+        self.tab3_layout = QVBoxLayout()
+        self.tab3_layout.addWidget(self.searchbar)
+        self.tab3_layout.addWidget(self.softwareList)
+        self.tab3.setLayout(self.tab3_layout)
+        self.tabs.addTab(self.tab3,"Tab 3")
+
+        containerLayout.addWidget(self.tabs)
 
         container = QWidget()
         containerLayout = QVBoxLayout()
