@@ -25,7 +25,7 @@ def set_threads(threads):
 
 
 def aria2server():
-    downloads_dir = os.path.join(os.path.expanduser("~"), "Downloads")
+    downloads_dir = os.path.join("Library")
 
     cmd = [
         "aria2c",
