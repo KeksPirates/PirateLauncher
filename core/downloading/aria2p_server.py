@@ -1,7 +1,6 @@
 import aria2p
 import os
 import subprocess
-import time
 
 def run_aria2p():
     global aria2
