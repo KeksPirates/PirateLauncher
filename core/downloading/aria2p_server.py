@@ -1,9 +1,10 @@
 import aria2p
 import os
 import subprocess
-
+import time
 
 def run_aria2p():
+    global aria2
 
     aria2 = aria2p.API(
         aria2p.Client(
@@ -20,8 +21,6 @@ t = 4 # default value
 def set_threads(threads):
     global t
     t = threads
-
-
 
 
 def aria2server():
@@ -42,3 +41,15 @@ def aria2server():
     
     aria2server = subprocess.Popen(cmd)
     return aria2server
+
+def dlprogress():
+    try:
+        download2 = aria2.get_downloads()
+        if download2:
+            for download in download2:
+                progress = download.progress_string(0)
+                progress_int = int(progress.strip('%'))
+                return progress_int
+        return 0
+    except:
+        return 0

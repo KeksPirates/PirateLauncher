@@ -1,5 +1,5 @@
 from PySide6 import QtWidgets
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QTimer
 from PySide6.QtWidgets import (
     QLineEdit, 
     QPushButton, 
@@ -13,6 +13,7 @@ from PySide6.QtWidgets import (
     QComboBox, 
     QSpinBox,
     QTabWidget,
+    QProgressBar,
     )
 from PySide6.QtGui import QIcon, QAction
 import darkdetect
@@ -22,7 +23,7 @@ from core.scraping.rutracker_scraper import scrape_rutracker
 from core.scraping.utils import get_magnet_link
 from core.downloading.download import start_client
 from core.downloading.download import add_magnet
-from core.downloading.aria2p_server import set_threads
+from core.downloading.aria2p_server import dlprogress, set_threads
 
 
 
@@ -37,8 +38,6 @@ def state_debug(setting):
 def pass_aria(aria):
     global aria2process
     aria2process = aria
-
-
 
 global tracker
 tracker = "rutracker" # default tracker
@@ -69,11 +68,13 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         self.searchbar.setPlaceholderText("Search for software...")
         self.searchbar.setClearButtonEnabled(True)
         self.searchbar.setMinimumHeight(30)
-        
-
         self.searchbar.returnPressed.connect(lambda: self.run_thread(threading.Thread(target=self.return_pressed))) # Triggers scraping function thread on enter
+        
         self.dlbutton = QtWidgets.QPushButton("Download")
         self.softwareList = QListWidget()
+        self.libraryList = QListWidget()
+        self.emptyLabel = QLabel("No items in library.")
+        self.progressbar = QProgressBar()
 
         container = QWidget()
         containerLayout = QVBoxLayout()
@@ -93,7 +94,7 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         self.tabs = QTabWidget()
         
         self.tab1 = create_tab("Download", self.searchbar, self.softwareList, self.tabs)
-        self.tab2 = create_tab("Library", self.searchbar, self.softwareList, self.tabs)
+        self.tab2 = create_tab("Library", self.emptyLabel, self.libraryList, self.tabs)
 
         containerLayout.addWidget(self.tabs)
 
@@ -119,13 +120,18 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
 
         toolbar.setMovable(False)
 
+        self.progressbar.setValue(0)
+        containerLayout.addWidget(self.progressbar)
+        
+        self.progress_timer = QTimer()
+        self.progress_timer.timeout.connect(self.update_progress)
+        self.progress_timer.start(1000)
+
     def set_tracker(self, _):
         global tracker
         tracker = self.tracker_list.currentText()
 
     def settings_dialog(self):
-
-        
 
         if debug:
             print("Settings dialog opened")
@@ -252,6 +258,10 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
             selected_magnet = get_magnet_link(selected, debug)
             start_client()
             add_magnet(selected_magnet)
+
+    def update_progress(self):
+        progress = dlprogress()
+        self.progressbar.setValue(progress)
 
     def run_thread(self, thread):
             thread.start()
