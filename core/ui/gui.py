@@ -73,7 +73,9 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         self.dlbutton = QtWidgets.QPushButton("Download")
         self.softwareList = QListWidget()
         self.libraryList = QListWidget()
-        self.emptyLabel = QLabel("No items in library.")
+        self.downloadList = QListWidget()
+        self.emptyLibrary = QLabel("No items in library.")
+        self.emptyDownload = QLabel("No items in downloads.")
         self.progressbar = QProgressBar()
 
         container = QWidget()
@@ -93,8 +95,9 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         # Tabs
         self.tabs = QTabWidget()
         
-        self.tab1 = create_tab("Download", self.searchbar, self.softwareList, self.tabs)
-        self.tab2 = create_tab("Library", self.emptyLabel, self.libraryList, self.tabs)
+        self.tab1 = create_tab("Search", self.searchbar, self.softwareList, self.tabs)
+        self.tab2 = create_tab("Library", self.emptyLibrary, self.libraryList, self.tabs)
+        self.tab3 = create_tab("Downloads", self.emptyDownload, self.downloadList, self.tabs)
 
         containerLayout.addWidget(self.tabs)
 
@@ -243,7 +246,9 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
                 self.softwareList.addItems(self.postnames)
         if not response:
             print(f"No Results found for \"{search_text}\"")
-        self.softwareList.addItem("No Results")
+            self.softwareList.clear()
+            self.softwareList.addItem("No Results")
+        
 
     def get_item_index(self, item, list, listlinks, debug):
         position = list.index(item)
