@@ -1,6 +1,6 @@
 import requests
 
-server = "http://vps-e512cfa0.vps.ovh.net"
+server = "api.michijackson.xyz"
 
 
 def scrape_rutracker(search_text, debug):
