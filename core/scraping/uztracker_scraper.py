@@ -12,6 +12,9 @@ async def init_uztracker():
         response = requests.get(url_uztracker, timeout=10)
         if response.status_code == 200:
             up = True
+        else:
+            up = False
+            print(f"Rutracker seems down, status code: {response.status_code}")
     except requests.exceptions.RequestException as e:
         print(f"\nRequest Exception on {url_uztracker}:")
         print(e)
