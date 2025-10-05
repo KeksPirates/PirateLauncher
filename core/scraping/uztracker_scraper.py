@@ -20,44 +20,51 @@ async def init_uztracker():
 
 asyncio.run(init_uztracker())
 
-def scrape_uztracker(search, debug):
+def scrape_uztracker(search, debug, max_results=450):
     if up:
-        search_url = url_uztracker + search
-        if debug:
-            print(search_url)
         result = False
         global results
         global resulttitles
         results = [] 
         resulttitles = []
 
-        try:
-            resultCount = 0
-            response = requests.get(search_url)
-            response.raise_for_status()
-            soup = BeautifulSoup(response.text, 'html.parser')
-            links = soup.find_all('a', class_="genmed tLink", href=lambda x: x and x.startswith('./viewtopic'))
-            for link in links:
-                if link.b:
-                    resultCount += 1
-                    results.append(link['href'])
-                    resulttitles.append(link.b.text)
-                    result = True
-                    
-            if result:
-                return resulttitles, results
-                    
-            if not result:
-                # add popup in gui for no result
+        per_page = 50
+
+        for start in range(0, max_results, per_page):
+            search_url = url_uztracker + search + f"&start={start}"
+            if debug:
+                print(search_url)
+
+            try:
+                resultCount = 0
+                response = requests.get(search_url)
+                response.raise_for_status()
+                soup = BeautifulSoup(response.text, 'html.parser')
+                links = soup.find_all('a', class_="genmed tLink", href=lambda x: x and x.startswith('./viewtopic'))
+                for link in links:
+                    if link.b:
+                        resultCount += 1
+                        results.append(link['href'])
+                        resulttitles.append(link.b.text)
+                        result = True
+                        
+                if resultCount == 0:
+                    # add popup in gui for no result
+                    break
+                
+            except requests.RequestException as e:
+                if result:
+                    print(f"Failed to fetch {search_url}: {e}")
                 return None
-            
-        except requests.RequestException as e:
-            if result:
-                print(f"Failed to fetch {search_url}: {e}")
-            return None
-    else:
-        print("Error: Uztracker down")
-        return None, None    
+
+        else:
+            print("Error: Uztracker down")
+            return None, None
+
+        if not results:
+            return None, None
+
+        return resulttitles, results
 
 def get_post_title(post_url, debug):
     if up:
