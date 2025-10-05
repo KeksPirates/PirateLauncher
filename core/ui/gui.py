@@ -85,7 +85,6 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         containerLayout.addWidget(self.softwareList)
         self.softwareList.addItems(searchresults)
 
-        containerLayout.addWidget(self.dlbutton)
         # download button triggers
         self.dlbutton.clicked.connect(lambda: self.run_thread(threading.Thread(target=self.download_selected)))
 
@@ -94,8 +93,16 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
 
         # Tabs
         self.tabs = QTabWidget()
+
+        # Tab 1
+        self.searchtab = QWidget()
+        self.searchtab_layout = QVBoxLayout()
+        self.searchtab_layout.addWidget(self.searchbar)
+        self.searchtab_layout.addWidget(self.softwareList)
+        self.searchtab_layout.addWidget(self.dlbutton)
+        self.searchtab.setLayout(self.searchtab_layout)
+        self.tabs.addTab(self.searchtab,"Search")
         
-        self.tab1 = create_tab("Search", self.searchbar, self.softwareList, self.tabs)
         self.tab2 = create_tab("Library", self.emptyLibrary, self.libraryList, self.tabs)
         self.tab3 = create_tab("Downloads", self.emptyDownload, self.downloadList, self.tabs)
 
