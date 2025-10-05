@@ -18,8 +18,8 @@ from PySide6.QtWidgets import (
 from PySide6.QtGui import QIcon, QAction
 import darkdetect
 import threading
-from core.scraping.uztracker_scraper import scrape_uztracker
-from core.scraping.rutracker_scraper import scrape_rutracker
+from core.scraping.scrapers.uztracker import scrape_uztracker
+from core.scraping.scrapers.rutracker import scrape_rutracker
 from core.scraping.utils import get_magnet_link
 from core.downloading.download import start_client
 from core.downloading.download import add_magnet
