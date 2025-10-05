@@ -9,8 +9,9 @@ async def init_uztracker():
     global up
     global soup
     try:
-        response = requests.get(url_uztracker)
-        up = True
+        response = requests.get(url_uztracker, timeout=10)
+        if response.status_code == 200:
+            up = True
     except requests.exceptions.RequestException as e:
         print(f"\nRequest Exception on {url_uztracker}:")
         print(e)
