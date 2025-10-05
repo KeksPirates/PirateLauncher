@@ -1,6 +1,6 @@
 import requests
 
-server = "api.michijackson.xyz"
+server = "https://api.michijackson.xyz"
 
 
 def scrape_rutracker(search_text, debug):
