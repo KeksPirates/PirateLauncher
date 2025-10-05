@@ -18,12 +18,12 @@ from PySide6.QtWidgets import (
 from PySide6.QtGui import QIcon, QAction
 import darkdetect
 import threading
-from core.scraping.scrapers.uztracker import scrape_uztracker
-from core.scraping.scrapers.rutracker import scrape_rutracker
-from core.scraping.utils import get_magnet_link
-from core.downloading.download import start_client
-from core.downloading.download import add_magnet
-from core.downloading.aria2p_server import dlprogress, set_threads
+from core.data.scrapers.uztracker import scrape_uztracker
+from core.data.scrapers.rutracker import scrape_rutracker
+from core.data.utils import get_magnet_link
+from core.network.aria2_wrapper import start_client
+from core.network.aria2_wrapper import add_magnet
+from core.network.aria2_integration import dlprogress, set_threads
 
 
 
@@ -68,7 +68,7 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         self.searchbar.setPlaceholderText("Search for software...")
         self.searchbar.setClearButtonEnabled(True)
         self.searchbar.setMinimumHeight(30)
-        self.searchbar.returnPressed.connect(lambda: self.run_thread(threading.Thread(target=self.return_pressed))) # Triggers scraping function thread on enter
+        self.searchbar.returnPressed.connect(lambda: self.run_thread(threading.Thread(target=self.return_pressed))) # Triggers data function thread on enter
         
         self.dlbutton = QtWidgets.QPushButton("Download")
         self.softwareList = QListWidget()
@@ -226,7 +226,7 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         item = self.softwareList.currentItem()
         if item is not None:
             if debug:
-                print(f"Downloading {self.softwareList.currentItem().text()}")
+                print(f"network {self.softwareList.currentItem().text()}")
             self.run_thread(threading.Thread(target=self.get_item_index, args=(self.softwareList.currentItem().text(), self.postnames, self.postlinks, debug)))
         else:
             if debug:

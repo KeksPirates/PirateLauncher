@@ -1,4 +1,4 @@
-from .aria2p_server import run_aria2p
+from .aria2_integration import run_aria2p
 
 def start_client():
     global aria2

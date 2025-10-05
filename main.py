@@ -1,7 +1,7 @@
-from core.ui.gui import MainWindow
-from core.ui.gui import state_debug
-from core.ui.gui import pass_aria
-from core.downloading.aria2p_server import aria2server
+from core.interface.gui import MainWindow
+from core.interface.gui import state_debug
+from core.interface.gui import pass_aria
+from core.network.aria2_integration import aria2server
 from PySide6 import QtWidgets
 import qdarktheme
 import darkdetect
