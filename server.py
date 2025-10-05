@@ -1,7 +1,7 @@
 from flask import Flask
 from flask import jsonify
-from scraping.rutracker import scrape_rutracker
-from scraping.rutracker import init
+from data.scrapers.rutracker import scrape_rutracker
+from data.scrapers.rutracker import init
 
 app = Flask(__name__)
 
