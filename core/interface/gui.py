@@ -43,6 +43,9 @@ def pass_aria(aria):
 global tracker
 tracker = "rutracker" # default tracker
 
+global api_url
+api_url = "https://api.michijackson.xyz"
+
 def create_tab(title, searchbar, software_list, tabs):
     tab = QWidget()
     layout = QVBoxLayout()
@@ -252,7 +255,7 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         if tracker == "uztracker":
             response = scrape_uztracker(search_text, debug)
         if tracker == "rutracker":
-            response = scrape_rutracker(search_text, debug)
+            response = scrape_rutracker(search_text, debug, api_url)
         if response:
             self.postnames, self.postlinks = response
             self.softwareList.clear()

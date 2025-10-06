@@ -1,9 +1,7 @@
 import requests
 
-server = "https://api.michijackson.xyz"
 
-
-def scrape_rutracker(search_text, debug):
+def scrape_rutracker(search_text, debug, server):
     search = requests.get(f"{server}/search/{search_text}")
     if search:
         try:
