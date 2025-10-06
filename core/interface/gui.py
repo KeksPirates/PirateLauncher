@@ -196,6 +196,7 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         api_url_layout.addWidget(text_edit)
         api_url_container.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
         api_url_container.setLayout(api_url_layout)
+        text_edit.setText(api_url)
         dialog.layout().addWidget(api_url_container)
 
         # dialog.layout().addWidget(QtWidgets.QPushButton("Close", clicked=dialog.close))
@@ -204,7 +205,7 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
 
         save_btn = QPushButton("Save")
         cancel_btn = QPushButton("Cancel")
-        save_btn.clicked.connect(lambda: self.save_settings(thread_box.value(), close_settings))
+        save_btn.clicked.connect(lambda: self.save_settings(thread_box.value(), close_settings, text_edit.toPlainText()))
     
 
         cancel_btn.clicked.connect(dialog.reject)
@@ -230,8 +231,10 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         atexit.unregister(main.kill_aria2server)
         atexit.register(main.kill_aria2server, aria2process)
 
-    def save_settings(self, thread_count, close):
+    def save_settings(self, thread_count, close, apiurl):
+        global api_url
         set_threads(thread_count)
+        api_url = apiurl
         self.restart_aria2c()
         close()
 
