@@ -184,12 +184,15 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
 
         dialog.layout().addWidget(thread_container)
 
-        # server setting
+        ##################
+        # SERVER SETTING #
+        ##################
+        
         api_url_container = QWidget()
         api_url_layout = QHBoxLayout()
 
         text_edit = QTextEdit()
-        api_url_layout.addWidget(QLabel("api server url:"))
+        api_url_layout.addWidget(QLabel("API Server URL:"))
         api_url_layout.addWidget(text_edit)
         api_url_container.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
         api_url_container.setLayout(api_url_layout)
