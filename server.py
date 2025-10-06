@@ -1,11 +1,8 @@
-from flask import Flask
-from flask import jsonify
-from data.scrapers.rutracker import scrape_rutracker
-from data.scrapers.rutracker import init
+from flask import Flask, jsonify
+from data.scrapers.rutracker import scrape_rutracker, init
+from data.models import SearchResponse
 
 app = Flask(__name__)
-
-
 
 debug = False
 port = 8080
@@ -15,14 +12,18 @@ init()
 
 @app.route('/search/<search_term>')
 def search(search_term):
-    results = scrape_rutracker(search_term)
-    if results is None:
-        return jsonify(error="No results found"), 404
-    return jsonify(results)
+    try:
+        response = scrape_rutracker(search_term)
+        return jsonify(response.to_dict()), 200
+    except RuntimeError as e:
+        err = SearchResponse(success=False, query=search_term, data=[], count=0)
+        return jsonify(err.to_dict()), 502
+
 
 @app.route("/search/")
 def search_empty():
-    return jsonify(error="no search query defined"), 400
+    err = SearchResponse(success=False, query="", data=[], count=0)
+    return jsonify(err.to_dict()), 400
 
 
 if __name__ == '__main__':
