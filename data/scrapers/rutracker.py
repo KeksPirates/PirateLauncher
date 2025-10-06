@@ -1,13 +1,11 @@
-import cloudscraper
-import requests
-import os
+from data.models import Post, SearchResponse
+from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
-
-
-global url_rutracker
-url_rutracker = "https://rutracker.org/forum/tracker.php?nm="
-
+import cloudscraper
+import requests
+import time
+import os
 
 load_dotenv()
 
@@ -23,6 +21,7 @@ headers = {
 
 def init():
     global up
+    url_rutracker = "https://rutracker.org/forum/tracker.php?nm="
     try:
         response = scraper.get(url_rutracker, cookies=cookies, headers=headers)
         if response.status_code == 200:
@@ -36,47 +35,40 @@ def init():
         print("\nIs the Site down?")
         up = False
 
-def scrape_rutracker(search_term, max_results = 450):
-    if up:
-        result = False
-        global results
-        global resulttitles
-        results = []
-        resulttitles = []
+def scrape_rutracker(query: str, max_pages: int = 10, delay: float = 0.5) -> SearchResponse:
+    if not up:
+        return SearchResponse(success=False, query=query, data=[], count=0)
 
-        per_page = 50
+    posts: list[Post] = []
+    per_page = 50
+    base_url = "https://rutracker.org/forum/"
 
-        for start in range(0, max_results, per_page):
-            search_url = url_rutracker + search_term + f"&start={start}"
-            print(search_url)
+    for page in range(max_pages):
+        params = {"nm": query, "start": page * per_page}
+        search_url = f"{base_url.rstrip('/')}/tracker.php?nm={query}&start={page * per_page}"
+        print(search_url)
 
-            try:
-                resultCount = 0
-                response = scraper.get(search_url, cookies=cookies, headers=headers)
-                print(response.status_code)
-                response.raise_for_status()
-                soup = BeautifulSoup(response.text, 'html.parser')
-                links = soup.find_all('a', class_="med tLink tt-text ts-text hl-tags bold", href=lambda x: x and x.startswith("viewtopic"))
-                for link in links:
-                    if link:
-                        resultCount += 1
-                        results.append(link['href'])
-                        resulttitles.append(link.text)
-                        result = True
+        try:
+            response = scraper.get(search_url, cookies=cookies, headers=headers, timeout=15)
+            print(response.status_code)
+            response.raise_for_status()
+            soup = BeautifulSoup(response.text, 'html.parser')
+            links = soup.find_all('a', class_="med tLink tt-text ts-text hl-tags bold", href=lambda x: x and x.startswith("viewtopic"))
 
-                if resultCount == 0:
-                    break
+            if not links:
+                break
 
-            except requests.RequestException as e:
-                if result:
-                    print(f"Failed to fetch {search_url}: {e}")
-                return "error"
+            for link in links:
+                posts.append(Post(
+                    id=len(posts) + 1,
+                    title=link.text.strip(),
+                    url=urljoin(base_url, link['href'])
+                ))
 
-        if not results:
-            return None, None
+            time.sleep(delay)
 
-        return {"links": ["https://rutracker.org/forum/" + r for r in results], "titles": resulttitles}
+        except requests.RequestException as e:
+            print(f"Failed to fetch {search_url}: {e}")
+            break
 
-    else:
-        print("Error: Rutracker down")
-        return "Error: Rutracker down"
+    return SearchResponse(success=True, query=query, data=posts, count=len(posts))
