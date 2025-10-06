@@ -35,7 +35,7 @@ def init():
         print("\nIs the Site down?")
         up = False
 
-def scrape_rutracker(query: str, max_pages: int = 10, delay: float = 0.5) -> SearchResponse:
+def scrape_rutracker(query: str, max_pages: int = 2, delay: float = 0.1) -> SearchResponse:
     if not up:
         return SearchResponse(success=False, query=query, data=[], count=0)
 
