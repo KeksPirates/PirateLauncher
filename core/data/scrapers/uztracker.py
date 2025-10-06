@@ -14,7 +14,7 @@ async def init_uztracker():
             up = True
         else:
             up = False
-            print(f"Rutracker seems down, status code: {response.status_code}")
+            print(f"Uztracker seems down, status code: {response.status_code}")
     except requests.exceptions.RequestException as e:
         print(f"\nRequest Exception on {url_uztracker}:")
         print(e)

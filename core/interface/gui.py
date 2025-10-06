@@ -14,6 +14,7 @@ from PySide6.QtWidgets import (
     QSpinBox,
     QTabWidget,
     QProgressBar,
+    QTextEdit,
     )
 from PySide6.QtGui import QIcon, QAction
 import darkdetect
@@ -149,7 +150,6 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         dialog.setWindowTitle("Settings")
         dialog.setFixedSize(400, 200)
 
-
         dialog.setLayout(QVBoxLayout())
         dialog.layout().addWidget(QLabel("Settings"))
 
@@ -167,7 +167,7 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
 
         # container for tight space
         thread_container = QWidget()
-        thread_layout = QVBoxLayout()
+        thread_layout = QHBoxLayout()
 
         thread_layout.addWidget(QLabel("Threads:"))
         thread_layout.addWidget(thread_box)
@@ -181,8 +181,16 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
 
         dialog.layout().addWidget(thread_container)
 
+        # server setting
+        api_url_container = QWidget()
+        api_url_layout = QHBoxLayout()
 
-
+        text_edit = QTextEdit()
+        api_url_layout.addWidget(QLabel("api server url:"))
+        api_url_layout.addWidget(text_edit)
+        api_url_container.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
+        api_url_container.setLayout(api_url_layout)
+        dialog.layout().addWidget(api_url_container)
 
         # dialog.layout().addWidget(QtWidgets.QPushButton("Close", clicked=dialog.close))
 
@@ -191,7 +199,6 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         save_btn = QPushButton("Save")
         cancel_btn = QPushButton("Cancel")
         save_btn.clicked.connect(lambda: self.save_settings(thread_box.value(), close_settings))
-
     
 
         cancel_btn.clicked.connect(dialog.reject)
