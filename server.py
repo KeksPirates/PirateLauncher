@@ -15,7 +15,10 @@ init()
 
 @app.route('/search/<search_term>')
 def search(search_term):
-    return scrape_rutracker(search_term)    
+    results = scrape_rutracker(search_term)
+    if results is None:
+        return jsonify(error="No results found"), 404
+    return jsonify(results)
 
 @app.route("/search/")
 def search_empty():
