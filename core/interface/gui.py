@@ -21,10 +21,9 @@ import darkdetect
 import threading
 from core.data.scrapers.uztracker import scrape_uztracker
 from core.data.scrapers.rutracker import scrape_rutracker
-from core.data.utils import get_magnet_link
-from core.network.aria2_wrapper import start_client
-from core.network.aria2_wrapper import add_magnet
+from core.data.utils.tracker_utils import get_item_index
 from core.network.aria2_integration import dlprogress, set_threads
+
 
 
 
@@ -243,7 +242,7 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         if item is not None:
             if debug:
                 print(f"network {self.softwareList.currentItem().text()}")
-            self.run_thread(threading.Thread(target=self.get_item_index, args=(self.softwareList.currentItem().text(), self.postnames, self.postlinks, debug)))
+            self.run_thread(threading.Thread(target=get_item_index, args=(tracker, self.softwareList.currentItem().text(), self.postnames, self.postlinks, debug)))
         else:
             if debug:
                 print("No item selected for download.")
@@ -272,20 +271,6 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
             self.softwareList.clear()
             self.softwareList.addItem("No Results")
         
-
-    def get_item_index(self, item, list, listlinks, debug):
-        position = list.index(item)
-        if 0 <= position < len(listlinks): # note for myself: py starts counting at 0; check if number is not negative, check if number is not more than list length.
-            if tracker == "uztracker":
-                selected = "https://uztracker.net/" + listlinks[position].lstrip("./")
-            if tracker == "rutracker":                
-                selected = listlinks[position]
-
-            if debug:
-                print("Selected URL: ", selected)
-            selected_magnet = get_magnet_link(selected, debug)
-            start_client()
-            add_magnet(selected_magnet)
 
     def update_progress(self):
         progress = dlprogress()
