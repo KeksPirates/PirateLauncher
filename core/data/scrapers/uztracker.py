@@ -2,6 +2,8 @@ import requests
 import asyncio
 import aiohttp
 from bs4 import BeautifulSoup
+from ..utils.state import state
+
 
 global url_uztracker
 url_uztracker = "https://uztracker.net/tracker.php?nm="
@@ -24,7 +26,7 @@ async def init_uztracker():
 
 asyncio.run(init_uztracker())
 
-async def scrape_uztracker(search, debug, max_results=450):
+async def scrape_uztracker(search, max_results=450):
     if up:
         result = False
         global results
@@ -36,7 +38,7 @@ async def scrape_uztracker(search, debug, max_results=450):
 
         for start in range(0, max_results, per_page):
             search_url = url_uztracker + search + f"&start={start}"
-            if debug:
+            if state.debug:
                 print(search_url)
 
             async with aiohttp.ClientSession() as session:
@@ -72,7 +74,7 @@ async def scrape_uztracker(search, debug, max_results=450):
 
         return resulttitles, results
 
-def get_post_title(post_url, debug):
+def get_post_title(post_url):
     if up:
         response = requests.get(post_url)
         soup = BeautifulSoup(response.text, 'html.parser')
@@ -80,7 +82,7 @@ def get_post_title(post_url, debug):
         if maintitle:
             return maintitle.text
         else:
-            if debug:
+            if state.debug:
                 print("Program not found")
     else:
         print("Error: Uztracker down")

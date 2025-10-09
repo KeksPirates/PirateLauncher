@@ -24,17 +24,17 @@ from core.data.scrapers.uztracker import scrape_uztracker
 from core.data.scrapers.rutracker import scrape_rutracker
 from core.data.utils.tracker import get_item_index
 from core.data.utils.settings import save_settings
-from core.network.aria2_integration import dlprogress, set_threads
+from core.data.utils.state import state
+from core.network.aria2_integration import dlprogress
 
 
 
 
 def state_debug(setting):
-    global debug
     if setting is True:
-        debug = True
+        state.debug = True
     else:
-        debug = False
+        state.debug = False
 
 
 def pass_aria(aria):
@@ -148,7 +148,7 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
 
     def settings_dialog(self):
 
-        if debug:
+        if state.debug:
             print("Settings dialog opened")
         dialog = QDialog(self)
         dialog.setWindowTitle("Settings")
@@ -223,11 +223,11 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
     def download_selected(self):
         item = self.softwareList.currentItem()
         if item is not None:
-            if debug:
+            if state.debug:
                 print(f"network {self.softwareList.currentItem().text()}")
-            self.run_thread(threading.Thread(target=get_item_index, args=(tracker, self.softwareList.currentItem().text(), self.postnames, self.postlinks, debug)))
+            self.run_thread(threading.Thread(target=get_item_index, args=(tracker, self.softwareList.currentItem().text(), self.postnames, self.postlinks, state.debug)))
         else:
-            if debug:
+            if state.debug:
                 print("No item selected for download.")
             # add gui notification for no item selected
 
@@ -235,15 +235,15 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
     def return_pressed(self):
         search_text = self.searchbar.text()
         if search_text == "":
-            if debug:
+            if state.debug:
                 print("Error: Can't search for nothing")
             return
-        if debug:
+        if state.debug:
             print("User searched for:", search_text)
         if tracker == "uztracker":
-            response = asyncio.run(scrape_uztracker(search_text, debug))
+            response = asyncio.run(scrape_uztracker(search_text))
         if tracker == "rutracker":
-            response = asyncio.run(scrape_rutracker(search_text, debug, api_url))
+            response = asyncio.run(scrape_rutracker(search_text))
         if response:
             self.postnames, self.postlinks = response
             self.softwareList.clear()

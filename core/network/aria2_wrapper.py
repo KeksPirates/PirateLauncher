@@ -8,9 +8,4 @@ def add_magnet(uri):
     aria2.add_magnet(uri)
 
 
-def terminate():
-    return
-
-
-
 

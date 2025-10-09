@@ -1,8 +1,9 @@
 import requests
+from ..utils.state import state
 
 
-def scrape_rutracker(search_text, debug, server):
-    search = requests.get(f"{server}/search/{search_text}")
+def scrape_rutracker(search_text):
+    search = requests.get(f"{state.api_url}/search/{search_text}")
     if search:
         try:
             data = search.json()
@@ -10,7 +11,7 @@ def scrape_rutracker(search_text, debug, server):
             resultlinks = data["links"]
             return resulttitles, resultlinks
         except Exception:
-            if debug:
+            if state.debug:
                 print("No results found / No response from server")
             return None
 
