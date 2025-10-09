@@ -1,6 +1,6 @@
 from core.interface.gui import MainWindow
 from core.interface.gui import state_debug
-from core.interface.gui import pass_aria
+from core.utils.state import state
 from core.network.aria2_integration import aria2server
 from PySide6 import QtWidgets
 import qdarktheme
@@ -28,28 +28,25 @@ def run_aria2server():
     return aria2process
 
 
-def kill_aria2server(aria2process):
-    if aria2process:
-        aria2process.kill()
+def kill_aria2server():
+    if state.aria2process:
+        state.aria2process.kill()
         if debug:
             print("\nKilled Aria2")
 
 
 def keyboardinterrupthandler(signum, frame):
-    global aria2process
-    kill_aria2server(aria2process)
+    kill_aria2server()
     sys.exit(0)
 
 
 if __name__ == "__main__":
     if debug:
         print("Starting Aria2 Server")
-    aria2process = run_aria2server()
+    state.aria2process = run_aria2server()
     signal.signal(signal.SIGINT, keyboardinterrupthandler)
-    atexit.register(kill_aria2server, aria2process)
+    atexit.register(kill_aria2server)
     if debug:
         print("Launching GUI")
-
-    pass_aria(aria2process)
     run_gui()
     

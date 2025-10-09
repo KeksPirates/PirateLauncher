@@ -37,13 +37,6 @@ def state_debug(setting):
         state.debug = False
 
 
-def pass_aria(aria):
-    global aria2process
-    aria2process = aria
-
-
-
-
 def create_tab(title, searchbar, software_list, tabs):
     tab = QWidget()
     layout = QVBoxLayout()
@@ -162,7 +155,7 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         thread_box = QSpinBox()
         thread_box.setMinimum(1)
         thread_box.setMaximum(16)
-        thread_box.setValue(4)
+        thread_box.setValue(state.aria2_threads)
         
 
         # container for tight space
@@ -202,7 +195,7 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
 
         save_btn = QPushButton("Save")
         cancel_btn = QPushButton("Cancel")
-        save_btn.clicked.connect(lambda: save_settings(thread_box.value(), close_settings, text_edit.toPlainText(), aria2process))
+        save_btn.clicked.connect(lambda: save_settings(thread_box.value(), close_settings, text_edit.toPlainText()))
     
 
         cancel_btn.clicked.connect(dialog.reject)

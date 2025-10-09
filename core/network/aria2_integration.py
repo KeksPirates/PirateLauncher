@@ -1,6 +1,7 @@
 import aria2p
 import os
 import subprocess
+from core.utils.state import state
 
 def run_aria2p():
     global aria2
@@ -15,11 +16,7 @@ def run_aria2p():
     
     return aria2
 
-t = 4 # default value
 
-def set_threads(threads):
-    global t
-    t = threads
 
 
 def aria2server():
@@ -32,8 +29,8 @@ def aria2server():
         "--rpc-listen-all",
         "--rpc-listen-port=6800",
         f"--dir={downloads_dir}",
-        "-x", str(t),
-        "-s", str(t),
+        "-x", str(state.aria2_threads),
+        "-s", str(state.aria2_threads),
     ]
 
 
