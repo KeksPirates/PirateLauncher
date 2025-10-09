@@ -88,7 +88,4 @@ def get_post_title(post_url, debug):
 
     
 
-# What x and x.startswith('magnet:') Does
-# x - check if x exists (not None/empty)
-# and - if x exists, THEN check the next part
-# x.startswith('magnet:') - does x start with "magnet:"?
+
