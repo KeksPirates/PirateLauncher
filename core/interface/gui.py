@@ -19,6 +19,7 @@ from PySide6.QtWidgets import (
 from PySide6.QtGui import QIcon, QAction
 import darkdetect
 import threading
+import asyncio
 from core.data.scrapers.uztracker import scrape_uztracker
 from core.data.scrapers.rutracker import scrape_rutracker
 from core.data.utils import get_magnet_link
@@ -124,9 +125,9 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
 
 
         if darkdetect.isDark():
-            settings_action = QAction(QIcon("core/interface/assets/settings_white.png"), "Settings", self)
-        else:
             settings_action = QAction(QIcon("core/interface/assets/settings_dark.png"), "Settings", self)
+        else:
+            settings_action = QAction(QIcon("core/interface/assets/settings.png"), "Settings", self)
 
         settings_action.triggered.connect(self.settings_dialog)
         toolbar.addAction(settings_action)
@@ -259,9 +260,9 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         if debug:
             print("User searched for:", search_text)
         if tracker == "uztracker":
-            response = scrape_uztracker(search_text, debug)
+            response = asyncio.run(scrape_uztracker(search_text, debug))
         if tracker == "rutracker":
-            response = scrape_rutracker(search_text, debug, api_url)
+            response = asyncio.run(scrape_rutracker(search_text, debug, api_url))
         if response:
             self.postnames, self.postlinks = response
             self.softwareList.clear()

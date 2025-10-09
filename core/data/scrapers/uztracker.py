@@ -1,5 +1,6 @@
 import requests
 import asyncio
+import aiohttp
 from bs4 import BeautifulSoup
 
 global url_uztracker
@@ -23,7 +24,7 @@ async def init_uztracker():
 
 asyncio.run(init_uztracker())
 
-def scrape_uztracker(search, debug, max_results=450):
+async def scrape_uztracker(search, debug, max_results=450):
     if up:
         result = False
         global results
@@ -38,27 +39,29 @@ def scrape_uztracker(search, debug, max_results=450):
             if debug:
                 print(search_url)
 
-            try:
-                resultCount = 0
-                response = requests.get(search_url)
-                response.raise_for_status()
-                soup = BeautifulSoup(response.text, 'html.parser')
-                links = soup.find_all('a', class_="genmed tLink", href=lambda x: x and x.startswith('./viewtopic'))
-                for link in links:
-                    if link.b:
-                        resultCount += 1
-                        results.append(link['href'])
-                        resulttitles.append(link.b.text)
-                        result = True
+            async with aiohttp.ClientSession() as session:
+                try:
+                    async with session.get(search_url) as response:
+                        response.raise_for_status()
+                        text = await response.text()
+                        soup = BeautifulSoup(text, 'html.parser')
+                        links = soup.find_all('a', class_="genmed tLink", href=lambda x: x and x.startswith('./viewtopic'))
+                        resultCount = 0
+                        for link in links:
+                            if link.b:
+                                resultCount += 1
+                                results.append(link['href'])
+                                resulttitles.append(link.b.text)
+                                result = True
                         
-                if resultCount == 0:
-                    # add popup in gui for no result
-                    break
-                
-            except requests.RequestException as e:
-                if result:
-                    print(f"Failed to fetch {search_url}: {e}")
-                return None
+                        if resultCount == 0:
+                            # add popup in gui for no result
+                            break
+                        
+                except aiohttp.ClientError as e:
+                    if result:
+                        print(f"Failed to fetch {search_url}: {e}")
+                    return None
 
         else:
             print("Error: Uztracker down")
