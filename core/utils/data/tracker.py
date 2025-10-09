@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 from core.network.aria2_wrapper import start_client
 from core.network.aria2_wrapper import add_magnet
-from core.utils.state import state
+from core.utils.data.state import state
 
 
 
@@ -40,3 +40,4 @@ def get_magnet_link(post_url, debug):
         if debug:
             print(f"Failed to fetch {post_url}: {e}")
         return None
+    

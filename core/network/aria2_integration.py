@@ -1,7 +1,7 @@
 import aria2p
 import os
 import subprocess
-from core.utils.state import state
+from core.utils.data.state import state
 
 def run_aria2p():
     global aria2

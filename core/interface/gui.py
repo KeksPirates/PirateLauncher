@@ -22,19 +22,10 @@ import threading
 import asyncio
 from core.data.scrapers.uztracker import scrape_uztracker
 from core.data.scrapers.rutracker import scrape_rutracker
-from core.utils.tracker import get_item_index
+from core.utils.wrappers import run_thread
 from core.utils.settings import save_settings
-from core.utils.state import state
+from core.utils.data.state import state
 from core.network.aria2_integration import dlprogress
-
-
-
-
-def state_debug(setting):
-    if setting is True:
-        state.debug = True
-    else:
-        state.debug = False
 
 
 def create_tab(title, searchbar, software_list, tabs):
@@ -48,7 +39,6 @@ def create_tab(title, searchbar, software_list, tabs):
 
 class MainWindow(QtWidgets.QMainWindow, QWidget):
     def __init__(self):
-        global settings_action
         super().__init__()
         searchresults = []
 
@@ -63,7 +53,7 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         self.searchbar.setPlaceholderText("Search for software...")
         self.searchbar.setClearButtonEnabled(True)
         self.searchbar.setMinimumHeight(30)
-        self.searchbar.returnPressed.connect(lambda: self.run_thread(threading.Thread(target=self.return_pressed))) # Triggers data function thread on enter
+        self.searchbar.returnPressed.connect(lambda: run_thread(threading.Thread(target=self.return_pressed))) # Triggers data function thread on enter
         
         self.dlbutton = QtWidgets.QPushButton("Download")
         self.softwareList = QListWidget()
@@ -81,7 +71,7 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         self.softwareList.addItems(searchresults)
 
         # download button triggers
-        self.dlbutton.clicked.connect(lambda: self.run_thread(threading.Thread(target=self.download_selected)))
+        self.dlbutton.clicked.connect(lambda: run_thread(threading.Thread(target=self.download_selected)))
 
         container.setLayout(containerLayout)
         self.setCentralWidget(container)
@@ -209,16 +199,17 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         
         dialog.exec()
 
-    def download_selected(self):
-        item = self.softwareList.currentItem()
-        if item is not None:
-            if state.debug:
-                print(f"network {self.softwareList.currentItem().text()}")
-            self.run_thread(threading.Thread(target=get_item_index, args=(self.softwareList.currentItem().text(), self.postnames, self.postlinks, state.debug)))
-        else:
-            if state.debug:
-                print("No item selected for download.")
-            # add gui notification for no item selected
+    # def download_selected(self):
+    #     item = self.softwareList.currentItem()
+    #     if item is not None:
+    #         if state.debug:
+    #             print(f"network {self.softwareList.currentItem().text()}")
+    #         self.run_thread(threading.Thread(target=get_item_index, args=(self.softwareList.currentItem().text(), self.postnames, self.postlinks, state.debug)))
+    #     else:
+    #         if state.debug:
+    #             print("No item selected for download.")
+    #         # add gui notification for no item selected
+
 
     # this needs a cleanup
     def return_pressed(self):
@@ -234,10 +225,13 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         if state.tracker == "rutracker":
             response = asyncio.run(scrape_rutracker(search_text))
         if response:
-            self.postnames, self.postlinks = response
-            self.softwareList.clear()
-            if self.postnames:
-                self.softwareList.addItems(self.postnames)
+            if state.tracker == "uztracker":
+                self.postnames, self.postlinks = response
+                self.softwareList.clear()
+                if self.postnames:
+                    self.softwareList.addItems(self.postnames)
+            if state.tracker == "rutracker":
+                pass
         if not response:
             print(f"No Results found for \"{search_text}\"")
             self.softwareList.clear()
@@ -248,5 +242,4 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         progress = dlprogress()
         self.progressbar.setValue(progress)
 
-    def run_thread(self, thread):
-            thread.start()
+

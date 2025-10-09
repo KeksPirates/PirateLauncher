@@ -1,4 +1,4 @@
-from core.utils.state import state
+from core.utils.data.state import state
 
 
 def restart_aria2c():

@@ -1,5 +1,5 @@
 import requests
-from core.utils.state import state
+from core.utils.data.state import state
 
 
 def scrape_rutracker(search_text):
