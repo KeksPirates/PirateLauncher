@@ -6,10 +6,7 @@ def scrape_rutracker(search_text):
     search = requests.get(f"{state.api_url}/search/{search_text}")
     if search:
         try:
-            data = search.json()
-            resulttitles = data["titles"]
-            resultlinks = data["links"]
-            return resulttitles, resultlinks
+            return search.text
         except Exception:
             if state.debug:
                 print("No results found / No response from server")

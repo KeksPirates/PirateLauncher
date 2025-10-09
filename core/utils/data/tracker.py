@@ -1,43 +1,39 @@
 import requests
 from bs4 import BeautifulSoup
-from core.network.aria2_wrapper import start_client
-from core.network.aria2_wrapper import add_magnet
 from core.utils.data.state import state
+from core.utils.network.jsonhandler import format_data
 
 
 
-def get_item_index(item, list, listlinks, debug):
-        position = list.index(item)
-        if 0 <= position < len(listlinks): # note for myself: py starts counting at 0; check if number is not negative, check if number is not more than list length.
+def get_item_url(item, posts, post_titles): # oftwarelist currentitem, post list (dict), post titles list
+        post_index = post_titles.index(item)
+        if 0 <= post_index < len(post_titles): 
             if state.tracker == "uztracker":
-                selected = "https://uztracker.net/" + listlinks[position].lstrip("./")
+                item = "https://uztracker.net/" + state.post_urls[post_index].lstrip("./")
+                return item
             if state.tracker == "rutracker":                
-                selected = listlinks[position]
-
-            if debug:
-                print("Selected URL: ", selected)
-            selected_magnet = get_magnet_link(selected, debug)
-            start_client()
-            add_magnet(selected_magnet)
+                item_dict = posts[post_index]
+                _, post_links = format_data([item_dict])
+                return post_links[0]
+        return None
 
 
 
-
-def get_magnet_link(post_url, debug):
+def get_magnet_link(post_url):
     try:
         response = requests.get(post_url)
         response.raise_for_status()
         soup = BeautifulSoup(response.text, 'html.parser')
         magnet_link = soup.find('a', href=lambda x: x and x.startswith('magnet:'))
         if magnet_link:
-            if debug:
+            if state.debug:
                 print("Magnet Link Retrieved: ", magnet_link['href'])
             return magnet_link['href']
         else:
-            if debug:
+            if state.debug:
                 print("Magnet Link not Found!")
     except requests.RequestException as e:
-        if debug:
+        if state.debug:
             print(f"Failed to fetch {post_url}: {e}")
         return None
     

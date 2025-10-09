@@ -22,7 +22,6 @@ def run_gui():
     sys.exit(app.exec())
 
 def run_aria2server():
-    global aria2process
     aria2process = aria2server()
     return aria2process
 

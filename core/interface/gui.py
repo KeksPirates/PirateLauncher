@@ -25,6 +25,8 @@ from core.data.scrapers.rutracker import scrape_rutracker
 from core.utils.wrappers import run_thread
 from core.utils.settings import save_settings
 from core.utils.data.state import state
+from core.utils.network.jsonhandler import split_data, format_data
+from core.utils.network.download import download_selected
 from core.network.aria2_integration import dlprogress
 
 
@@ -71,7 +73,7 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         self.softwareList.addItems(searchresults)
 
         # download button triggers
-        self.dlbutton.clicked.connect(lambda: run_thread(threading.Thread(target=self.download_selected)))
+        self.dlbutton.clicked.connect(lambda: run_thread(threading.Thread(target=download_selected, args=(self.softwareList.currentItem(), state.posts, state.post_titles))))
 
         container.setLayout(containerLayout)
         self.setCentralWidget(container)
@@ -179,7 +181,6 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         text_edit.setText(state.api_url)
         dialog.layout().addWidget(api_url_container)
 
-        # dialog.layout().addWidget(QtWidgets.QPushButton("Close", clicked=dialog.close))
 
         layout = QHBoxLayout() # layout for buttons
 
@@ -199,17 +200,6 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         
         dialog.exec()
 
-    # def download_selected(self):
-    #     item = self.softwareList.currentItem()
-    #     if item is not None:
-    #         if state.debug:
-    #             print(f"network {self.softwareList.currentItem().text()}")
-    #         self.run_thread(threading.Thread(target=get_item_index, args=(self.softwareList.currentItem().text(), self.postnames, self.postlinks, state.debug)))
-    #     else:
-    #         if state.debug:
-    #             print("No item selected for download.")
-    #         # add gui notification for no item selected
-
 
     # this needs a cleanup
     def return_pressed(self):
@@ -223,19 +213,23 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         if state.tracker == "uztracker":
             response = asyncio.run(scrape_uztracker(search_text))
         if state.tracker == "rutracker":
-            response = asyncio.run(scrape_rutracker(search_text))
+            response = scrape_rutracker(search_text)
         if response:
             if state.tracker == "uztracker":
-                self.postnames, self.postlinks = response
+                state.post_titles, state.post_urls, = response
                 self.softwareList.clear()
-                if self.postnames:
-                    self.softwareList.addItems(self.postnames)
+                if state.post_titles:
+                    self.softwareList.addItems(state.post_titles)
             if state.tracker == "rutracker":
-                pass
+                _, state.posts, _, _ = split_data(response)
+                state.post_titles, _ = format_data(state.posts)
+                self.softwareList.clear()
+                self.softwareList.addItems(state.post_titles)
         if not response:
-            print(f"No Results found for \"{search_text}\"")
+            if state.debug:
+                print(f"No Results found for \"{search_text}\"")
             self.softwareList.clear()
-            self.softwareList.addItem("No Results")
+            self.softwareList.addItem("No Results") # replace with no results text in center
         
 
     def update_progress(self):
