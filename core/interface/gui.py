@@ -22,9 +22,9 @@ import threading
 import asyncio
 from core.data.scrapers.uztracker import scrape_uztracker
 from core.data.scrapers.rutracker import scrape_rutracker
-from core.data.utils.tracker import get_item_index
-from core.data.utils.settings import save_settings
-from core.data.utils.state import state
+from core.utils.tracker import get_item_index
+from core.utils.settings import save_settings
+from core.utils.state import state
 from core.network.aria2_integration import dlprogress
 
 
@@ -231,7 +231,7 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
                 print("No item selected for download.")
             # add gui notification for no item selected
 
-
+    # this needs a cleanup
     def return_pressed(self):
         search_text = self.searchbar.text()
         if search_text == "":

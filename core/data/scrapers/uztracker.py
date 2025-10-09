@@ -2,7 +2,7 @@ import requests
 import asyncio
 import aiohttp
 from bs4 import BeautifulSoup
-from ..utils.state import state
+from core.utils.state import state
 
 
 global url_uztracker
