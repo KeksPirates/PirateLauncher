@@ -22,7 +22,8 @@ import threading
 import asyncio
 from core.data.scrapers.uztracker import scrape_uztracker
 from core.data.scrapers.rutracker import scrape_rutracker
-from core.data.utils.tracker_utils import get_item_index
+from core.data.utils.tracker import get_item_index
+from core.data.utils.settings import save_settings
 from core.network.aria2_integration import dlprogress, set_threads
 
 
@@ -205,7 +206,7 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
 
         save_btn = QPushButton("Save")
         cancel_btn = QPushButton("Cancel")
-        save_btn.clicked.connect(lambda: self.save_settings(thread_box.value(), close_settings, text_edit.toPlainText()))
+        save_btn.clicked.connect(lambda: save_settings(thread_box.value(), close_settings, text_edit.toPlainText(), aria2process))
     
 
         cancel_btn.clicked.connect(dialog.reject)
@@ -218,25 +219,6 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
 
         
         dialog.exec()
-
-    def restart_aria2c(self):
-        import main # had to do this because of circle import :(
-        import signal
-        import atexit
-        global aria2process
-        main.kill_aria2server(aria2process)
-        aria2process.wait()
-        aria2process = main.run_aria2server()
-        signal.signal(signal.SIGINT, main.keyboardinterrupthandler)
-        atexit.unregister(main.kill_aria2server)
-        atexit.register(main.kill_aria2server, aria2process)
-
-    def save_settings(self, thread_count, close, apiurl):
-        global api_url
-        set_threads(thread_count)
-        api_url = apiurl
-        self.restart_aria2c()
-        close()
 
     def download_selected(self):
         item = self.softwareList.currentItem()
