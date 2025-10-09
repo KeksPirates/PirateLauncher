@@ -41,11 +41,8 @@ def pass_aria(aria):
     global aria2process
     aria2process = aria
 
-global tracker
-tracker = "rutracker" # default tracker
 
-global api_url
-api_url = "https://api.michijackson.xyz"
+
 
 def create_tab(title, searchbar, software_list, tabs):
     tab = QWidget()
@@ -143,8 +140,7 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         self.progress_timer.start(1000)
 
     def set_tracker(self, _):
-        global tracker
-        tracker = self.tracker_list.currentText()
+        state.tracker = self.tracker_list.currentText()
 
     def settings_dialog(self):
 
@@ -197,7 +193,7 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         api_url_layout.addWidget(text_edit)
         api_url_container.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
         api_url_container.setLayout(api_url_layout)
-        text_edit.setText(api_url)
+        text_edit.setText(state.api_url)
         dialog.layout().addWidget(api_url_container)
 
         # dialog.layout().addWidget(QtWidgets.QPushButton("Close", clicked=dialog.close))
@@ -225,7 +221,7 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         if item is not None:
             if state.debug:
                 print(f"network {self.softwareList.currentItem().text()}")
-            self.run_thread(threading.Thread(target=get_item_index, args=(tracker, self.softwareList.currentItem().text(), self.postnames, self.postlinks, state.debug)))
+            self.run_thread(threading.Thread(target=get_item_index, args=(self.softwareList.currentItem().text(), self.postnames, self.postlinks, state.debug)))
         else:
             if state.debug:
                 print("No item selected for download.")
@@ -240,9 +236,9 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
             return
         if state.debug:
             print("User searched for:", search_text)
-        if tracker == "uztracker":
+        if state.tracker == "uztracker":
             response = asyncio.run(scrape_uztracker(search_text))
-        if tracker == "rutracker":
+        if state.tracker == "rutracker":
             response = asyncio.run(scrape_rutracker(search_text))
         if response:
             self.postnames, self.postlinks = response

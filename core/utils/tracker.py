@@ -2,14 +2,16 @@ import requests
 from bs4 import BeautifulSoup
 from core.network.aria2_wrapper import start_client
 from core.network.aria2_wrapper import add_magnet
+from core.utils.state import state
 
 
-def get_item_index(tracker, item, list, listlinks, debug):
+
+def get_item_index(item, list, listlinks, debug):
         position = list.index(item)
         if 0 <= position < len(listlinks): # note for myself: py starts counting at 0; check if number is not negative, check if number is not more than list length.
-            if tracker == "uztracker":
+            if state.tracker == "uztracker":
                 selected = "https://uztracker.net/" + listlinks[position].lstrip("./")
-            if tracker == "rutracker":                
+            if state.tracker == "rutracker":                
                 selected = listlinks[position]
 
             if debug:
