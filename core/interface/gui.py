@@ -195,7 +195,7 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         download_path.setText(state.download_path)
         dialog.layout().addWidget(download_path_container)
 
-        #################
+        ##################
         # SPEED LIMITING #
         ##################
 
@@ -233,7 +233,7 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         dialog.exec()
 
 
-        # this needs a cleanup
+
     def return_pressed(self):
         search_text = self.searchbar.text()
         if search_text == "":

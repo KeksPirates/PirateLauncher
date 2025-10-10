@@ -53,4 +53,4 @@ if __name__ == "__main__":
     if state.debug:
         print("Launching GUI")
     run_gui()
-    
+
