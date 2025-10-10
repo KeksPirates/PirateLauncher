@@ -1,7 +1,6 @@
 from core.utils.data.state import state
 from .config import create_config
 import os
-import platform
 
 def restart_aria2c():
     import main # had to do this because of circle import :(
@@ -14,10 +13,10 @@ def restart_aria2c():
     atexit.unregister(main.kill_aria2server)
     atexit.register(main.kill_aria2server)
 
-def save_settings(thread_count, close, apiurl):
-
+def save_settings(thread_count, close, apiurl, download_path):
     state.aria2_threads = thread_count
     state.api_url = apiurl
+    state.download_path = download_path
     
     create_config()
     restart_aria2c()

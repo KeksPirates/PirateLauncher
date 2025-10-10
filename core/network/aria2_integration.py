@@ -1,5 +1,4 @@
 import aria2p
-import os
 import subprocess
 from core.utils.data.state import state
 
@@ -17,10 +16,8 @@ def run_aria2p():
     return aria2
 
 
-
-
 def aria2server():
-    downloads_dir = os.path.join("Library")
+    download_path = state.download_path
 
     cmd = [
         "aria2c",
@@ -28,7 +25,7 @@ def aria2server():
         "--disable-ipv6", # added this since it caused problems with vpns
         "--rpc-listen-all",
         "--rpc-listen-port=6800",
-        f"--dir={downloads_dir}",
+        f"--dir={download_path}",
         "-x", str(state.aria2_threads),
         "-s", str(state.aria2_threads),
     ]

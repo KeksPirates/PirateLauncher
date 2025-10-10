@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import Optional, Any, List, Dict
+from pathlib import Path
 
 @dataclass
 class AppState:
@@ -9,7 +10,8 @@ class AppState:
     debug: bool = False
     tracker: str = "rutracker"
     api_url: str = "https://api.michijackson.xyz"
+    download_path:  str = str(Path.home() / "Downloads")
     aria2process: Optional[Any] = None
     aria2_threads: int = 4
 
-state = AppState(posts=[], post_titles=[], post_urls=[])
+state = AppState(posts=[], post_titles=[], post_urls=[], download_path="")

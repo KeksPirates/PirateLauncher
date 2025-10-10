@@ -133,7 +133,7 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
             print("Settings dialog opened")
         dialog = QDialog(self)
         dialog.setWindowTitle("Settings")
-        dialog.setFixedSize(400, 200)
+        dialog.setFixedSize(800, 400)
 
         dialog.setLayout(QVBoxLayout())
         dialog.layout().addWidget(QLabel("Settings"))
@@ -173,30 +173,46 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         api_url_container = QWidget()
         api_url_layout = QHBoxLayout()
 
-        text_edit = QTextEdit()
+        api_url = QTextEdit()
         api_url_layout.addWidget(QLabel("API Server URL:"))
-        api_url_layout.addWidget(text_edit)
+        api_url_layout.addWidget(api_url)
         api_url_container.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
         api_url_container.setLayout(api_url_layout)
-        text_edit.setText(state.api_url)
+        api_url.setText(state.api_url)
         dialog.layout().addWidget(api_url_container)
 
+        #################
+        # DOWNLOAD PATH #
+        #################
 
-        layout = QHBoxLayout() # layout for buttons
+        download_path_container = QWidget()
+        download_path_layout = QHBoxLayout()
+
+        download_path = QTextEdit()
+        download_path_layout.addWidget(QLabel("Download Path:"))
+        download_path_layout.addWidget(download_path)
+        download_path_container.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
+        download_path_container.setLayout(download_path_layout)
+        download_path.setText(state.download_path)
+        dialog.layout().addWidget(download_path_container)
+
+        ###############
+        # SAVE/CANCEL #
+        ###############
+
+        layout = QHBoxLayout()
 
         save_btn = QPushButton("Save")
         cancel_btn = QPushButton("Cancel")
-        save_btn.clicked.connect(lambda: save_settings(thread_box.value(), close_settings, text_edit.toPlainText()))
+        save_btn.clicked.connect(lambda: save_settings(thread_box.value(), close_settings, api_url.toPlainText(), download_path.toPlainText()))
     
 
         cancel_btn.clicked.connect(dialog.reject)
         print(thread_box.value())
         layout.addWidget(cancel_btn)
         layout.addWidget(save_btn)
-        
 
         dialog.layout().addLayout(layout)
-
         
         dialog.exec()
 
