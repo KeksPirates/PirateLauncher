@@ -50,15 +50,18 @@ def dlprogress():
 
 def send_notification():
     while True:
+        if state.aria2 is None:
+            time.sleep(1)
+            continue
+
         try:
-            downloads = state.aria2.get_downloads()
-            if downloads:
-                for download in downloads:
-                    if download.is_complete:
-                        # notification.notify("Download Complete"
-                        print("yet")
-                    time.sleep(5)
+            for d in state.aria2.get_downloads():
+                if d.is_complete:
+                    notification.notify(
+                        title="Download finished",
+                        message=d.name,
+                        timeout=4)
         except Exception as e:
             if state.debug:
-                print(f"Notification Error: {e}")
-                break
+                print("Notification thread error:", e)
+        time.sleep(5)
