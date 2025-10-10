@@ -14,6 +14,10 @@ def restart_aria2c():
     atexit.register(main.kill_aria2server)
 
 def save_settings(thread_count, close, apiurl):
+
+    state.aria2_threads = thread_count
+    state.api_url = apiurl
+
     if platform.system() == "Windows":
         config_dir = os.environ.get("APPDATA", os.path.expanduser("~\\AppData\\Roaming"))
     else:
@@ -22,11 +26,11 @@ def save_settings(thread_count, close, apiurl):
     os.makedirs(settings_path, exist_ok=True)
 
     with open(os.path.join(settings_path, "config.yml"), 'w') as f:
+        f.write("# SoftwareManager Config file\n\n")
         f.write(f"aria2_threads: {state.aria2_threads}\n")
         f.write(f"api_url: {state.api_url}\n")
 
-    state.aria2_threads = thread_count
-    state.api_url = apiurl
+    
     restart_aria2c()
 
     close()
