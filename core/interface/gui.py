@@ -39,6 +39,42 @@ def create_tab(title, searchbar, software_list, tabs):
     tabs.addTab(tab, title)
     return tab
 
+# this needs a cleanup
+def return_pressed(self):
+    search_text = self.searchbar.text()
+    if search_text == "":
+        if state.debug:
+            print("Error: Can't search for nothing")
+        return
+    if state.debug:
+        print("User searched for:", search_text)
+    if state.tracker == "uztracker":
+        response = asyncio.run(scrape_uztracker(search_text))
+    if state.tracker == "rutracker":
+        response = scrape_rutracker(search_text)
+    if response:
+        if state.tracker == "uztracker":
+            state.post_titles, state.post_urls, = response
+            self.softwareList.clear()
+            if state.post_titles:
+                self.softwareList.addItems(state.post_titles)
+        if state.tracker == "rutracker":
+            _, state.posts, _, _ = split_data(response)
+            state.post_titles, _ = format_data(state.posts)
+            self.softwareList.clear()
+            self.softwareList.addItems(state.post_titles)
+    if not response:
+        if state.debug:
+            print(f"No Results found for \"{search_text}\"")
+        self.softwareList.clear()
+        self.softwareList.addItem("No Results") # replace with no results text in center
+    
+
+def update_progress(self):
+    progress = dlprogress()
+    self.progressbar.setValue(progress)
+
+
 class MainWindow(QtWidgets.QMainWindow, QWidget):
     def __init__(self):
         super().__init__()
@@ -121,7 +157,7 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         containerLayout.addWidget(self.progressbar)
         
         self.progress_timer = QTimer()
-        self.progress_timer.timeout.connect(self.update_progress)
+        self.progress_timer.timeout.connect(lambda: run_thread(threading.Thread(target=update_progress)))
         self.progress_timer.start(1000)
 
     def set_tracker(self, _):
@@ -235,37 +271,4 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         dialog.exec()
 
 
-    # this needs a cleanup
-    def return_pressed(self):
-        search_text = self.searchbar.text()
-        if search_text == "":
-            if state.debug:
-                print("Error: Can't search for nothing")
-            return
-        if state.debug:
-            print("User searched for:", search_text)
-        if state.tracker == "uztracker":
-            response = asyncio.run(scrape_uztracker(search_text))
-        if state.tracker == "rutracker":
-            response = scrape_rutracker(search_text)
-        if response:
-            if state.tracker == "uztracker":
-                state.post_titles, state.post_urls, = response
-                self.softwareList.clear()
-                if state.post_titles:
-                    self.softwareList.addItems(state.post_titles)
-            if state.tracker == "rutracker":
-                _, state.posts, _, _ = split_data(response)
-                state.post_titles, _ = format_data(state.posts)
-                self.softwareList.clear()
-                self.softwareList.addItems(state.post_titles)
-        if not response:
-            if state.debug:
-                print(f"No Results found for \"{search_text}\"")
-            self.softwareList.clear()
-            self.softwareList.addItem("No Results") # replace with no results text in center
-        
-
-    def update_progress(self):
-        progress = dlprogress()
-        self.progressbar.setValue(progress)
+    
