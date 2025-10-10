@@ -1,6 +1,8 @@
 import aria2p
 import subprocess
 from core.utils.data.state import state
+from plyer import notification
+import time
 
 def run_aria2p():
     global aria2
@@ -37,12 +39,27 @@ def aria2server():
 
 def dlprogress():
     try:
-        download2 = aria2.get_downloads()
-        if download2:
-            for download in download2:
+        downloads = aria2.get_downloads()
+        if downloads:
+            for download in downloads:
                 progress = download.progress_string(0)
                 progress_int = int(progress.strip('%'))
                 return progress_int
         return 0
     except:
         return 0
+
+def send_notification():
+    while True:
+        try:
+            downloads = aria2.get_downloads()
+            if downloads:
+                for download in downloads:
+                    if download.is_complete:
+                        # notification.notify("Download Complete"
+                        print("yet")
+                    time.sleep(5)
+        except Exception as e:
+            if state.debug:
+                print(f"Notification Error: {e}")
+                break

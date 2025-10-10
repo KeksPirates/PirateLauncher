@@ -1,6 +1,9 @@
 from core.interface.gui import MainWindow
 from core.utils.data.state import state
 from core.network.aria2_integration import aria2server
+from core.network.aria2_integration import send_notification
+from core.utils.wrappers import run_thread
+import threading
 from core.utils.config.config import read_config
 from PySide6 import QtWidgets
 import qdarktheme
@@ -23,6 +26,7 @@ def run_gui():
     sys.exit(app.exec())
 
 def run_aria2server():
+    run_thread(threading.Thread(target=send_notification))
     aria2process = aria2server()
     return aria2process
 

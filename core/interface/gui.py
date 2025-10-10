@@ -14,7 +14,6 @@ from PySide6.QtWidgets import (
     QSpinBox,
     QTabWidget,
     QProgressBar,
-    QTextEdit,
     )
 from PySide6.QtGui import QIcon, QAction
 import darkdetect
@@ -173,7 +172,7 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         api_url_container = QWidget()
         api_url_layout = QHBoxLayout()
 
-        api_url = QTextEdit()
+        api_url = QLineEdit()
         api_url_layout.addWidget(QLabel("API Server URL:"))
         api_url_layout.addWidget(api_url)
         api_url_container.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
@@ -188,7 +187,7 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         download_path_container = QWidget()
         download_path_layout = QHBoxLayout()
 
-        download_path = QTextEdit()
+        download_path = QLineEdit()
         download_path_layout.addWidget(QLabel("Download Path:"))
         download_path_layout.addWidget(download_path)
         download_path_container.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
@@ -222,9 +221,8 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
 
         save_btn = QPushButton("Save")
         cancel_btn = QPushButton("Cancel")
-        save_btn.clicked.connect(lambda: save_settings(thread_box.value(), close_settings, api_url.toPlainText(), download_path.toPlainText(), speed_limit.value()))
+        save_btn.clicked.connect(lambda: save_settings(thread_box.value(), close_settings, api_url.text(), download_path.text(), speed_limit.value()))
     
-
         cancel_btn.clicked.connect(dialog.reject)
         print(thread_box.value())
         layout.addWidget(cancel_btn)
@@ -233,7 +231,6 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         dialog.layout().addLayout(layout)
         
         dialog.exec()
-
 
     # this needs a cleanup
     def return_pressed(self):
