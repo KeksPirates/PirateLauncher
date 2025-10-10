@@ -13,6 +13,7 @@ class AppState:
     download_path:  str = str(Path.home() / "Downloads")
     speed_limit: int = 0
     aria2process: Optional[Any] = None
+    aria2: Optional[Any] = None
     aria2_threads: int = 4
 
 state = AppState(posts=[], post_titles=[], post_urls=[], download_path="")

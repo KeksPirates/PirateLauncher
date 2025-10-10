@@ -26,7 +26,6 @@ def run_gui():
     sys.exit(app.exec())
 
 def run_aria2server():
-    run_thread(threading.Thread(target=send_notification))
     aria2process = aria2server()
     return aria2process
 
@@ -48,6 +47,7 @@ if __name__ == "__main__":
     if state.debug:
         print("Starting Aria2 Server")
     state.aria2process = run_aria2server()
+    run_thread(threading.Thread(target=send_notification))
     signal.signal(signal.SIGINT, keyboardinterrupthandler)
     atexit.register(kill_aria2server)
     if state.debug:

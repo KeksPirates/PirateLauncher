@@ -5,9 +5,8 @@ from plyer import notification
 import time
 
 def run_aria2p():
-    global aria2
 
-    aria2 = aria2p.API(
+    state.aria2 = aria2p.API(
         aria2p.Client(
             host="http://localhost",
             port=6800,
@@ -15,7 +14,7 @@ def run_aria2p():
         )
     )
     
-    return aria2
+    return state.aria2
 
 
 def aria2server():
@@ -39,7 +38,7 @@ def aria2server():
 
 def dlprogress():
     try:
-        downloads = aria2.get_downloads()
+        downloads = state.aria2.get_downloads()
         if downloads:
             for download in downloads:
                 progress = download.progress_string(0)
@@ -52,7 +51,7 @@ def dlprogress():
 def send_notification():
     while True:
         try:
-            downloads = aria2.get_downloads()
+            downloads = state.aria2.get_downloads()
             if downloads:
                 for download in downloads:
                     if download.is_complete:
