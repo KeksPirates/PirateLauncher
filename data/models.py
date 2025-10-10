@@ -6,6 +6,7 @@ class Post:
     id: int
     title: str
     url: str
+    author: str
 
 @dataclass
 class SearchResponse:
@@ -16,11 +17,4 @@ class SearchResponse:
     cached: bool = False
 
     def to_dict(self):
-        d = asdict(self)
-        return {
-            'count': d['count'],
-            'data': d['data'],
-            'query': d['query'],
-            'success': d['success'],
-            'cached': d['cached']
-        }
+        return asdict(self)
