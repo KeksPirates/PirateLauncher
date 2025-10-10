@@ -14,7 +14,6 @@ from PySide6.QtWidgets import (
     QSpinBox,
     QTabWidget,
     QProgressBar,
-    QTextEdit,
     )
 from PySide6.QtGui import QIcon, QAction
 import darkdetect
@@ -209,7 +208,7 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         api_url_container = QWidget()
         api_url_layout = QHBoxLayout()
 
-        api_url = QTextEdit()
+        api_url = QLineEdit()
         api_url_layout.addWidget(QLabel("API Server URL:"))
         api_url_layout.addWidget(api_url)
         api_url_container.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
@@ -224,7 +223,7 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         download_path_container = QWidget()
         download_path_layout = QHBoxLayout()
 
-        download_path = QTextEdit()
+        download_path = QLineEdit()
         download_path_layout.addWidget(QLabel("Download Path:"))
         download_path_layout.addWidget(download_path)
         download_path_container.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
@@ -258,9 +257,8 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
 
         save_btn = QPushButton("Save")
         cancel_btn = QPushButton("Cancel")
-        save_btn.clicked.connect(lambda: save_settings(thread_box.value(), close_settings, api_url.toPlainText(), download_path.toPlainText(), speed_limit.value()))
+        save_btn.clicked.connect(lambda: save_settings(thread_box.value(), close_settings, api_url.text(), download_path.text(), speed_limit.value()))
     
-
         cancel_btn.clicked.connect(dialog.reject)
         print(thread_box.value())
         layout.addWidget(cancel_btn)
@@ -270,5 +268,37 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         
         dialog.exec()
 
+    # this needs a cleanup
+    def return_pressed(self):
+        search_text = self.searchbar.text()
+        if search_text == "":
+            if state.debug:
+                print("Error: Can't search for nothing")
+            return
+        if state.debug:
+            print("User searched for:", search_text)
+        if state.tracker == "uztracker":
+            response = asyncio.run(scrape_uztracker(search_text))
+        if state.tracker == "rutracker":
+            response = scrape_rutracker(search_text)
+        if response:
+            if state.tracker == "uztracker":
+                state.post_titles, state.post_urls, = response
+                self.softwareList.clear()
+                if state.post_titles:
+                    self.softwareList.addItems(state.post_titles)
+            if state.tracker == "rutracker":
+                _, state.posts, _, _ = split_data(response)
+                state.post_titles, _ = format_data(state.posts)
+                self.softwareList.clear()
+                self.softwareList.addItems(state.post_titles)
+        if not response:
+            if state.debug:
+                print(f"No Results found for \"{search_text}\"")
+            self.softwareList.clear()
+            self.softwareList.addItem("No Results") # replace with no results text in center
+        
 
-    
+    def update_progress(self):
+        progress = dlprogress()
+        self.progressbar.setValue(progress)
