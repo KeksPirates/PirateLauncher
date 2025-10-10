@@ -18,6 +18,7 @@ def run_aria2p():
 
 def aria2server():
     download_path = state.download_path
+    speed_limit = state.speed_limit
 
     cmd = [
         "aria2c",
@@ -26,11 +27,10 @@ def aria2server():
         "--rpc-listen-all",
         "--rpc-listen-port=6800",
         f"--dir={download_path}",
+        f"--max-download-limit={speed_limit * 1024}",
         "-x", str(state.aria2_threads),
         "-s", str(state.aria2_threads),
     ]
-
-
     
     aria2server = subprocess.Popen(cmd)
     return aria2server

@@ -196,6 +196,24 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         download_path.setText(state.download_path)
         dialog.layout().addWidget(download_path_container)
 
+        #################
+        # SPEED LIMITING #
+        ##################
+
+        speed_limit_container = QWidget()
+        speed_limit_layout = QHBoxLayout()
+
+        speed_limit_layout.addWidget(QLabel("Max Download Speed (KiB, 0 for unlimited): "))
+        speed_limit = QSpinBox()
+        speed_limit.setMinimum(0)
+        speed_limit.setMaximum(10000000)
+        speed_limit.setValue(state.speed_limit)
+        speed_limit_container.setLayout(speed_limit_layout)
+        speed_limit_layout.addWidget(speed_limit)
+        speed_limit.setFixedWidth(180)
+        speed_limit.setFixedHeight(30)
+        dialog.layout().addWidget(speed_limit_container)
+
         ###############
         # SAVE/CANCEL #
         ###############
@@ -204,7 +222,7 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
 
         save_btn = QPushButton("Save")
         cancel_btn = QPushButton("Cancel")
-        save_btn.clicked.connect(lambda: save_settings(thread_box.value(), close_settings, api_url.toPlainText(), download_path.toPlainText()))
+        save_btn.clicked.connect(lambda: save_settings(thread_box.value(), close_settings, api_url.toPlainText(), download_path.toPlainText(), speed_limit.value()))
     
 
         cancel_btn.clicked.connect(dialog.reject)
@@ -251,5 +269,3 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
     def update_progress(self):
         progress = dlprogress()
         self.progressbar.setValue(progress)
-
-

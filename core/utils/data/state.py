@@ -11,6 +11,7 @@ class AppState:
     tracker: str = "rutracker"
     api_url: str = "https://api.michijackson.xyz"
     download_path:  str = str(Path.home() / "Downloads")
+    speed_limit: int = 0
     aria2process: Optional[Any] = None
     aria2_threads: int = 4
 
