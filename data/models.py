@@ -13,6 +13,7 @@ class SearchResponse:
     query: str
     data: List[Post]
     count: int
+    cached: bool = False
 
     def to_dict(self):
         return asdict(self)

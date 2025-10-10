@@ -21,6 +21,7 @@ def search(search_term):
     
     if search_term in cache:
         response, timestamp = cache[search_term]
+        response.cached = True
         return jsonify(response.to_dict()), 200
     
     try:
