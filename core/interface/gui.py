@@ -58,6 +58,7 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         
         self.dlbutton = QtWidgets.QPushButton("Download")
         self.softwareList = QListWidget()
+        self.post_author_list = QListWidget()
         self.libraryList = QListWidget()
         self.downloadList = QListWidget()
         self.emptyLibrary = QLabel("No items in library.")
@@ -69,6 +70,7 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         containerLayout.addWidget(self.searchbar)
         
         containerLayout.addWidget(self.softwareList)
+        containerLayout.addWidget(self.post_author_list)
         self.softwareList.addItems(searchresults)
 
         # download button triggers
@@ -83,9 +85,12 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         # Tab 1
         self.searchtab = QWidget()
         self.searchtab_layout = QVBoxLayout()
+        self.horizontal_layout = QHBoxLayout()
+        self.horizontal_layout.addWidget(self.softwareList, stretch=3)
+        self.horizontal_layout.addWidget(self.post_author_list)
         self.searchtab_layout.addWidget(self.searchbar)
-        self.searchtab_layout.addWidget(self.softwareList)
         self.searchtab_layout.addWidget(self.dlbutton)
+        self.searchtab_layout.addLayout(self.horizontal_layout)
         self.searchtab.setLayout(self.searchtab_layout)
         self.tabs.addTab(self.searchtab,"Search")
         
@@ -252,9 +257,12 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
                 self.softwareList.clear()
                 if state.post_titles:
                     self.softwareList.addItems(state.post_titles)
+                    self.post_author_list.addItems(state.post_author)
             if state.tracker == "rutracker":
                 _, state.posts, _, _ = split_data(response)
-                state.post_titles, _ = format_data(state.posts)
+                state.post_titles, _, state.post_author = format_data(state.posts)
+                self.post_author_list.clear()
+                self.post_author_list.addItems(state.post_author)
                 self.softwareList.clear()
                 self.softwareList.addItems(state.post_titles)
         if not response:

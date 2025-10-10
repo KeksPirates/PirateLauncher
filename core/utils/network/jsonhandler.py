@@ -11,10 +11,11 @@ def split_data(data):
     return count, posts, query, success
 
 def format_data(data):
+    post_author = [post["author"] for post in data]
     post_titles = [post["title"] for post in data]
     post_links = [post["url"] for post in data]
 
-    return post_titles, post_links
+    return post_titles, post_links, post_author
 
 
 

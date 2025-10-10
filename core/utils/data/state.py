@@ -7,6 +7,7 @@ class AppState:
     posts: List[Dict[str, Any]]
     post_titles: List[str]
     post_urls: List[str]
+    post_author: List[str]
     debug: bool = False
     tracker: str = "rutracker"
     api_url: str = "https://api.michijackson.xyz"
@@ -16,4 +17,4 @@ class AppState:
     aria2: Optional[Any] = None
     aria2_threads: int = 4
 
-state = AppState(posts=[], post_titles=[], post_urls=[], download_path="")
+state = AppState(posts=[], post_titles=[], post_urls=[], post_author=[], download_path="")
