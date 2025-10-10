@@ -1,6 +1,7 @@
 from core.interface.gui import MainWindow
 from core.utils.data.state import state
 from core.network.aria2_integration import aria2server
+from core.utils.config.config import read_config
 from PySide6 import QtWidgets
 import qdarktheme
 import darkdetect
@@ -39,6 +40,7 @@ def keyboardinterrupthandler(signum, frame):
 
 
 if __name__ == "__main__":
+    read_config()
     if state.debug:
         print("Starting Aria2 Server")
     state.aria2process = run_aria2server()

@@ -20,3 +20,23 @@ def create_config():
         config.write(cf)
 
 
+def read_config():
+
+    config = configparser.ConfigParser()
+
+    if platform.system() == "Windows":
+            config_dir = os.environ.get("APPDATA", os.path.expanduser("~\\AppData\\Roaming"))
+    else:
+        config_dir = os.environ.get("XDG_CONFIG_HOME", os.path.expanduser("~/.config"))
+    settings_path = os.path.join(config_dir, "SoftwareManager")
+    config_file = os.path.join(settings_path, "config.yml")
+
+    if not os.path.exists(config_file):
+        create_config()
+
+    config.read(config_file)
+
+    state.debug = config.getboolean("General", "debug")
+    state.api_url = config.get("General", "api_url")
+    state.aria2_threads = config.getint("General", "aria2_threads")
+
