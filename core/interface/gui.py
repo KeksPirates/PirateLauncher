@@ -23,7 +23,7 @@ import asyncio
 from core.data.scrapers.uztracker import scrape_uztracker
 from core.data.scrapers.rutracker import scrape_rutracker
 from core.utils.wrappers import run_thread
-from core.utils.settings import save_settings
+from core.utils.config.settings import save_settings
 from core.utils.data.state import state
 from core.utils.network.jsonhandler import split_data, format_data
 from core.utils.network.download import download_selected

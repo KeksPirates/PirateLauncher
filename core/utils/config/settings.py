@@ -1,4 +1,5 @@
 from core.utils.data.state import state
+from .config import create_config
 import os
 import platform
 
@@ -17,20 +18,7 @@ def save_settings(thread_count, close, apiurl):
 
     state.aria2_threads = thread_count
     state.api_url = apiurl
-
-    if platform.system() == "Windows":
-        config_dir = os.environ.get("APPDATA", os.path.expanduser("~\\AppData\\Roaming"))
-    else:
-        config_dir = os.environ.get("XDG_CONFIG_HOME", os.path.expanduser("~/.config"))
-    settings_path = os.path.join(config_dir, "SoftwareManager")
-    os.makedirs(settings_path, exist_ok=True)
-
-    with open(os.path.join(settings_path, "config.yml"), 'w') as f:
-        f.write("# SoftwareManager Config file\n\n")
-        f.write(f"aria2_threads: {state.aria2_threads}\n")
-        f.write(f"api_url: {state.api_url}\n")
-
     
+    create_config()
     restart_aria2c()
-
     close()
