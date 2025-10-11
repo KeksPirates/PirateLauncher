@@ -14,6 +14,7 @@ import sys
 
 # Debug Output
 state.debug = True
+shutdown_event = threading.Event()
 
 def run_gui():
     app = QtWidgets.QApplication([])
@@ -38,6 +39,7 @@ def kill_aria2server():
 
 
 def keyboardinterrupthandler(signum, frame):
+    shutdown_event.set()
     kill_aria2server()
     sys.exit(0)
 
@@ -49,7 +51,7 @@ if __name__ == "__main__":
     state.aria2process = run_aria2server()
     signal.signal(signal.SIGINT, keyboardinterrupthandler)
     atexit.register(kill_aria2server)
-    run_thread(threading.Thread(target=send_notification))
+    run_thread(threading.Thread(target=send_notification, args=(shutdown_event,), daemon=True))
     if state.debug:
         print("Launching GUI")
     run_gui()

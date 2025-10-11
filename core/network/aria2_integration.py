@@ -48,8 +48,8 @@ def dlprogress():
     except:
         return 0
 
-def send_notification():
-    while True:
+def send_notification(shutdown_event):
+    while not shutdown_event.is_set():
         try:
             for download in state.aria2.get_downloads():
                 if dlprogress() == 100:
