@@ -49,14 +49,15 @@ def dlprogress():
         return 0
 
 def send_notification():
+    
     while True:
         try:
-            for d in state.aria2.get_downloads():
+            for download in state.aria2:
                 if dlprogress() == 100:
                         notification.notify(
-                            title="Download finished",
-                            message=f"{d.name} has finished downloading.",
-                            timeout=4
+                            title = "Download finished",
+                            message = f"{download.name} has finished downloading.",
+                            timeout = 4
                         )
         except Exception as e:
             if state.debug:

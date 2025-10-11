@@ -259,12 +259,14 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
                     self.softwareList.addItems(state.post_titles)
                     self.post_author_list.addItems(state.post_author)
             if state.tracker == "rutracker":
-                _, state.posts, _, _ = split_data(response)
+                _, state.posts, _, _, cached = split_data(response)
                 state.post_titles, _, state.post_author = format_data(state.posts)
                 self.post_author_list.clear()
                 self.post_author_list.addItems(state.post_author)
                 self.softwareList.clear()
                 self.softwareList.addItems(state.post_titles)
+                if state.debug == True:
+                    print(f"Cached: {cached}")
         if not response:
             if state.debug:
                 print(f"No Results found for \"{search_text}\"")

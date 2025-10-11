@@ -7,8 +7,9 @@ def split_data(data):
     posts = p_json["data"]
     query = p_json["query"]
     success = p_json["success"]
+    cached = p_json["cached"]
 
-    return count, posts, query, success
+    return count, posts, query, success, cached
 
 def format_data(data):
     post_author = [post["author"] for post in data]

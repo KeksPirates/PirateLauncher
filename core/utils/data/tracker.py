@@ -21,7 +21,7 @@ def get_item_url(item, posts, post_titles): # oftwarelist currentitem, post list
 
 def get_magnet_link(post_url):
     try:
-        response = requests.get(post_url)
+        response = requests.get(post_url) # eventually impl. cloudscraper
         response.raise_for_status()
         soup = BeautifulSoup(response.text, 'html.parser')
         magnet_link = soup.find('a', href=lambda x: x and x.startswith('magnet:'))
