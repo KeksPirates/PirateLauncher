@@ -1,4 +1,4 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Optional, Any, List, Dict
 from pathlib import Path
 
@@ -14,7 +14,7 @@ class AppState:
     download_path:  str = str(Path.home() / "Downloads")
     speed_limit: int = 0
     aria2process: Optional[Any] = None
-    aria2: list[Any] = field(default_factory=list)
+    aria2: Any = None
     aria2_threads: int = 4
 
 state = AppState(posts=[], post_titles=[], post_urls=[], post_author=[], download_path="")

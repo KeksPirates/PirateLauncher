@@ -49,10 +49,9 @@ def dlprogress():
         return 0
 
 def send_notification():
-    
     while True:
         try:
-            for download in state.aria2:
+            for download in state.aria2.get_downloads():
                 if dlprogress() == 100:
                         notification.notify(
                             title = "Download finished",
