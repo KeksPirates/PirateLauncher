@@ -38,7 +38,8 @@ def aria2server():
 
 def dlprogress():
     try:
-        downloads = state.aria2.get_downloads()
+        state.downloads = state.aria2.get_downloads()
+        downloads = state.downloads
         if downloads:
             for download in downloads:
                 progress = download.progress_string(0)
@@ -48,10 +49,11 @@ def dlprogress():
     except:
         return 0
 
+
 def send_notification(shutdown_event):
     while not shutdown_event.is_set():
         try:
-            for download in state.aria2.get_downloads():
+            for download in state.downloads:
                 if dlprogress() == 100:
                         notification.notify(
                             title = "Download finished",
