@@ -1,4 +1,4 @@
-name: Build Executables
+name: Build Executables (Dev)
 
 on:
   workflow_dispatch:
