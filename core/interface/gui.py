@@ -29,15 +29,20 @@ from core.utils.network.download import download_selected
 from core.network.aria2_integration import dlprogress
 
 
-def create_tab(title, searchbar, software_list, tabs):
-    tab = QWidget()
-    layout = QVBoxLayout()
-    layout.addWidget(searchbar)
-    layout.addWidget(software_list)
-    tab.setLayout(layout)
-    tabs.addTab(tab, title)
+def create_tab(title, searchbar, software_list, tabs, dlbutton, layout2): 
+    tab = QWidget() 
+    layout = QVBoxLayout() 
+    if searchbar:
+        layout.addWidget(searchbar)
+    if layout2:
+        layout.addLayout(layout2)
+    else:
+        layout.addWidget(software_list)
+    if dlbutton:
+        layout.addWidget(dlbutton)
+    tab.setLayout(layout) 
+    tabs.addTab(tab, title) 
     return tab
-
 class MainWindow(QtWidgets.QMainWindow, QWidget):
     def __init__(self):
         super().__init__()
@@ -82,20 +87,13 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         # Tabs
         self.tabs = QTabWidget()
 
-        # Tab 1
-        self.searchtab = QWidget()
-        self.searchtab_layout = QVBoxLayout()
         self.horizontal_layout = QHBoxLayout()
         self.horizontal_layout.addWidget(self.softwareList, stretch=3)
         self.horizontal_layout.addWidget(self.post_author_list)
-        self.searchtab_layout.addWidget(self.searchbar)
-        self.searchtab_layout.addWidget(self.dlbutton)
-        self.searchtab_layout.addLayout(self.horizontal_layout)
-        self.searchtab.setLayout(self.searchtab_layout)
-        self.tabs.addTab(self.searchtab,"Search")
         
-        self.tab2 = create_tab("Library", self.emptyLibrary, self.libraryList, self.tabs)
-        self.tab3 = create_tab("Downloads", self.emptyDownload, self.downloadList, self.tabs)
+        self.tab1 = create_tab("Search", self.searchbar, self.softwareList, self.tabs, self.dlbutton, self.horizontal_layout)
+        self.tab2 = create_tab("Library", self.emptyLibrary, self.libraryList, self.tabs, None, None)
+        self.tab3 = create_tab("Downloads", self.emptyDownload, self.downloadList, self.tabs, None, None)
 
         containerLayout.addWidget(self.tabs)
 

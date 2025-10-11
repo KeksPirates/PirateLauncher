@@ -58,7 +58,6 @@ def send_notification(shutdown_event):
                             message = f"{download.name} has finished downloading.",
                             timeout = 4
                         )
-        except Exception as e:
-            if state.debug:
-                print("Notification thread error:", e)
+        except Exception:
+            pass
         time.sleep(5)
