@@ -26,23 +26,10 @@ from core.utils.config.settings import save_settings
 from core.utils.data.state import state
 from core.utils.network.jsonhandler import split_data, format_data
 from core.utils.network.download import download_selected
+from core.interface.utils.guihelper import create_tab
 from core.network.aria2_integration import dlprogress
 
 
-def create_tab(title, searchbar, software_list, tabs, dlbutton, layout2): 
-    tab = QWidget() 
-    layout = QVBoxLayout() 
-    if searchbar:
-        layout.addWidget(searchbar)
-    if layout2:
-        layout.addLayout(layout2)
-    else:
-        layout.addWidget(software_list)
-    if dlbutton:
-        layout.addWidget(dlbutton)
-    tab.setLayout(layout) 
-    tabs.addTab(tab, title) 
-    return tab
 class MainWindow(QtWidgets.QMainWindow, QWidget):
     def __init__(self):
         super().__init__()
