@@ -111,13 +111,13 @@ jobs:
           chmod +x release/app-linux release/app-macos
           ls -la release/
 
-      - name: Create GitHub Release
+      - name: Create Draft Release (Dev)
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.event.inputs.version }}
-          name: Release ${{ github.event.inputs.version }}
-          draft: false
-          prerelease: false
+          name: Dev Release ${{ github.event.inputs.version }}
+          draft: true
+          prerelease: true
           files: |
             release/app-linux
             release/app-windows.exe
