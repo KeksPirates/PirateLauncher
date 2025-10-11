@@ -58,6 +58,6 @@ def send_notification(shutdown_event):
                             message = f"{download.name} has finished downloading.",
                             timeout = 4
                         )
-        except Exception:
+        except Exception as e:
             pass
         time.sleep(5)

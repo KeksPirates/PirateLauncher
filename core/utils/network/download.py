@@ -3,7 +3,7 @@ from core.utils.data.tracker import get_item_url
 from core.utils.data.tracker import get_magnet_link
 from core.network.aria2_wrapper import start_client
 from core.network.aria2_wrapper import add_magnet
-from core.utils.wrappers import run_thread
+from core.utils.general.wrappers import run_thread
 import threading
 
 

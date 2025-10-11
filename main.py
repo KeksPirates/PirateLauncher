@@ -2,19 +2,20 @@ from core.interface.gui import MainWindow
 from core.utils.data.state import state
 from core.network.aria2_integration import aria2server
 from core.network.aria2_integration import send_notification
-from core.utils.wrappers import run_thread
-import threading
+from core.utils.general.shutdown import kill_aria2server, closehelper, shutdown_event
+from core.utils.general.wrappers import run_thread
 from core.utils.config.config import read_config
 from PySide6 import QtWidgets
 import qdarktheme
 import darkdetect
+import threading
 import signal
 import atexit
 import sys
 
 # Debug Output
 state.debug = True
-shutdown_event = threading.Event()
+
 
 def run_gui():
     app = QtWidgets.QApplication([])
@@ -30,19 +31,8 @@ def run_aria2server():
     aria2process = aria2server()
     return aria2process
 
-
-def kill_aria2server():
-    if state.aria2process:
-        state.aria2process.kill()
-        if state.debug:
-            print("\nKilled Aria2")
-
-
 def keyboardinterrupthandler(signum, frame):
-    shutdown_event.set()
-    kill_aria2server()
-    sys.exit(0)
-
+    closehelper()
 
 if __name__ == "__main__":
     read_config()

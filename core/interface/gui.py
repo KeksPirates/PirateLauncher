@@ -12,12 +12,13 @@ from PySide6.QtWidgets import (
     QTabWidget,
     QProgressBar,
     )
-from PySide6.QtGui import QIcon, QAction
+from PySide6.QtGui import QIcon, QAction, QCloseEvent
 import darkdetect
 import threading
-from core.utils.wrappers import run_thread
+from core.utils.general.wrappers import run_thread
 from core.utils.data.state import state
 from core.utils.network.download import download_selected
+from core.utils.general.shutdown import closehelper
 from core.interface.utils.tabhelper import create_tab
 from core.interface.utils.searchhelper import return_pressed
 from core.interface.dialogs.settings import settings_dialog
@@ -107,6 +108,10 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         self.progress_timer = QTimer()
         self.progress_timer.timeout.connect(lambda: run_thread(threading.Thread(target=self.update_progress)))
         self.progress_timer.start(1000)
+
+    def closeEvent(self, event: QCloseEvent):
+        closehelper()
+        event.accept()
 
     def set_tracker(self, _):
         state.tracker = self.tracker_list.currentText()
