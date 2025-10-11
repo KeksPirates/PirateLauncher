@@ -10,7 +10,7 @@ on:
 
 env:
   PYTHON_VERSION: "3.11"
-  APP_NAME: "app"
+  APP_NAME: "SoftwareManager"
 
 jobs:
   build:
