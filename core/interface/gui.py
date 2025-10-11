@@ -109,6 +109,15 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         self.progress_timer.timeout.connect(lambda: run_thread(threading.Thread(target=self.update_progress)))
         self.progress_timer.start(1000)
 
+        self.download_timer = QTimer()
+        self.download_timer.timeout.connect(lambda: run_thread(threading.Thread(target=self.download_list_update)))
+        self.download_timer.start(5000)
+
+    def download_list_update(self):
+        self.downloadList.clear()
+        for download in state.downloads:
+            self.downloadList.addItem(download.name)
+
     def closeEvent(self, event: QCloseEvent):
         closehelper()
         event.accept()
