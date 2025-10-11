@@ -40,7 +40,6 @@ if __name__ == "__main__":
         print("Starting Aria2 Server")
     state.aria2process = run_aria2server()
     signal.signal(signal.SIGINT, keyboardinterrupthandler)
-    atexit.register(kill_aria2server)
     run_thread(threading.Thread(target=send_notification, args=(shutdown_event,), daemon=True))
     if state.debug:
         print("Launching GUI")
