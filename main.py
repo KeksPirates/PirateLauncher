@@ -49,7 +49,7 @@ if __name__ == "__main__":
     state.aria2process = run_aria2server()
     signal.signal(signal.SIGINT, keyboardinterrupthandler)
     atexit.register(kill_aria2server)
-    # run_thread(threading.Thread(target=send_notification))
+    run_thread(threading.Thread(target=send_notification))
     if state.debug:
         print("Launching GUI")
     run_gui()

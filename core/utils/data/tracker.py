@@ -13,7 +13,7 @@ def get_item_url(item, posts, post_titles): # oftwarelist currentitem, post list
                 return item
             if state.tracker == "rutracker":                
                 item_dict = posts[post_index]
-                _, post_links = format_data([item_dict])
+                _, post_links, _ = format_data([item_dict])
                 return post_links[0]
         return None
 
