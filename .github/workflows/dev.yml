@@ -22,14 +22,14 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
-            artifact_name: app-linux
-            asset_name: app-linux
+            artifact_name: SoftwareManager-linux
+            asset_name: SoftwareManager-linux
           - os: windows-latest
-            artifact_name: app-windows.exe
-            asset_name: app-windows.exe
+            artifact_name: SoftwareManager-windows.exe
+            asset_name: SoftwareManager-windows.exe
           - os: macos-latest
-            artifact_name: app-macos
-            asset_name: app-macos
+            artifact_name: SoftwareManager-macos
+            asset_name: SoftwareManager-macos
 
     runs-on: ${{ matrix.os }}
 
@@ -108,10 +108,10 @@ jobs:
       - name: Prepare release files
         run: |
           mkdir -p release
-          cp artifacts/ubuntu-latest-build/app-linux release/
-          cp artifacts/windows-latest-build/app-windows.exe release/
-          cp artifacts/macos-latest-build/app-macos release/
-          chmod +x release/app-linux release/app-macos
+          cp artifacts/ubuntu-latest-build/SoftwareManager-linux release/
+          cp artifacts/windows-latest-build/SoftwareManager-windows.exe release/
+          cp artifacts/macos-latest-build/SoftwareManager-macos release/
+          chmod +x release/SoftwareManager-linux release/SoftwareManager-macos
           ls -la release/
 
       - name: Create Draft Release (Dev)
@@ -122,8 +122,8 @@ jobs:
           draft: true
           prerelease: true
           files: |
-            release/app-linux
-            release/app-windows.exe
-            release/app-macos
+            release/SoftwareManager-linux
+            release/SoftwareManager-windows.exe
+            release/SoftwareManager-macos
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
