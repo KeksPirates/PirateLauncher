@@ -25,14 +25,14 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
-            artifact_name: SoftwareManager-dev-${{ github.run_number }}-linux
-            asset_name: SoftwareManager-dev-${{ github.run_number }}-linux
+            artifact_name: SoftwareManager-dev-${{ github.sha }}-linux
+            asset_name: SoftwareManager-dev-${{ github.sha }}-linux
           - os: windows-latest
-            artifact_name: SoftwareManager-dev-${{ github.run_number }}-windows.exe
-            asset_name: SoftwareManager-dev-${{ github.run_number }}-windows.exe
+            artifact_name: SoftwareManager-dev-${{ github.sha }}-windows.exe
+            asset_name: SoftwareManager-dev-${{ github.sha }}-windows.exe
           - os: macos-latest
-            artifact_name: SoftwareManager-dev-${{ github.run_number }}-macos
-            asset_name: SoftwareManager-dev-${{ github.run_number }}-macos
+            artifact_name: SoftwareManager-dev-${{ github.sha }}-macos
+            asset_name: SoftwareManager-dev-${{ github.sha }}-macos
 
     runs-on: ${{ matrix.os }}
 
@@ -111,19 +111,20 @@ jobs:
       - name: Generate version
         id: version
         run: |
-          MAJOR=1
-          MINOR=0
-          PATCH=${{ github.run_number }}
-          VERSION="v${MAJOR}.${MINOR}.${PATCH}-dev"
+          COMMIT_SHA=${{ github.sha }}
+          SHORT_SHA=${COMMIT_SHA:0:7}
+          VERSION="${SHORT_SHA}-dev"
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "short_sha=${SHORT_SHA}" >> $GITHUB_OUTPUT
           echo "Generated version: ${VERSION}"
 
       - name: Prepare release files
         run: |
           mkdir -p release
-          cp artifacts/ubuntu-latest-build/SoftwareManager-dev-${{ github.run_number }}-linux release/SoftwareManager-dev-1.0.${{ github.run_number }}-linux
-          cp artifacts/windows-latest-build/SoftwareManager-dev-${{ github.run_number }}-windows.exe release/SoftwareManager-dev-1.0.${{ github.run_number }}-windows.exe
-          cp artifacts/macos-latest-build/SoftwareManager-dev-${{ github.run_number }}-macos release/SoftwareManager-dev-1.0.${{ github.run_number }}-macos
+          SHORT_SHA="${{ steps.version.outputs.short_sha }}"
+          cp artifacts/ubuntu-latest-build/SoftwareManager-dev-*-linux release/SoftwareManager-dev-${SHORT_SHA}-linux
+          cp artifacts/windows-latest-build/SoftwareManager-dev-*-windows.exe release/SoftwareManager-dev-${SHORT_SHA}-windows.exe
+          cp artifacts/macos-latest-build/SoftwareManager-dev-*-macos release/SoftwareManager-dev-${SHORT_SHA}-macos
           chmod +x release/SoftwareManager-dev-*-linux release/SoftwareManager-dev-*-macos
           ls -la release/
 
@@ -135,8 +136,8 @@ jobs:
           draft: true
           prerelease: true
           files: |
-            release/SoftwareManager-dev-1.0.${{ github.run_number }}-linux
-            release/SoftwareManager-dev-1.0.${{ github.run_number }}-windows.exe
-            release/SoftwareManager-dev-1.0.${{ github.run_number }}-macos
+            release/SoftwareManager-dev-${{ steps.version.outputs.short_sha }}-linux
+            release/SoftwareManager-dev-${{ steps.version.outputs.short_sha }}-windows.exe
+            release/SoftwareManager-dev-${{ steps.version.outputs.short_sha }}-macos
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
