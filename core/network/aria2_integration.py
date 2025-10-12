@@ -54,18 +54,29 @@ def dlprogress():
         return 0
     except:
         return 0
-
+    
+def get_active_downloads():
+    try: 
+        downloads = state.aria2.get_downloads()
+        return [d for d in downloads if d.is_active]
+    except:
+        return []
 
 def send_notification(shutdown_event):
+    notified = set()
     while not shutdown_event.is_set():
         try:
-            for download in state.downloads:
-                if dlprogress() == 100:
-                        notification.notify(
-                            title = "Download finished",
-                            message = f"{download.name} has finished downloading.",
-                            timeout = 4
-                        )
-        except Exception as e:
+            for d in state.aria2.get_downloads():
+                if d.is_metadata:
+                    continue
+                if d.progress == 100 and d.gid not in notified:
+                    notification.notify(
+                        title="Download finished",
+                        message=f"{d.name} has finished downloading.",
+                        timeout=4
+                    )
+                    notified.add(d.gid)
+            state.downloads = [d for d in state.aria2.get_downloads() if d.is_active and not d.is_metadata]
+        except Exception:
             pass
         time.sleep(5)
