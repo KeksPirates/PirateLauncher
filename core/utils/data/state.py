@@ -9,7 +9,6 @@ class AppState:
     post_urls: List[str]
     post_author: List[str]
     downloads: List[str]
-    # dl_speed: str = "0 B/s"
     debug: bool = False
     tracker: str = "rutracker"
     api_url: str = "https://api.michijackson.xyz"
