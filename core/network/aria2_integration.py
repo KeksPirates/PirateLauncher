@@ -55,6 +55,17 @@ def dlprogress():
     except:
         return 0
 
+# def dlspeed():
+#     try:
+#         state.downloads = [download for download in state.aria2.get_downloads() if not download.is_metadata]
+#         downloads = state.downloads
+#         if downloads:
+#             for download in downloads:
+#                 speed = download.download_speed()
+#                 return speed
+#         return "0 B/s"
+#     except:
+#         return "0 B/s"
 
 def send_notification(shutdown_event):
     while not shutdown_event.is_set():
