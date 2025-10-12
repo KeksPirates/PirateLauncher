@@ -1,7 +1,9 @@
 from PySide6 import QtWidgets
-from PySide6.QtCore import Qt, QTimer
+from PySide6 import QtCore
+from PySide6.QtCore import Qt, QTimer, QModelIndex, QAbstractTableModel
 from PySide6.QtWidgets import (
-    QLineEdit, 
+    QLineEdit,
+    QTableView, 
     QWidget, 
     QVBoxLayout, 
     QListWidget, 
@@ -11,6 +13,7 @@ from PySide6.QtWidgets import (
     QComboBox, 
     QTabWidget,
     QProgressBar,
+    QHeaderView,
     )
 from PySide6.QtGui import QIcon, QAction, QCloseEvent
 import darkdetect
@@ -48,7 +51,8 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         self.softwareList = QListWidget()
         self.post_author_list = QListWidget()
         self.libraryList = QListWidget()
-        self.downloadList = QListWidget()
+        self.download_model = None
+        self.downloadList = QTableView()
         self.emptyLibrary = QLabel("No items in library.")
         self.emptyDownload = QLabel("No items in downloads.")
         self.progressbar = QProgressBar()
@@ -60,6 +64,47 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         containerLayout.addWidget(self.softwareList)
         containerLayout.addWidget(self.post_author_list)
         self.softwareList.addItems(searchresults)
+
+        class DownloadModel(QAbstractTableModel):
+            def __init__(self):
+                super().__init__()
+                self.headers = ["Name", "Status", "Progress", "Speed", "Size", "Total Size"]
+            
+            def rowCount(self, parent=QModelIndex()):
+                return len(state.downloads)
+
+            def columnCount(self, parent=QModelIndex()):
+                return len(self.headers)
+            
+            def headerData(self, section, orientation, role=Qt.DisplayRole):
+                if role == Qt.DisplayRole and orientation == Qt.Horizontal:
+                    return self.headers[section]
+                return None
+
+            def data(self, index, role=Qt.DisplayRole):
+                if role == Qt.DisplayRole:
+                    download = state.downloads[index.row()]
+                    col = index.column()
+                    
+                    if col == 0:
+                        return download.name
+                    elif col == 1:
+                        return getattr(download, 'status', 'Downloading')
+                    elif col == 2:
+                        return f"{int(download.progress)}%"
+                    elif col == 3:
+                        return f"{download.download_speed_string()}"
+                    elif col == 4:
+                        pass
+                    elif col == 5:
+                        return f"{download.total_length_string()}"
+                return None
+
+        self.download_model = DownloadModel()
+        self.downloadList.setModel(self.download_model)
+        self.downloadList.horizontalHeader().setStretchLastSection(False)
+        self.downloadList.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
+        self.downloadList.setSelectionBehavior(QTableView.SelectRows)
 
         # download button triggers
         self.dlbutton.clicked.connect(lambda: run_thread(threading.Thread(target=download_selected, args=(self.softwareList.currentItem(), state.posts, state.post_titles))))
@@ -111,12 +156,12 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
 
         self.download_timer = QTimer()
         self.download_timer.timeout.connect(lambda: run_thread(threading.Thread(target=self.download_list_update)))
-        self.download_timer.start(5000)
+        self.download_timer.start(500)
 
     def download_list_update(self):
-        self.downloadList.clear()
-        for download in state.downloads:
-            self.downloadList.addItem(download.name)
+        if self.download_model:
+            self.download_model.layoutAboutToBeChanged.emit()
+            self.download_model.layoutChanged.emit()
 
     def closeEvent(self, event: QCloseEvent):
         closehelper()
@@ -124,7 +169,6 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
 
     def set_tracker(self, _):
         state.tracker = self.tracker_list.currentText()
-
 
     def update_progress(self):
         progress = dlprogress()

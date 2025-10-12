@@ -44,7 +44,7 @@ def aria2server():
 
 def dlprogress():
     try:
-        state.downloads = state.aria2.get_downloads()
+        state.downloads = [download for download in state.aria2.get_downloads() if not download.is_metadata]
         downloads = state.downloads
         if downloads:
             for download in downloads:
