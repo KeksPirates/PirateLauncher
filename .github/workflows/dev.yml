@@ -1,10 +1,13 @@
-name: Build Executables
+name: Build Executables (Dev)
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
     inputs:
       version:
-        description: "Release version (e.g., v1.0.0)"
+        description: "Dev release version (e.g., v1.0.0-dev)"
         required: true
         default: "v1.0.0"
 
@@ -22,14 +25,14 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
-            artifact_name: SoftwareManager-linux
-            asset_name: SoftwareManager-linux
+            artifact_name: SoftwareManager-dev-${{ github.run_number }}-linux
+            asset_name: SoftwareManager-dev-${{ github.run_number }}-linux
           - os: windows-latest
-            artifact_name: SoftwareManager-windows.exe
-            asset_name: SoftwareManager-windows.exe
+            artifact_name: SoftwareManager-dev-${{ github.run_number }}-windows.exe
+            asset_name: SoftwareManager-dev-${{ github.run_number }}-windows.exe
           - os: macos-latest
-            artifact_name: SoftwareManager-macos
-            asset_name: SoftwareManager-macos
+            artifact_name: SoftwareManager-dev-${{ github.run_number }}-macos
+            asset_name: SoftwareManager-dev-${{ github.run_number }}-macos
 
     runs-on: ${{ matrix.os }}
 
@@ -105,25 +108,35 @@ jobs:
           find artifacts -type f
           ls -la artifacts/
 
+      - name: Generate version
+        id: version
+        run: |
+          MAJOR=1
+          MINOR=0
+          PATCH=${{ github.run_number }}
+          VERSION="v${MAJOR}.${MINOR}.${PATCH}-dev"
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "Generated version: ${VERSION}"
+
       - name: Prepare release files
         run: |
           mkdir -p release
-          cp artifacts/ubuntu-latest-build/SoftwareManager-linux release/
-          cp artifacts/windows-latest-build/SoftwareManager-windows.exe release/
-          cp artifacts/macos-latest-build/SoftwareManager-macos release/
-          chmod +x release/SoftwareManager-linux release/SoftwareManager-macos
+          cp artifacts/ubuntu-latest-build/SoftwareManager-dev-${{ github.run_number }}-linux release/SoftwareManager-dev-1.0.${{ github.run_number }}-linux
+          cp artifacts/windows-latest-build/SoftwareManager-dev-${{ github.run_number }}-windows.exe release/SoftwareManager-dev-1.0.${{ github.run_number }}-windows.exe
+          cp artifacts/macos-latest-build/SoftwareManager-dev-${{ github.run_number }}-macos release/SoftwareManager-dev-1.0.${{ github.run_number }}-macos
+          chmod +x release/SoftwareManager-dev-*-linux release/SoftwareManager-dev-*-macos
           ls -la release/
 
       - name: Create Draft Release (Dev)
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.event.inputs.version }}
-          name: Dev Release ${{ github.event.inputs.version }}
+          tag_name: ${{ steps.version.outputs.version }}
+          name: ${{ steps.version.outputs.version }}
           draft: true
           prerelease: true
           files: |
-            release/SoftwareManager-linux
-            release/SoftwareManager-windows.exe
-            release/SoftwareManager-macos
+            release/SoftwareManager-dev-1.0.${{ github.run_number }}-linux
+            release/SoftwareManager-dev-1.0.${{ github.run_number }}-windows.exe
+            release/SoftwareManager-dev-1.0.${{ github.run_number }}-macos
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
