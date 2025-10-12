@@ -54,13 +54,6 @@ def dlprogress():
         return 0
     except:
         return 0
-    
-def get_active_downloads():
-    try: 
-        downloads = state.aria2.get_downloads()
-        return [d for d in downloads if d.is_active]
-    except:
-        return []
 
 def send_notification(shutdown_event):
     notified = set()
