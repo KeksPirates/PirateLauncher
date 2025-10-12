@@ -16,13 +16,15 @@ def kill_aria2server():
         state.aria2process.kill()
         if state.debug:
             print("Killed Aria2")
-
-    for proc in psutil.process_iter():
-        if proc.name() == process:
-            proc.kill()
-            if state.debug:
-                print("Killed Aria2c")
-
+            
+    try:
+        for proc in psutil.process_iter():
+            if proc.name() == process:
+                proc.kill()
+                if state.debug:
+                    print("Killed Aria2c")
+    except psutil.NoSuchProcess:
+        pass
 
 def closehelper():
     shutdown_event.set()

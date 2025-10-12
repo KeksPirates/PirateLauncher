@@ -3,6 +3,7 @@ import subprocess
 from core.utils.data.state import state
 from plyer import notification
 import time
+import sys
 
 def run_aria2p():
 
@@ -33,7 +34,12 @@ def aria2server():
         "-s", str(state.aria2_threads),
     ]
     
-    aria2server = subprocess.Popen(cmd)
+    aria2server = subprocess.Popen(
+        cmd,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        creationflags=subprocess.CREATE_NO_WINDOW if sys.platform == 'win32' else 0
+    )
     return aria2server
 
 def dlprogress():
