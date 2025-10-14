@@ -113,7 +113,7 @@ jobs:
         run: |
           COMMIT_SHA=${{ github.sha }}
           SHORT_SHA=${COMMIT_SHA:0:7}
-          VERSION="dev"
+          VERSION="${SHORT_SHA}-dev"
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
           echo "short_sha=${SHORT_SHA}" >> $GITHUB_OUTPUT
           echo "Generated version: ${VERSION}"
@@ -131,8 +131,8 @@ jobs:
       - name: Create Prerelease (Public)
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: dev
-          name: dev-${{ steps.version.outputs.short_sha }}
+          tag_name: ${{ steps.version.outputs.version }}
+          name: ${{ steps.version.outputs.version }}
           draft: false
           prerelease: true
           files: |
