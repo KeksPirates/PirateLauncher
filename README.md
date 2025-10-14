@@ -27,6 +27,11 @@ SoftwareManager is a Python-based GUI/TUI tool that simplifies downloading and m
 - If you want to host your own server, clone the server branch of this repo, enter your cookie for rutracker.org and run server.py. Detailed Instructions on how to get your rutracker cookie are in the README of its branch.
 - This tool is for educational purposes only. Use it responsibly.
 
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=KeksPirates/SoftwareManager&type=date&legend=top-left)](https://www.star-history.com/#KeksPirates/SoftwareManager&type=date&legend=top-left)
+
 ---
 
 **Disclaimer:** SoftwareManager is intended for legal and ethical use only. Ensure compliance with applicable laws and regulations when using this tool.
