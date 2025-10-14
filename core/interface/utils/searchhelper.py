@@ -25,6 +25,12 @@ def return_pressed(self):
                     self.post_author_list.addItems(state.post_author)
             if state.tracker == "rutracker":
                 _, state.posts, _, _, cached = split_data(response)
+                if state.posts == []:
+                    if state.debug:
+                        print(f"No Results found for \"{search_text}\"")
+                        self.softwareList.clear()
+                        self.softwareList.addItem("No Results") # replace with no results text in center
+                        
                 state.post_titles, _, state.post_author = format_data(state.posts)
                 self.post_author_list.clear()
                 self.post_author_list.addItems(state.post_author)
@@ -32,8 +38,4 @@ def return_pressed(self):
                 self.softwareList.addItems(state.post_titles)
                 if state.debug == True:
                     print(f"Cached: {cached}")
-        if not response:
-            if state.debug:
-                print(f"No Results found for \"{search_text}\"")
-            self.softwareList.clear()
-            self.softwareList.addItem("No Results") # replace with no results text in center
+
