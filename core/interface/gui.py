@@ -51,6 +51,12 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         self.softwareList = QListWidget()
         self.post_author_list = QListWidget()
         self.libraryList = QListWidget()
+
+        self.emptyResults = QLabel("No Results")
+        self.emptyResults.setAlignment(Qt.AlignCenter)
+        self.emptyResults.hide()
+
+
         self.download_model = None
         self.downloadList = QTableView()
         self.emptyLibrary = QLabel("No items in library.")
@@ -117,6 +123,7 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
 
         self.horizontal_layout = QHBoxLayout()
         self.horizontal_layout.addWidget(self.softwareList, stretch=3)
+        self.horizontal_layout.addWidget(self.emptyResults, stretch=3)
         self.horizontal_layout.addWidget(self.post_author_list)
         
         self.tab1 = create_tab("Search", self.searchbar, self.softwareList, self.tabs, self.dlbutton, self.horizontal_layout)
@@ -173,3 +180,11 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
     def update_progress(self):
         progress = dlprogress()
         self.progressbar.setValue(progress)
+
+    def show_empty_results(self, show: bool):
+        if show:
+            self.softwareList.hide()
+            self.emptyResults.show()
+        else:
+            self.emptyResults.hide()
+            self.softwareList.show()

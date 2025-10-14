@@ -25,13 +25,14 @@ def return_pressed(self):
                     self.post_author_list.addItems(state.post_author)
             if state.tracker == "rutracker":
                 _, state.posts, _, _, cached = split_data(response)
-                if state.posts == []:
-                    if state.debug:
-                        print(f"No Results found for \"{search_text}\"")
-                        self.softwareList.clear()
-                        self.softwareList.addItem("No Results") # replace with no results text in center
-                        
+            if state.posts == []:
+                if state.debug:
+                    print(f"No Results found for \"{search_text}\"")
+                self.softwareList.clear()
+                self.show_empty_results(True)
+            else:
                 state.post_titles, _, state.post_author = format_data(state.posts)
+                self.show_empty_results(False)
                 self.post_author_list.clear()
                 self.post_author_list.addItems(state.post_author)
                 self.softwareList.clear()
