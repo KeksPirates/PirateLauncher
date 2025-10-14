@@ -3,9 +3,9 @@ SoftwareManager is a Python-based GUI/TUI tool that simplifies downloading and m
 
 ## Features
 - VPN Binding (impl. soon)
-- Bandwidth/Download speed limiting (impl. soon)
+- Bandwidth/Download speed limiting
 - Start downloads via a predefined magnet URI.
-- View detailed download information (name, speed, and status). (improved impl. soon)
+- View detailed download information (name, speed, and status).
 
 ## Installation
 1. Download the binary file for your operating system from releases 
