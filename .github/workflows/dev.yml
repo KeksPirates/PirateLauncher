@@ -131,8 +131,8 @@ jobs:
       - name: Create Prerelease (Public)
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ steps.version.outputs.version }}
-          name: ${{ steps.version.outputs.version }}
+          tag_name: dev
+          name: dev-${{ steps.version.outputs.short_sha }}
           draft: false
           prerelease: true
           files: |
