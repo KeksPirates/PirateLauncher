@@ -22,7 +22,7 @@ def kill_aria2server():
             if proc.name() == process:
                 proc.kill()
                 if state.debug:
-                    print("Killed Aria2c")
+                    print(f"Killed Aria2c (PID {proc.pid})")
     except psutil.NoSuchProcess:
         pass
 

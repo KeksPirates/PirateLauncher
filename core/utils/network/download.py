@@ -10,7 +10,7 @@ import threading
 def download_selected(item, posts, post_titles):
     if item is not None:
         if state.debug:
-            print(f"network {item.text()}")
+            print(f"Downloading {item.text()}")
         run_thread(threading.Thread(target=run_download, args=(item.text(), posts, post_titles)))
         
     else:
