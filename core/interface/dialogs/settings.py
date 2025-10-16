@@ -114,7 +114,6 @@ def settings_dialog(self):
         save_btn.clicked.connect(lambda: save_settings(thread_box.value(), close_settings, api_url.text(), download_path.text(), speed_limit.value()))
     
         cancel_btn.clicked.connect(dialog.reject)
-        print(thread_box.value())
         layout.addWidget(cancel_btn)
         layout.addWidget(save_btn)
 
