@@ -38,5 +38,5 @@ def return_pressed(self):
                 self.softwareList.clear()
                 self.softwareList.addItems(state.post_titles)
                 if state.debug == True:
-                    print(f"Cached: {cached}")
+                    print(f"Response Cached: {cached}")
 
