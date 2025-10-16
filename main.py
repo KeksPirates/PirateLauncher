@@ -10,11 +10,14 @@ import qdarktheme
 import darkdetect
 import threading
 import signal
-import atexit
+import argparse
 import sys
 
-# Debug Output
-state.debug = True
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--debug", action="store_true") 
+args = parser.parse_args()
 
 
 def run_gui():
@@ -36,6 +39,7 @@ def keyboardinterrupthandler(signum, frame):
 
 if __name__ == "__main__":
     read_config()
+    state.debug = args.debug # override of read_config
     if state.debug:
         print("Starting Aria2 Server")
     state.aria2process = run_aria2server()
