@@ -17,11 +17,13 @@ async def init_uztracker():
             up = True
         else:
             up = False
-            print(f"Uztracker seems down, status code: {response.status_code}")
+            if state.debug: 
+                print(f"Uztracker seems down, status code: {response.status_code}")
     except requests.exceptions.RequestException as e:
-        print(f"\nRequest Exception on {url_uztracker}:")
-        print(e)
-        print("\nIs the Site down?")
+        if state.debug:
+            print(f"\nRequest Exception on {url_uztracker}:")
+            print(e)
+            print("\nIs the Site down?")
         up = False
 
 asyncio.run(init_uztracker())
@@ -61,12 +63,13 @@ async def scrape_uztracker(search, max_results=450):
                             break
                         
                 except aiohttp.ClientError as e:
-                    if result:
+                    if result and state.debug:
                         print(f"Failed to fetch {search_url}: {e}")
                     return None
 
         else:
-            print("Error: Uztracker down")
+            if state.debug:
+                print("Error: Uztracker down")
             return None, None
 
         if not results:
@@ -85,7 +88,8 @@ def get_post_title(post_url):
             if state.debug:
                 print("Program not found")
     else:
-        print("Error: Uztracker down")
+        if state.debug:
+            print("Error: Uztracker down")
         return None   
 
     
