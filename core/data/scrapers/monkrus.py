@@ -1,10 +1,9 @@
-from core.utils.data.state import state
 from bs4 import BeautifulSoup
 import requests
 
 
 
-def scrape_monkrus_telegram():
+def scrape_monkrus_telegram(query):
     telegram_channel = "https://t.me/s/real_monkrus/"
     posts: list[dict] = []
 
@@ -18,12 +17,13 @@ def scrape_monkrus_telegram():
         title = post_txt.b.text
         url = bubble.find("a", href=lambda x: x and x.startswith("https://uztracker.net"))
 
-        posts.append(dict(
-            author = "m0nkrus",
-            id = len(posts) + 1,
-            title = title,
-            url = url["href"]
-        ))
+        if query.lower() in title.lower():
+            posts.append(dict(
+                author = "m0nkrus",
+                id = len(posts) + 1,
+                title = title,
+                url = url["href"]
+            ))
 
     posts.reverse() # reverse to show most recent posts (bubbles) at top of list
     return(posts)

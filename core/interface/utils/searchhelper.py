@@ -1,6 +1,6 @@
-import asyncio
 from core.data.scrapers.uztracker import scrape_uztracker
 from core.data.scrapers.rutracker import scrape_rutracker
+from core.data.scrapers.monkrus import scrape_monkrus_telegram
 from core.utils.network.jsonhandler import split_data, format_data
 from core.utils.data.state import state
 
@@ -56,3 +56,19 @@ def return_pressed(self):
                 print(f"No response from rutracker")
             self.softwareList.clear()
             self.show_empty_results(True)
+
+    elif state.tracker == "m0nkrus":
+        state.posts = scrape_monkrus_telegram(search_text)
+
+        if state.posts == []:
+            if state.debug:
+                print(f"No Results for {search_text}")
+            self.softwareList.clear()
+            self.show_empty_results(True)
+        else:
+            state.post_titles, _, state.post_author = format_data(state.posts)
+            self.show_empty_results(False)
+            self.post_author_list.clear()
+            self.post_author_list.addItems(state.post_author)
+            self.softwareList.clear()
+            self.softwareList.addItems(state.post_titles)

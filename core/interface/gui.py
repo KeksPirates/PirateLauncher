@@ -139,7 +139,7 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         toolbar.setLayoutDirection(Qt.RightToLeft)
         
         self.tracker_list = QComboBox()
-        self.tracker_list.addItems(["rutracker", "uztracker"])
+        self.tracker_list.addItems(["rutracker", "uztracker", "m0nkrus"])
         self.tracker_list.activated.connect(self.set_tracker)
 
 
