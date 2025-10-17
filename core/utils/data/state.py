@@ -23,7 +23,4 @@ state = AppState(posts=[], post_titles=[], post_urls=[], post_author=[], downloa
 
 @dataclass
 class Post:
-    id: int
-    title: str
-    url: str
-    author: str
+    text: str

@@ -12,14 +12,15 @@ def scrape_monkrus_telegram():
     print(response.status_code) # rm later
 
     soup = BeautifulSoup(response.text, "html.parser")
-    posts = soup.find_all("div", class_=["tgme_widget_message_wrap js-widget_message_wrap", "tgme_widget_message_wrap js-widget_message_wrap date_visible"])
+    bubbles = soup.find_all("div", class_="tgme_widget_message_bubble")
 
-    for post in posts:
-        posts_txt = post.find("div", class_="tgme_widget_message_text js-message_text") # this doesnt work
+    for bubble in bubbles:
+        post_txt = bubble.find("div", class_="tgme_widget_message_text js-message_text") # this doesnt work
+        if post_txt.b:
+            posts.append(Post(text=post_txt.get_text()))
 
 
-
-    print(posts_txt)
+    print(post_txt.b.text)
 
 
 
