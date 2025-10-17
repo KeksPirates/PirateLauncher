@@ -15,12 +15,22 @@ def scrape_monkrus_telegram():
     bubbles = soup.find_all("div", class_="tgme_widget_message_bubble")
 
     for bubble in bubbles:
-        post_txt = bubble.find("div", class_="tgme_widget_message_text js-message_text") # this doesnt work
-        if post_txt.b:
-            posts.append(Post(text=post_txt.get_text()))
+        post_txt = bubble.find("div", class_="tgme_widget_message_text js-message_text") 
+
+        title = post_txt.b.text
+        url = bubble.find("a", href=lambda x: x and x.startswith("https://uztracker.net"))
 
 
-    print(post_txt.b.text)
+
+        posts.append(Post(
+            id = len(posts) + 1,
+            title = title,
+            url = url,
+            author = "m0nkrus"
+            
+        ))
+
+    print(posts)
 
 
 
