@@ -20,3 +20,10 @@ class AppState:
     aria2_threads: int = 4
 
 state = AppState(posts=[], post_titles=[], post_urls=[], post_author=[], downloads=[], download_path="")
+
+@dataclass
+class Post:
+    id: int
+    title: str
+    url: str
+    author: str
