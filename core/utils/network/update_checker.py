@@ -17,12 +17,15 @@ def check_for_updates():
     assets = latest_release["assets"]
 
     if latest_version != state.version:
-        print(f"New release available: {latest_version}")
+        if state.debug:
+            print(f"New release available: {latest_version}")
         if assets:
-            print("Assets:")
-            for asset in assets:
-                print(f" - {asset['name']}: {asset['browser_download_url']}")
+            if state.debug:
+                print("Assets:")
+                for asset in assets:
+                    print(f" - {asset['name']}: {asset['browser_download_url']}")
             return assets, latest_version
     else:
-        print("Already up-to-date.")
+        if state.debug:
+            print("Already up-to-date.")
         return None, None
