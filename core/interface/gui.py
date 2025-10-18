@@ -14,25 +14,66 @@ from PySide6.QtWidgets import (
     QTabWidget,
     QProgressBar,
     QHeaderView,
+    QMessageBox,
     )
 from PySide6.QtGui import QIcon, QAction, QCloseEvent
 import darkdetect
 import threading
+import platform
+import requests as r
+import os
+import subprocess
+import time
+import sys
+from core.utils.config.settings import save_settings
 from core.utils.general.wrappers import run_thread
 from core.utils.data.state import state
 from core.utils.network.download import download_selected
+from core.utils.network.update_checker import check_for_updates
 from core.utils.general.shutdown import closehelper
 from core.interface.utils.tabhelper import create_tab
 from core.interface.utils.searchhelper import return_pressed
 from core.interface.dialogs.settings import settings_dialog
 from core.network.aria2_integration import dlprogress
 
+def download_update(latest_version):
+    filename = "SoftwareManager-dev-windows.exe"
+    url = "https://github.com/KeksPirates/SoftwareManager/releases/latest/download/SoftwareManager-dev-windows.exe"
 
+    print("Downloading update...")
+    if os.path.exists(filename):
+        os.remove(filename)
+    response = r.get(url, allow_redirects=True)
+    with open(filename, "wb") as f:
+        f.write(response.content)
+    if not os.path.exists(filename):
+        raise FileNotFoundError(f"Executable not found")
+    subprocess.Popen([filename], shell=True)
+    time.sleep(0.5)
+    save_settings(version=latest_version)
+    sys.exit(0)
 
 class MainWindow(QtWidgets.QMainWindow, QWidget):
     def __init__(self):
         super().__init__()
         searchresults = []
+
+        # Check for updates on Windows
+        if platform.system() == "Windows":
+            result = check_for_updates()
+            assets, latest_version = result
+
+            if assets:
+                msg = QMessageBox()
+                msg.setIcon(QMessageBox.Information)
+                msg.setWindowTitle("Update Available")
+                msg.setText(f"A new version is available.")
+                msg.setInformativeText("Please visit the GitHub releases page to download the latest version.")
+                msg.setStandardButtons(QMessageBox.Ok | QMessageBox.Ignore)
+
+                response = msg.exec_()
+                if response == QMessageBox.Ok:
+                    download_update(latest_version)
 
         self.setWindowTitle("Software Manager")
         self.setGeometry(100, 100, 800, 600)
@@ -141,7 +182,6 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         self.tracker_list = QComboBox()
         self.tracker_list.addItems(["rutracker", "uztracker", "m0nkrus"])
         self.tracker_list.activated.connect(self.set_tracker)
-
 
         if darkdetect.isDark():
             settings_action = QAction(QIcon("core/interface/assets/settings_dark.png"), "Settings", self)

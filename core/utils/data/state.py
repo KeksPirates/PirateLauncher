@@ -9,6 +9,7 @@ class AppState:
     post_urls: List[str]
     post_author: List[str]
     downloads: List[str]
+    version: str
     debug: bool = False
     tracker: str = "rutracker"
     api_url: str = "https://api.michijackson.xyz"
@@ -19,4 +20,4 @@ class AppState:
     aria2p: Any = None
     aria2_threads: int = 4
 
-state = AppState(posts=[], post_titles=[], post_urls=[], post_author=[], downloads=[], download_path="")
+state = AppState(posts=[], post_titles=[], post_urls=[], post_author=[], downloads=[], download_path="", version="")

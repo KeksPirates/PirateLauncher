@@ -2,7 +2,7 @@ from core.interface.gui import MainWindow
 from core.utils.data.state import state
 from core.network.aria2_integration import aria2server
 from core.network.aria2_integration import send_notification
-from core.utils.general.shutdown import kill_aria2server, closehelper, shutdown_event
+from core.utils.general.shutdown import closehelper, shutdown_event
 from core.utils.general.wrappers import run_thread
 from core.utils.config.config import read_config
 from PySide6 import QtWidgets
@@ -14,11 +14,9 @@ import argparse
 import sys
 
 
-
 parser = argparse.ArgumentParser()
 parser.add_argument("--debug", action="store_true") 
 args = parser.parse_args()
-
 
 def run_gui():
     app = QtWidgets.QApplication([])

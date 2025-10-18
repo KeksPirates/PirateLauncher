@@ -3,11 +3,11 @@ import platform
 import configparser
 from core.utils.data.state import state
 
-
 def create_config():
     config = configparser.ConfigParser()
 
-    config["General"] = {"debug": True, "api_url": f"{state.api_url}", "aria2_threads": f"{state.aria2_threads}", "download_path": f"{state.download_path}", f"speed_limit": f"{state.speed_limit}"}
+    config["General"] = {"debug": True, "api_url": f"{state.api_url}", "aria2_threads": f"{state.aria2_threads}", "download_path": f"{state.download_path}", f"speed_limit": f"{state.speed_limit}",
+                         "version": f"{state.version}"}
 
     if platform.system() == "Windows":
             config_dir = os.environ.get("APPDATA", os.path.expanduser("~\\AppData\\Roaming"))
@@ -42,4 +42,4 @@ def read_config():
     state.aria2_threads = config.getint("General", "aria2_threads")
     state.download_path = config.get("General", "download_path")
     state.speed_limit = config.getint("General", "speed_limit")
-
+    state.version = config.get("General", "version")
