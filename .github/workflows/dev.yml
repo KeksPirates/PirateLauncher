@@ -25,14 +25,14 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
-            artifact_name: SoftwareManager-dev-${{ github.sha }}-linux
-            asset_name: SoftwareManager-dev-${{ github.sha }}-linux
+            artifact_name: SoftwareManager-dev-linux
+            asset_name: SoftwareManager-dev-linux
           - os: windows-latest
-            artifact_name: SoftwareManager-dev-${{ github.sha }}-windows.exe
-            asset_name: SoftwareManager-dev-${{ github.sha }}-windows.exe
+            artifact_name: SoftwareManager-dev-windows.exe
+            asset_name: SoftwareManager-dev-windows.exe
           - os: macos-latest
-            artifact_name: SoftwareManager-dev-${{ github.sha }}-macos
-            asset_name: SoftwareManager-dev-${{ github.sha }}-macos
+            artifact_name: SoftwareManager-dev-macos
+            asset_name: SoftwareManager-dev-macos
 
     runs-on: ${{ matrix.os }}
 
@@ -134,7 +134,7 @@ jobs:
           tag_name: ${{ steps.version.outputs.version }}
           name: ${{ steps.version.outputs.version }}
           draft: false
-          prerelease: true
+          prerelease: false
           files: |
             release/SoftwareManager-dev-${{ steps.version.outputs.short_sha }}-linux
             release/SoftwareManager-dev-${{ steps.version.outputs.short_sha }}-windows.exe
