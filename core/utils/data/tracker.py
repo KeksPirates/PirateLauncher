@@ -19,6 +19,12 @@ def get_item_url(item, posts, post_titles): # softwarelist currentitem, post lis
                 if state.debug: 
                     print("Found post URL: ", post_links[0])
                 return post_links[0]
+            if state.tracker == "m0nkrus":                
+                item_dict = posts[post_index]
+                _, post_links, _ = format_data([item_dict])
+                if state.debug: 
+                    print("Found post URL: ", post_links[0])
+                return post_links[0]
 
         return None
 
