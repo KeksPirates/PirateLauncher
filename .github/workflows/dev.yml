@@ -25,14 +25,14 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
-            artifact_name: SoftwareManager-dev-linux
-            asset_name: SoftwareManager-dev-linux
+            artifact_name: SoftwareManager-dev-${{ github.sha }}-linux
+            asset_name: SoftwareManager-dev-${{ github.sha }}-linux
           - os: windows-latest
-            artifact_name: SoftwareManager-dev-windows.exe
-            asset_name: SoftwareManager-dev-windows.exe
+            artifact_name: SoftwareManager-dev-${{ github.sha }}-windows.exe
+            asset_name: SoftwareManager-dev-${{ github.sha }}-windows.exe
           - os: macos-latest
-            artifact_name: SoftwareManager-dev-macos
-            asset_name: SoftwareManager-dev-macos
+            artifact_name: SoftwareManager-dev-${{ github.sha }}-macos
+            asset_name: SoftwareManager-dev-${{ github.sha }}-macos
 
     runs-on: ${{ matrix.os }}
 
@@ -121,11 +121,10 @@ jobs:
       - name: Prepare release files
         run: |
           mkdir -p release
-          SHORT_SHA="${{ steps.version.outputs.short_sha }}"
-          cp artifacts/ubuntu-latest-build/SoftwareManager-dev-*-linux release/SoftwareManager-dev-${SHORT_SHA}-linux
-          cp artifacts/windows-latest-build/SoftwareManager-dev-*-windows.exe release/SoftwareManager-dev-${SHORT_SHA}-windows.exe
-          cp artifacts/macos-latest-build/SoftwareManager-dev-*-macos release/SoftwareManager-dev-${SHORT_SHA}-macos
-          chmod +x release/SoftwareManager-dev-*-linux release/SoftwareManager-dev-*-macos
+          cp artifacts/ubuntu-latest-build/SoftwareManager-dev-linux release/SoftwareManager-dev-linux
+          cp artifacts/windows-latest-build/SoftwareManager-dev-windows.exe release/SoftwareManager-dev-windows.exe
+          cp artifacts/macos-latest-build/SoftwareManager-dev-macos release/SoftwareManager-dev-macos
+          chmod +x release/SoftwareManager-dev-linux release/SoftwareManager-dev-macos
           ls -la release/
 
       - name: Create Prerelease (Public)
