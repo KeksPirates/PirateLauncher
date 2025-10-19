@@ -16,7 +16,12 @@ def check_for_updates():
     latest_version = latest_release["name"]
     assets = latest_release["assets"]
 
-    if latest_version != state.version:
+
+    if state.version == "dev":
+        if state.debug:
+            print("Dev release detected, skipping version check")
+            return None, None
+    elif latest_version != state.version:
         if state.debug:
             print(f"New release available: {latest_version}")
         if assets:
