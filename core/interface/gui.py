@@ -16,10 +16,9 @@ from PySide6.QtWidgets import (
     QHeaderView,
     QMessageBox,
     QTableWidget,
-    QTableWidgetItem
     )
 
-from PySide6.QtGui import QIcon, QAction, QCloseEvent, QPalette
+from PySide6.QtGui import QIcon, QAction, QCloseEvent
 import darkdetect
 import threading
 import platform
@@ -29,7 +28,6 @@ import subprocess
 import time
 import sys
 import json
-from core.utils.config.settings import save_settings
 from core.utils.general.wrappers import run_thread
 from core.utils.data.state import state
 from core.utils.network.download import download_selected
@@ -64,7 +62,7 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         if os.path.exists(build_info_path):
             with open(build_info_path, "r") as f:
                 build_info = json.load(f)
-                state.version = build_info.get("version", "dev")
+                state.version = build_info.get("version")
 
         # Check for updates on Windows
         if state.ignore_updates is False:
