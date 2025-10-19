@@ -16,9 +16,10 @@ from PySide6.QtWidgets import (
     QHeaderView,
     QMessageBox,
     QTableWidget,
-    QTableWidgetItem,
+    QTableWidgetItem
     )
-from PySide6.QtGui import QIcon, QAction, QCloseEvent
+
+from PySide6.QtGui import QIcon, QAction, QCloseEvent, QPalette
 import darkdetect
 import threading
 import platform
@@ -109,6 +110,9 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         self.qtablewidget.verticalHeader().setVisible(False)
         self.qtablewidget.setHorizontalHeaderLabels(["Post Title", "Author"])
         self.qtablewidget.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
+        self.qtablewidget.setAttribute(Qt.WA_TranslucentBackground)
+        self.qtablewidget.viewport().setAttribute(Qt.WA_TranslucentBackground)
+
         header = self.qtablewidget.horizontalHeader()
         header.setSectionResizeMode(1, QHeaderView.Fixed)
         header.resizeSection(1, 500)
@@ -158,6 +162,8 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         self.downloadList.horizontalHeader().setStretchLastSection(False)
         self.downloadList.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
         self.downloadList.setSelectionBehavior(QTableView.SelectRows)
+        self.downloadList.setAttribute(Qt.WA_TranslucentBackground)
+        self.downloadList.viewport().setAttribute(Qt.WA_TranslucentBackground)
 
         # download button triggers
         self.dlbutton.clicked.connect(lambda: run_thread(threading.Thread(target=download_selected, args=(self.qtablewidget.currentItem(), state.posts, state.post_titles))))
@@ -175,6 +181,8 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         self.tab1 = create_tab("Search", self.searchbar, self.qtablewidget, self.tabs, self.dlbutton, self.horizontal_layout)
         self.tab2 = create_tab("Library", self.emptyLibrary, self.libraryList, self.tabs, None, None)
         self.tab3 = create_tab("Downloads", self.emptyDownload, self.downloadList, self.tabs, None, None)
+        
+        
 
         containerLayout.addWidget(self.tabs)
 
