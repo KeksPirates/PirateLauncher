@@ -40,7 +40,7 @@ from core.interface.utils.searchhelper import return_pressed
 from core.interface.dialogs.settings import settings_dialog
 from core.network.aria2_integration import dlprogress
 
-def download_update(latest_version):
+def download_update():
     filename = "SoftwareManager-dev-windows.exe"
     url = "https://github.com/KeksPirates/SoftwareManager/releases/latest/download/SoftwareManager-dev-windows.exe"
 
@@ -61,9 +61,10 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         super().__init__()
 
         build_info_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "build_info.json")
-        with open(build_info_path, "r") as f:
-            build_info = json.load(f)
-            state.version = build_info.get("version", "dev")
+        if os.path.exists(build_info_path):
+            with open(build_info_path, "r") as f:
+                build_info = json.load(f)
+                state.version = build_info.get("version", "dev")
 
         # Check for updates on Windows
         if state.ignore_updates is False:
