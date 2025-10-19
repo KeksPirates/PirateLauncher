@@ -66,11 +66,26 @@ jobs:
           pip install -r requirements.txt
           pip install pyinstaller
 
-      - name: Inject commit hash into code
+      - name: Generate version
+        id: version
         run: |
-          echo '{' > build_info.json
-          echo "  \"version\": \"${GITHUB_SHA}\"" >> build_info.json
-          echo '}' >> build_info.json
+          COMMIT_SHA=${{ github.sha }}
+          SHORT_SHA=${COMMIT_SHA:0:7}
+          VERSION="${SHORT_SHA}-dev"
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "short_sha=${SHORT_SHA}" >> $GITHUB_OUTPUT
+          echo "Generated version: ${VERSION}"
+
+      - name: Inject commit hash into code (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $json = @"
+      {
+        "version": "$env:VERSION"
+      }
+      "@
+          $json | Out-File -Encoding utf8 build_info.json
 
       - name: Build executable with PyInstaller
         run: pyinstaller --onefile --windowed --add-data "build_info.json:." --name ${{ env.APP_NAME }} main.py
@@ -113,16 +128,6 @@ jobs:
           echo "Downloaded artifacts:"
           find artifacts -type f
           ls -la artifacts/
-
-      - name: Generate version
-        id: version
-        run: |
-          COMMIT_SHA=${{ github.sha }}
-          SHORT_SHA=${COMMIT_SHA:0:7}
-          VERSION="${SHORT_SHA}-dev"
-          echo "version=${VERSION}" >> $GITHUB_OUTPUT
-          echo "short_sha=${SHORT_SHA}" >> $GITHUB_OUTPUT
-          echo "Generated version: ${VERSION}"
 
       - name: Prepare release files
         run: |
