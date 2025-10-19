@@ -10,10 +10,8 @@ from PySide6.QtWidgets import (
     QLabel, 
     QHBoxLayout,
     QSpinBox,
+    QCheckBox,
     )
-
-
-
 
 
 def settings_dialog(self):
@@ -29,7 +27,20 @@ def settings_dialog(self):
 
         def close_settings():
             dialog.reject()
-        
+
+        checkbox_container = QWidget()
+        checkbox_layout = QHBoxLayout()
+
+        # ignore updates checkbox
+        checkbox = QCheckBox()
+        checkbox_container.setLayout(checkbox_layout)
+        checkbox_layout.addWidget(QLabel("Ignore Updates: "))
+        checkbox_layout.addStretch()
+        checkbox.setChecked(state.ignore_updates)
+        checkbox.toggled.connect(lambda checked: setattr(state, 'ignore_updates', checked))
+        checkbox_layout.addWidget(checkbox)
+        dialog.layout().addWidget(checkbox_container)
+
         ##################
         # THREAD SETTING #
         ##################

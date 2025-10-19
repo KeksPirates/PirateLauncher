@@ -10,6 +10,7 @@ class AppState:
     post_author: List[str]
     downloads: List[str]
     version: str
+    ignore_updates: bool = False
     debug: bool = False
     tracker: str = "rutracker"
     api_url: str = "https://api.michijackson.xyz"
