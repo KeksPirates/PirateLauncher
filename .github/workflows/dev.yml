@@ -81,10 +81,10 @@ jobs:
         shell: pwsh
         run: |
           $json = @"
-      {
-        "version": "$env:VERSION"
-      }
-      "@
+          {
+            "version": "$env:VERSION"
+          }
+          "@
           $json | Out-File -Encoding utf8 build_info.json
 
       - name: Build executable with PyInstaller
