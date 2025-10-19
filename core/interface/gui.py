@@ -105,7 +105,6 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         self.qtablewidget = QTableWidget()
 
         self.qtablewidget.setColumnCount(2)
-        self.qtablewidget.setRowCount(100)
         self.qtablewidget.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
         self.qtablewidget.verticalHeader().setVisible(False)
         self.qtablewidget.setHorizontalHeaderLabels(["Post Title", "Author"])
