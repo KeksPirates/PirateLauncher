@@ -66,8 +66,12 @@ jobs:
           pip install -r requirements.txt
           pip install pyinstaller
 
+      - name: Inject commit hash into code
+        run: |
+          echo "version = '${GITHUB_SHA}'" > build_info.json
+
       - name: Build executable with PyInstaller
-        run: pyinstaller --onefile --windowed --name ${{ env.APP_NAME }} main.py
+        run: pyinstaller --onefile --windowed --add-data "build_info.json:." --name ${{ env.APP_NAME }} main.py
 
       - name: Make executable (Unix)
         if: runner.os != 'Windows'

@@ -28,6 +28,7 @@ import os
 import subprocess
 import time
 import sys
+import json
 from core.utils.config.settings import save_settings
 from core.utils.general.wrappers import run_thread
 from core.utils.data.state import state
@@ -53,12 +54,16 @@ def download_update(latest_version):
         raise FileNotFoundError(f"Executable not found")
     subprocess.Popen([filename], shell=True)
     time.sleep(0.5)
-    save_settings(version=latest_version)
     sys.exit(0)
 
 class MainWindow(QtWidgets.QMainWindow, QWidget):
     def __init__(self):
         super().__init__()
+
+        build_info_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "build_info.json")
+        with open(build_info_path, "r") as f:
+            build_info = json.load(f)
+            state.version = build_info.get("version", "dev")
 
         # Check for updates on Windows
         if state.ignore_updates is False:
