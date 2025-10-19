@@ -15,6 +15,8 @@ from PySide6.QtWidgets import (
     QProgressBar,
     QHeaderView,
     QMessageBox,
+    QTableWidget,
+    QTableWidgetItem,
     )
 from PySide6.QtGui import QIcon, QAction, QCloseEvent
 import darkdetect
@@ -56,7 +58,6 @@ def download_update(latest_version):
 class MainWindow(QtWidgets.QMainWindow, QWidget):
     def __init__(self):
         super().__init__()
-        searchresults = []
 
         # Check for updates on Windows
         if platform.system() == "Windows":
@@ -89,8 +90,6 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         self.searchbar.returnPressed.connect(lambda: run_thread(threading.Thread(target=return_pressed, args=(self,)))) # Triggers data function thread on enter
         
         self.dlbutton = QtWidgets.QPushButton("Download")
-        self.softwareList = QListWidget()
-        self.post_author_list = QListWidget()
         self.libraryList = QListWidget()
 
         self.emptyResults = QLabel("No Results")
@@ -103,14 +102,22 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         self.emptyLibrary = QLabel("No items in library.")
         self.emptyDownload = QLabel("No items in downloads.")
         self.progressbar = QProgressBar()
+        self.qtablewidget = QTableWidget()
+
+        self.qtablewidget.setColumnCount(2)
+        self.qtablewidget.setRowCount(100)
+        self.qtablewidget.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
+        self.qtablewidget.verticalHeader().setVisible(False)
+        self.qtablewidget.setHorizontalHeaderLabels(["Post Title", "Author"])
+        self.qtablewidget.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
+        header = self.qtablewidget.horizontalHeader()
+        header.setSectionResizeMode(1, QHeaderView.Fixed)
+        header.resizeSection(1, 500)
 
         container = QWidget()
         containerLayout = QVBoxLayout()
         containerLayout.addWidget(self.searchbar)
-        
-        containerLayout.addWidget(self.softwareList)
-        containerLayout.addWidget(self.post_author_list)
-        self.softwareList.addItems(searchresults)
+        containerLayout.addWidget(self.qtablewidget)
 
         class DownloadModel(QAbstractTableModel):
             def __init__(self):
@@ -154,7 +161,7 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         self.downloadList.setSelectionBehavior(QTableView.SelectRows)
 
         # download button triggers
-        self.dlbutton.clicked.connect(lambda: run_thread(threading.Thread(target=download_selected, args=(self.softwareList.currentItem(), state.posts, state.post_titles))))
+        self.dlbutton.clicked.connect(lambda: run_thread(threading.Thread(target=download_selected, args=(self.qtablewidget.currentItem(), state.posts, state.post_titles))))
 
         container.setLayout(containerLayout)
         self.setCentralWidget(container)
@@ -163,11 +170,10 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         self.tabs = QTabWidget()
 
         self.horizontal_layout = QHBoxLayout()
-        self.horizontal_layout.addWidget(self.softwareList, stretch=3)
         self.horizontal_layout.addWidget(self.emptyResults, stretch=3)
-        self.horizontal_layout.addWidget(self.post_author_list)
+        self.horizontal_layout.addWidget(self.qtablewidget)
         
-        self.tab1 = create_tab("Search", self.searchbar, self.softwareList, self.tabs, self.dlbutton, self.horizontal_layout)
+        self.tab1 = create_tab("Search", self.searchbar, self.qtablewidget, self.tabs, self.dlbutton, self.horizontal_layout)
         self.tab2 = create_tab("Library", self.emptyLibrary, self.libraryList, self.tabs, None, None)
         self.tab3 = create_tab("Downloads", self.emptyDownload, self.downloadList, self.tabs, None, None)
 
@@ -223,8 +229,8 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
 
     def show_empty_results(self, show: bool):
         if show:
-            self.softwareList.hide()
+            self.qtablewidget.hide()
             self.emptyResults.show()
         else:
             self.emptyResults.hide()
-            self.softwareList.show()
+            self.qtablewidget.show()
