@@ -68,13 +68,15 @@ jobs:
 
       - name: Generate version
         id: version
+        shell: bash
         run: |
           COMMIT_SHA=${{ github.sha }}
           SHORT_SHA=${COMMIT_SHA:0:7}
           VERSION="${SHORT_SHA}-dev"
-          echo "version=${VERSION}" >> $GITHUB_OUTPUT
-          echo "short_sha=${SHORT_SHA}" >> $GITHUB_OUTPUT
-          echo "Generated version: ${VERSION}"
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "short_sha=$SHORT_SHA" >> $GITHUB_OUTPUT
+          echo "Generated version: $VERSION"
 
       - name: Inject commit hash into code (Windows)
         if: runner.os == 'Windows'
