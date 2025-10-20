@@ -35,6 +35,8 @@ jobs:
             asset_name: SoftwareManager-dev-macos
 
     runs-on: ${{ matrix.os }}
+    outputs:
+      version: ${{ steps.version.outputs.version }}
 
     steps:
       - name: Checkout code
@@ -83,10 +85,10 @@ jobs:
         shell: pwsh
         run: |
           $json = @"
-          {
-            "version": "$env:VERSION"
-          }
-          "@
+{
+  "version": "$env:VERSION"
+}
+"@
           $json | Out-File -Encoding utf8 build_info.json
 
       - name: Build executable with PyInstaller (Windows)
@@ -122,36 +124,25 @@ jobs:
     if: success()
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Download all artifacts
-        uses: actions/download-artifact@v4
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
         with:
           path: artifacts
-
-      - name: Display downloaded artifacts
-        run: |
-          echo "Downloaded artifacts:"
-          find artifacts -type f
-          ls -la artifacts/
 
       - name: Prepare release files
         run: |
           mkdir -p release
-          cp artifacts/ubuntu-latest-build/SoftwareManager-dev-linux release/SoftwareManager-dev-linux
-          cp artifacts/windows-latest-build/SoftwareManager-dev-windows.exe release/SoftwareManager-dev-windows.exe
-          cp artifacts/macos-latest-build/SoftwareManager-dev-macos release/SoftwareManager-dev-macos
+          cp artifacts/ubuntu-latest-build/SoftwareManager-dev-linux release/
+          cp artifacts/windows-latest-build/SoftwareManager-dev-windows.exe release/
+          cp artifacts/macos-latest-build/SoftwareManager-dev-macos release/
           chmod +x release/SoftwareManager-dev-linux release/SoftwareManager-dev-macos
           ls -la release/
 
       - name: Create Release (Public)
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ steps.version.outputs.version }}
-          name: ${{ steps.version.outputs.version }}
-          draft: false
-          prerelease: false
+          tag_name: ${{ needs.build.outputs.version }}
+          name: ${{ needs.build.outputs.version }}
           files: |
             release/SoftwareManager-dev-linux
             release/SoftwareManager-dev-windows.exe
