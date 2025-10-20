@@ -43,7 +43,7 @@ print(os.path.abspath(__file__))
 def download_update(latest_version):
     old_filename = f"SoftwareManager-dev-{state.version.replace('-dev', '')}-windows.exe"
     new_filename = f"SoftwareManager-dev-{latest_version.replace('-dev', '')}-windows.exe"
-    url = f"https://github.com/KeksPirates/SoftwareManager/releases/latest/download/SoftwareManager-dev-{latest_version}-windows.exe"
+    url = f"https://github.com/KeksPirates/SoftwareManager/releases/latest/download/SoftwareManager-dev-{latest_version.replace('-dev', '')}-windows.exe"
 
     print("Downloading update...")
     if os.path.exists(old_filename):
