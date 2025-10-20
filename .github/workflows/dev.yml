@@ -87,8 +87,13 @@ jobs:
           "@
           $json | Out-File -Encoding utf8 build_info.json
 
-      - name: Build executable with PyInstaller
+      - name: Build executable with PyInstaller (Windows)
+        if: runner.os == 'Windows'
         run: pyinstaller --onefile --windowed --add-data "build_info.json:." --name ${{ env.APP_NAME }} main.py
+
+      - name: Build executable with PyInstaller (Unix)
+        if: runner.os != 'Windows'
+        run: pyinstaller --onefile --windowed --name ${{ env.APP_NAME }} main.py
 
       - name: Make executable (Unix)
         if: runner.os != 'Windows'
