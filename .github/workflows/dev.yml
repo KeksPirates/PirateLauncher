@@ -143,7 +143,6 @@ jobs:
         with:
           tag_name: ${{ needs.build.outputs.version }}
           name: ${{ needs.build.outputs.version }}
-          prerelease:  true
           files: |
             release/SoftwareManager-dev-${{ needs.build.outputs.short_sha }}-linux
             release/SoftwareManager-dev-${{ needs.build.outputs.short_sha }}-windows.exe
