@@ -38,19 +38,20 @@ from core.interface.utils.searchhelper import return_pressed
 from core.interface.dialogs.settings import settings_dialog
 from core.network.aria2_integration import dlprogress
 
-def download_update():
-    filename = "SoftwareManager-dev-windows.exe"
-    url = "https://github.com/KeksPirates/SoftwareManager/releases/latest/download/SoftwareManager-dev-windows.exe"
+def download_update(latest_version):
+    old_filename = f"SoftwareManager-dev-{state.version}-windows.exe"
+    new_filename = f"SoftwareManager-dev-{latest_version}-windows.exe"
+    url = f"https://github.com/KeksPirates/SoftwareManager/releases/latest/download/SoftwareManager-dev-{latest_version}-windows.exe"
 
     print("Downloading update...")
-    if os.path.exists(filename):
-        os.remove(filename)
+    if os.path.exists(old_filename):
+        os.remove(old_filename)
     response = r.get(url, allow_redirects=True)
-    with open(filename, "wb") as f:
+    with open(new_filename, "wb") as f:
         f.write(response.content)
-    if not os.path.exists(filename):
+    if not os.path.exists(new_filename):
         raise FileNotFoundError(f"Executable not found")
-    subprocess.Popen([filename], shell=True)
+    subprocess.Popen([new_filename], shell=True)
     time.sleep(0.5)
     sys.exit(0)
 
