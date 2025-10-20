@@ -41,7 +41,7 @@ from core.network.aria2_integration import dlprogress
 print(os.path.abspath(__file__))
 
 def download_update(latest_version):
-    old_filename = f"SoftwareManager-dev-{latest_version.replace('-dev', '')}-windows.exe"
+    old_filename = f"SoftwareManager-dev-{state.version.replace('-dev', '')}-windows.exe"
     new_filename = f"SoftwareManager-dev-{latest_version.replace('-dev', '')}-windows.exe"
     url = f"https://github.com/KeksPirates/SoftwareManager/releases/latest/download/SoftwareManager-dev-{latest_version}-windows.exe"
 
