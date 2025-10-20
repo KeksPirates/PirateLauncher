@@ -130,10 +130,11 @@ jobs:
       - name: Prepare release files
         run: |
           mkdir -p release
-          cp artifacts/ubuntu-latest-build/SoftwareManager-dev-linux release/
-          cp artifacts/windows-latest-build/SoftwareManager-dev-windows.exe release/
-          cp artifacts/macos-latest-build/SoftwareManager-dev-macos release/
-          chmod +x release/SoftwareManager-dev-linux release/SoftwareManager-dev-macos
+          SHORT_SHA="${{ steps.version.outputs.short_sha }}"
+          cp artifacts/ubuntu-latest-build/SoftwareManager-dev-*-linux release/SoftwareManager-dev-${SHORT_SHA}-linux
+          cp artifacts/windows-latest-build/SoftwareManager-dev-*-windows.exe release/SoftwareManager-dev-${SHORT_SHA}-windows.exe
+          cp artifacts/macos-latest-build/SoftwareManager-dev-*-macos release/SoftwareManager-dev-${SHORT_SHA}-macos
+          chmod +x release/SoftwareManager-dev-*-linux release/SoftwareManager-dev-*-macos
           ls -la release/
 
       - name: Create Release (Public)

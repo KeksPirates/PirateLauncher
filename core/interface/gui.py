@@ -38,6 +38,8 @@ from core.interface.utils.searchhelper import return_pressed
 from core.interface.dialogs.settings import settings_dialog
 from core.network.aria2_integration import dlprogress
 
+print(os.path.abspath(__file__))
+
 def download_update(latest_version):
     old_filename = f"SoftwareManager-dev-{state.version}-windows.exe"
     new_filename = f"SoftwareManager-dev-{latest_version}-windows.exe"
