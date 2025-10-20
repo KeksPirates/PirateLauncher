@@ -37,6 +37,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     outputs:
       version: ${{ steps.version.outputs.version }}
+      short_sha: ${{ steps.version.outputs.short_sha }}
 
     steps:
       - name: Checkout code
@@ -130,7 +131,7 @@ jobs:
       - name: Prepare release files
         run: |
           mkdir -p release
-          SHORT_SHA="${{ steps.version.outputs.short_sha }}"
+          SHORT_SHA="${{ needs.build.outputs.short_sha }}"
           cp artifacts/ubuntu-latest-build/SoftwareManager-dev-*-linux release/SoftwareManager-dev-${SHORT_SHA}-linux
           cp artifacts/windows-latest-build/SoftwareManager-dev-*-windows.exe release/SoftwareManager-dev-${SHORT_SHA}-windows.exe
           cp artifacts/macos-latest-build/SoftwareManager-dev-*-macos release/SoftwareManager-dev-${SHORT_SHA}-macos
@@ -144,8 +145,8 @@ jobs:
           name: ${{ needs.build.outputs.version }}
           prerelease:  true
           files: |
-            release/SoftwareManager-dev-${{ steps.version.outputs.short_sha }}-linux
-            release/SoftwareManager-dev-${{ steps.version.outputs.short_sha }}-windows.exe
-            release/SoftwareManager-dev-${{ steps.version.outputs.short_sha }}-macos
+            release/SoftwareManager-dev-${{ needs.build.outputs.short_sha }}-linux
+            release/SoftwareManager-dev-${{ needs.build.outputs.short_sha }}-windows.exe
+            release/SoftwareManager-dev-${{ needs.build.outputs.short_sha }}-macos
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
