@@ -1,22 +1,27 @@
 from core.utils.data.state import state
+from core.utils.general.shutdown import kill_aria2server
 from .config import create_config
 
 def restart_aria2c():
     import main # had to do this because of circle import :(
     import signal
     import atexit
-    main.kill_aria2server()
+    kill_aria2server()
     state.aria2process.wait()
     state.aria2process = main.run_aria2server()
     signal.signal(signal.SIGINT, main.keyboardinterrupthandler)
-    atexit.unregister(main.kill_aria2server)
-    atexit.register(main.kill_aria2server)
+    atexit.unregister(kill_aria2server)
+    atexit.register(kill_aria2server)
 
-def save_settings(thread_count, close, apiurl, download_path, speed_limit):
-    state.aria2_threads = thread_count
-    state.api_url = apiurl
-    state.download_path = download_path
-    state.speed_limit = speed_limit
+def save_settings(thread_count=None, close=lambda: None, apiurl=None, download_path=None, speed_limit=None):
+    if thread_count is not None:
+        state.aria2_threads = thread_count
+    if apiurl is not None:
+        state.api_url = apiurl
+    if download_path is not None:
+        state.download_path = download_path
+    if speed_limit is not None:
+        state.speed_limit = speed_limit
     
     create_config()
     restart_aria2c()

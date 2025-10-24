@@ -4,6 +4,8 @@ from core.utils.data.state import state
 
 def scrape_rutracker(search_text):
     search = requests.get(f"{state.api_url}/search/{search_text}")
+    if state.debug:
+        print("Sent request to server")
     if search:
         try:
             return search.text

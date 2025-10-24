@@ -35,6 +35,9 @@ jobs:
             asset_name: SoftwareManager-dev-${{ github.sha }}-macos
 
     runs-on: ${{ matrix.os }}
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      short_sha: ${{ steps.version.outputs.short_sha }}
 
     steps:
       - name: Checkout code
@@ -66,7 +69,33 @@ jobs:
           pip install -r requirements.txt
           pip install pyinstaller
 
-      - name: Build executable with PyInstaller
+      - name: Generate version
+        id: version
+        shell: bash
+        run: |
+          COMMIT_SHA=${{ github.sha }}
+          SHORT_SHA=${COMMIT_SHA:0:7}
+          VERSION="${SHORT_SHA}-dev"
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "short_sha=$SHORT_SHA" >> $GITHUB_OUTPUT
+          echo "Generated version: $VERSION"
+
+      - name: Inject commit hash into code (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $json = '{
+            "version": "' + $env:VERSION + '"
+          }'
+          $json | Out-File -Encoding utf8 build_info.json
+
+      - name: Build executable with PyInstaller (Windows)
+        if: runner.os == 'Windows'
+        run: pyinstaller --onefile --windowed --add-data "build_info.json:." --name ${{ env.APP_NAME }} main.py
+
+      - name: Build executable with PyInstaller (Unix)
+        if: runner.os != 'Windows'
         run: pyinstaller --onefile --windowed --name ${{ env.APP_NAME }} main.py
 
       - name: Make executable (Unix)
@@ -94,50 +123,29 @@ jobs:
     if: success()
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Download all artifacts
-        uses: actions/download-artifact@v4
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
         with:
           path: artifacts
-
-      - name: Display downloaded artifacts
-        run: |
-          echo "Downloaded artifacts:"
-          find artifacts -type f
-          ls -la artifacts/
-
-      - name: Generate version
-        id: version
-        run: |
-          COMMIT_SHA=${{ github.sha }}
-          SHORT_SHA=${COMMIT_SHA:0:7}
-          VERSION="${SHORT_SHA}-dev"
-          echo "version=${VERSION}" >> $GITHUB_OUTPUT
-          echo "short_sha=${SHORT_SHA}" >> $GITHUB_OUTPUT
-          echo "Generated version: ${VERSION}"
 
       - name: Prepare release files
         run: |
           mkdir -p release
-          SHORT_SHA="${{ steps.version.outputs.short_sha }}"
+          SHORT_SHA="${{ needs.build.outputs.short_sha }}"
           cp artifacts/ubuntu-latest-build/SoftwareManager-dev-*-linux release/SoftwareManager-dev-${SHORT_SHA}-linux
           cp artifacts/windows-latest-build/SoftwareManager-dev-*-windows.exe release/SoftwareManager-dev-${SHORT_SHA}-windows.exe
           cp artifacts/macos-latest-build/SoftwareManager-dev-*-macos release/SoftwareManager-dev-${SHORT_SHA}-macos
           chmod +x release/SoftwareManager-dev-*-linux release/SoftwareManager-dev-*-macos
           ls -la release/
 
-      - name: Create Prerelease (Public)
+      - name: Create Release (Public)
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ steps.version.outputs.version }}
-          name: ${{ steps.version.outputs.version }}
-          draft: false
-          prerelease: true
+          tag_name: ${{ needs.build.outputs.version }}
+          name: ${{ needs.build.outputs.version }}
           files: |
-            release/SoftwareManager-dev-${{ steps.version.outputs.short_sha }}-linux
-            release/SoftwareManager-dev-${{ steps.version.outputs.short_sha }}-windows.exe
-            release/SoftwareManager-dev-${{ steps.version.outputs.short_sha }}-macos
+            release/SoftwareManager-dev-${{ needs.build.outputs.short_sha }}-linux
+            release/SoftwareManager-dev-${{ needs.build.outputs.short_sha }}-windows.exe
+            release/SoftwareManager-dev-${{ needs.build.outputs.short_sha }}-macos
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

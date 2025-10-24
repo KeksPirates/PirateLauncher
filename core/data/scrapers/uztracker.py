@@ -17,62 +17,56 @@ async def init_uztracker():
             up = True
         else:
             up = False
-            print(f"Uztracker seems down, status code: {response.status_code}")
+            if state.debug: 
+                print(f"Uztracker seems down, status code: {response.status_code}")
     except requests.exceptions.RequestException as e:
-        print(f"\nRequest Exception on {url_uztracker}:")
-        print(e)
-        print("\nIs the Site down?")
+        if state.debug:
+            print(f"\nRequest Exception on {url_uztracker}:")
+            print(e)
+            print("\nIs the Site down?")
         up = False
 
 asyncio.run(init_uztracker())
 
-async def scrape_uztracker(search, max_results=450):
+def scrape_uztracker(search):
     if up:
+        search_url = url_uztracker + search
+        if state.debug:
+            print(search_url)
         result = False
         global results
         global resulttitles
-        results = [] 
+        results = []
         resulttitles = []
 
-        per_page = 50
+        try:
+            resultCount = 0
+            response = requests.get(search_url)
+            response.raise_for_status()
+            soup = BeautifulSoup(response.text, 'html.parser')
+            links = soup.find_all('a', class_="genmed tLink", href=lambda x: x and x.startswith('./viewtopic'))
+            for link in links:
+                if link.b:
+                    resultCount += 1
+                    results.append(link['href'])
+                    resulttitles.append(link.b.text)
+                    result = True
 
-        for start in range(0, max_results, per_page):
-            search_url = url_uztracker + search + f"&start={start}"
-            if state.debug:
-                print(search_url)
+            if result:
+                return resulttitles, results
 
-            async with aiohttp.ClientSession() as session:
-                try:
-                    async with session.get(search_url) as response:
-                        response.raise_for_status()
-                        text = await response.text()
-                        soup = BeautifulSoup(text, 'html.parser')
-                        links = soup.find_all('a', class_="genmed tLink", href=lambda x: x and x.startswith('./viewtopic'))
-                        resultCount = 0
-                        for link in links:
-                            if link.b:
-                                resultCount += 1
-                                results.append(link['href'])
-                                resulttitles.append(link.b.text)
-                                result = True
-                        
-                        if resultCount == 0:
-                            # add popup in gui for no result
-                            break
-                        
-                except aiohttp.ClientError as e:
-                    if result:
-                        print(f"Failed to fetch {search_url}: {e}")
-                    return None
+            if not result:
+                # add popup in gui for no result
+                return None
 
-        else:
+        except requests.RequestException as e:
+            if result and state.debug:
+                print(f"Failed to fetch {search_url}: {e}")
+            return None
+    else:
+        if state.debug:
             print("Error: Uztracker down")
-            return None, None
-
-        if not results:
-            return None, None
-
-        return resulttitles, results
+        return None, None
 
 def get_post_title(post_url):
     if up:
@@ -85,7 +79,8 @@ def get_post_title(post_url):
             if state.debug:
                 print("Program not found")
     else:
-        print("Error: Uztracker down")
+        if state.debug:
+            print("Error: Uztracker down")
         return None   
 
     

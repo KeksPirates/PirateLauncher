@@ -10,10 +10,8 @@ from PySide6.QtWidgets import (
     QLabel, 
     QHBoxLayout,
     QSpinBox,
+    QCheckBox,
     )
-
-
-
 
 
 def settings_dialog(self):
@@ -29,7 +27,20 @@ def settings_dialog(self):
 
         def close_settings():
             dialog.reject()
-        
+
+        checkbox_container = QWidget()
+        checkbox_layout = QHBoxLayout()
+
+        # ignore updates checkbox
+        checkbox = QCheckBox()
+        checkbox_container.setLayout(checkbox_layout)
+        checkbox_layout.addWidget(QLabel("Ignore Updates: "))
+        checkbox_layout.addStretch()
+        checkbox.setChecked(state.ignore_updates)
+        checkbox.toggled.connect(lambda checked: setattr(state, 'ignore_updates', checked))
+        checkbox_layout.addWidget(checkbox)
+        dialog.layout().addWidget(checkbox_container)
+
         ##################
         # THREAD SETTING #
         ##################
@@ -114,7 +125,6 @@ def settings_dialog(self):
         save_btn.clicked.connect(lambda: save_settings(thread_box.value(), close_settings, api_url.text(), download_path.text(), speed_limit.value()))
     
         cancel_btn.clicked.connect(dialog.reject)
-        print(thread_box.value())
         layout.addWidget(cancel_btn)
         layout.addWidget(save_btn)
 

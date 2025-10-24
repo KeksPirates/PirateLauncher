@@ -2,7 +2,7 @@ from core.interface.gui import MainWindow
 from core.utils.data.state import state
 from core.network.aria2_integration import aria2server
 from core.network.aria2_integration import send_notification
-from core.utils.general.shutdown import kill_aria2server, closehelper, shutdown_event
+from core.utils.general.shutdown import closehelper, shutdown_event
 from core.utils.general.wrappers import run_thread
 from core.utils.config.config import read_config
 from PySide6 import QtWidgets
@@ -10,11 +10,13 @@ import qdarktheme
 import darkdetect
 import threading
 import signal
+import argparse
 import sys
 
-# Debug Output
-state.debug = True
 
+parser = argparse.ArgumentParser()
+parser.add_argument("--debug", action="store_true") 
+args = parser.parse_args()
 
 def run_gui():
     app = QtWidgets.QApplication([])
@@ -35,6 +37,7 @@ def keyboardinterrupthandler(signum, frame):
 
 if __name__ == "__main__":
     read_config()
+    state.debug = args.debug # override of read_config
     if state.debug:
         print("Starting Aria2 Server")
     state.aria2process = run_aria2server()
