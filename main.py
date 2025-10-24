@@ -10,7 +10,6 @@ import qdarktheme
 import darkdetect
 import threading
 import signal
-import atexit
 import sys
 
 # Debug Output
