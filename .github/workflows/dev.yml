@@ -94,7 +94,7 @@ jobs:
         if: runner.os == 'Windows'
         run: |
           mkdir -p deps
-          wget https://github.com/aria2/aria2/releases/download/release-1.37.0/aria2-1.37.0-win-64bit-build1.zip
+          C:\msys64\usr\bin\wget.exe https://github.com/aria2/aria2/releases/download/release-1.37.0/aria2-1.37.0-win-64bit-build1.zip
           unzip -j aria2-1.37.0-win-64bit-build1.zip aria2-1.37.0-win-64bit-build1/aria2c.exe -d deps/
 
       - name: Build executable with PyInstaller (Windows)
