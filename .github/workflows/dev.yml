@@ -99,7 +99,7 @@ jobs:
 
       - name: Build executable with PyInstaller (Windows)
         if: runner.os == 'Windows'
-        run: pyinstaller --onefile --windowed --add-data "build_info.json:." --add-data "deps/aria2c.exe" --name ${{ env.APP_NAME }} main.py
+        run: pyinstaller --onefile --windowed --add-data "build_info.json:." --add-data "deps/aria2c.exe:." --name ${{ env.APP_NAME }} main.py
 
       - name: Build executable with PyInstaller (Unix)
         if: runner.os != 'Windows'
