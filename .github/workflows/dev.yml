@@ -90,9 +90,16 @@ jobs:
           }'
           $json | Out-File -Encoding utf8 build_info.json
 
+      - name: Download aria2c (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          mkdir -p deps
+          wget https://github.com/aria2/aria2/releases/download/release-1.37.0/aria2-1.37.0-win-64bit-build1.zip
+          unzip -j aria2-1.37.0-win-64bit-build1.zip aria2-1.37.0-win-64bit-build1/aria2c.exe -d deps/
+
       - name: Build executable with PyInstaller (Windows)
         if: runner.os == 'Windows'
-        run: pyinstaller --onefile --windowed --add-data "build_info.json:." --name ${{ env.APP_NAME }} main.py
+        run: pyinstaller --onefile --windowed --add-data "build_info.json:." --add-data "deps/aria2c.exe" --name ${{ env.APP_NAME }} main.py
 
       - name: Build executable with PyInstaller (Unix)
         if: runner.os != 'Windows'

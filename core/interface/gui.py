@@ -3,14 +3,14 @@ from PySide6 import QtCore
 from PySide6.QtCore import Qt, QTimer, QModelIndex, QAbstractTableModel
 from PySide6.QtWidgets import (
     QLineEdit,
-    QTableView, 
-    QWidget, 
-    QVBoxLayout, 
-    QListWidget, 
-    QToolBar, 
-    QLabel, 
+    QTableView,
+    QWidget,
+    QVBoxLayout,
+    QListWidget,
+    QToolBar,
+    QLabel,
     QHBoxLayout,
-    QComboBox, 
+    QComboBox,
     QTabWidget,
     QProgressBar,
     QHeaderView,
@@ -38,7 +38,6 @@ from core.interface.utils.searchhelper import return_pressed
 from core.interface.dialogs.settings import settings_dialog
 from core.network.aria2_integration import dlprogress
 
-print(os.path.abspath(__file__))
 
 def download_update(latest_version):
     old_filename = f"SoftwareManager-dev-{state.version.replace('-dev', '')}-windows.exe"
@@ -52,10 +51,11 @@ def download_update(latest_version):
     with open(new_filename, "wb") as f:
         f.write(response.content)
     if not os.path.exists(new_filename):
-        raise FileNotFoundError(f"Executable not found")
+        raise FileNotFoundError("Executable not found")
     subprocess.Popen([new_filename], shell=True)
     time.sleep(0.5)
     sys.exit(0)
+
 
 class MainWindow(QtWidgets.QMainWindow, QWidget):
     def __init__(self):
@@ -77,7 +77,7 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
                     msg = QMessageBox()
                     msg.setIcon(QMessageBox.Information)
                     msg.setWindowTitle("Update Available")
-                    msg.setText(f"A new version is available.")
+                    msg.setText("A new version is available.")
                     msg.setInformativeText("Please visit the GitHub releases page to download the latest version.")
                     msg.setStandardButtons(QMessageBox.Ok | QMessageBox.Ignore)
 
@@ -97,14 +97,13 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         self.searchbar.setClearButtonEnabled(True)
         self.searchbar.setMinimumHeight(30)
         self.searchbar.returnPressed.connect(lambda: run_thread(threading.Thread(target=return_pressed, args=(self,)))) # Triggers data function thread on enter
-        
+
         self.dlbutton = QtWidgets.QPushButton("Download")
         self.libraryList = QListWidget()
 
         self.emptyResults = QLabel("No Results")
         self.emptyResults.setAlignment(Qt.AlignCenter)
         self.emptyResults.hide()
-
 
         self.download_model = None
         self.downloadList = QTableView()
@@ -134,13 +133,13 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
             def __init__(self):
                 super().__init__()
                 self.headers = ["Name", "Status", "Progress", "Speed", "Size", "Total Size"]
-            
+
             def rowCount(self, parent=QModelIndex()):
                 return len(state.downloads)
 
             def columnCount(self, parent=QModelIndex()):
                 return len(self.headers)
-            
+
             def headerData(self, section, orientation, role=Qt.DisplayRole):
                 if role == Qt.DisplayRole and orientation == Qt.Horizontal:
                     return self.headers[section]
@@ -150,7 +149,7 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
                 if role == Qt.DisplayRole:
                     download = state.downloads[index.row()]
                     col = index.column()
-                    
+
                     if col == 0:
                         return download.name
                     elif col == 1:
@@ -185,12 +184,12 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         self.horizontal_layout = QHBoxLayout()
         self.horizontal_layout.addWidget(self.emptyResults, stretch=3)
         self.horizontal_layout.addWidget(self.qtablewidget)
-        
+
         self.tab1 = create_tab("Search", self.searchbar, self.qtablewidget, self.tabs, self.dlbutton, self.horizontal_layout)
         self.tab2 = create_tab("Library", self.emptyLibrary, self.libraryList, self.tabs, None, None)
         self.tab3 = create_tab("Downloads", self.emptyDownload, self.downloadList, self.tabs, None, None)
-        
-        
+
+
 
         containerLayout.addWidget(self.tabs)
 
@@ -199,7 +198,7 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         toolbar = QToolBar("Main Toolbar")
         self.addToolBar(toolbar)
         toolbar.setLayoutDirection(Qt.RightToLeft)
-        
+
         self.tracker_list = QComboBox()
         self.tracker_list.addItems(["rutracker", "uztracker", "m0nkrus"])
         self.tracker_list.activated.connect(self.set_tracker)
@@ -217,7 +216,7 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
 
         self.progressbar.setValue(0)
         containerLayout.addWidget(self.progressbar)
-        
+
         self.progress_timer = QTimer()
         self.progress_timer.timeout.connect(lambda: run_thread(threading.Thread(target=self.update_progress)))
         self.progress_timer.start(1000)
