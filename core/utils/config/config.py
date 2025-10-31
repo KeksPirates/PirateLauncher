@@ -7,7 +7,7 @@ def create_config():
     config = configparser.ConfigParser()
 
     config["General"] = {"debug": True, "api_url": f"{state.api_url}", "aria2_threads": f"{state.aria2_threads}", "download_path": f"{state.download_path}", f"speed_limit": f"{state.speed_limit}", 
-                         "ignore_updates": f"{state.ignore_updates}"}
+                         "ignore_updates": f"{state.ignore_updates}", "image_path": f"{state.image_path}"}
 
     if platform.system() == "Windows":
             config_dir = os.environ.get("APPDATA", os.path.expanduser("~\\AppData\\Roaming"))
@@ -37,9 +37,17 @@ def read_config():
 
     config.read(config_file)
 
-    state.debug = config.getboolean("General", "debug")
-    state.api_url = config.get("General", "api_url")
-    state.aria2_threads = config.getint("General", "aria2_threads")
-    state.download_path = config.get("General", "download_path")
-    state.speed_limit = config.getint("General", "speed_limit")
-    state.ignore_updates = config.getboolean("General", "ignore_updates")
+    if state.debug is None:
+        state.debug = config.getboolean("General", "debug")
+    if state.api_url is None:
+        state.api_url = config.get("General", "api_url")
+    if state.aria2_threads is None:
+        state.aria2_threads = config.getint("General", "aria2_threads")
+    if state.download_path is None:
+        state.download_path = config.get("General", "download_path")
+    if state.speed_limit is None:
+        state.speed_limit = config.getint("General", "speed_limit")
+    if state.ignore_updates is None:
+        state.ignore_updates = config.getboolean("General", "ignore_updates")
+    if state.image_path is None:
+        state.image_path = config.get("General", "image_path")

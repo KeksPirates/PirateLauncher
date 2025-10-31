@@ -1,6 +1,6 @@
 from PySide6 import QtWidgets
 from PySide6 import QtCore
-from PySide6.QtCore import Qt, QTimer, QModelIndex, QAbstractTableModel
+from PySide6.QtCore import Qt, QTimer, QModelIndex, QAbstractTableModel, Signal
 from PySide6.QtWidgets import (
     QLineEdit,
     QTableView,
@@ -18,7 +18,7 @@ from PySide6.QtWidgets import (
     QTableWidget,
     )
 
-from PySide6.QtGui import QIcon, QAction, QCloseEvent
+from PySide6.QtGui import QIcon, QAction, QCloseEvent, QImage, QPixmap
 import darkdetect
 import threading
 import platform
@@ -189,12 +189,25 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         self.tab2 = create_tab("Library", self.emptyLibrary, self.libraryList, self.tabs, None, None)
         self.tab3 = create_tab("Downloads", self.emptyDownload, self.downloadList, self.tabs, None, None)
 
+        self.image = QImage(state.image_path)
+        self.pixmap = QPixmap.fromImage(self.image)
+        self.overlay_label = QLabel(self)
+        self.overlay_label.setPixmap(self.pixmap)
+        self.overlay_label.adjustSize()
+        self.overlay_label.raise_()
 
+        offset_x = -1350
+        offset_y = -550
+        x = self.width() - self.overlay_label.width() - offset_x
+        y = self.height() - self.overlay_label.height() - offset_y
+        self.overlay_label.move(x, y)
+
+        # temporarily disabled
+        # state.image_changed.connect(self.update_image_overlay)
 
         containerLayout.addWidget(self.tabs)
 
         containerLayout.setAlignment(Qt.AlignmentFlag.AlignBottom)
-
         toolbar = QToolBar("Main Toolbar")
         self.addToolBar(toolbar)
         toolbar.setLayoutDirection(Qt.RightToLeft)
@@ -205,7 +218,6 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
 
         if darkdetect.isDark():
             settings_action = QAction(QIcon("core/interface/assets/settings_white.png"), "Settings", self)
-        else:
             settings_action = QAction(QIcon("core/interface/assets/settings_black.png"), "Settings", self)
 
         settings_action.triggered.connect(lambda: settings_dialog(self))
@@ -224,6 +236,13 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         self.download_timer = QTimer()
         self.download_timer.timeout.connect(lambda: run_thread(threading.Thread(target=self.download_list_update)))
         self.download_timer.start(500)
+
+    def update_image_overlay(self, new_image_path):
+        self.image = QImage(new_image_path)
+        self.pixmap = QPixmap.fromImage(self.image)
+
+        self.overlay_label.setPixmap(self.pixmap)
+        self.overlay_label.adjustSize()
 
     def download_list_update(self):
         if self.download_model:

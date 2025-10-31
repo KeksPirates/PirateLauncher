@@ -13,7 +13,7 @@ def restart_aria2c():
     atexit.unregister(kill_aria2server)
     atexit.register(kill_aria2server)
 
-def save_settings(thread_count=None, close=lambda: None, apiurl=None, download_path=None, speed_limit=None):
+def save_settings(thread_count=None, close=lambda: None, apiurl=None, download_path=None, speed_limit=None, image_path=None):
     if thread_count is not None:
         state.aria2_threads = thread_count
     if apiurl is not None:
@@ -22,6 +22,8 @@ def save_settings(thread_count=None, close=lambda: None, apiurl=None, download_p
         state.download_path = download_path
     if speed_limit is not None:
         state.speed_limit = speed_limit
+    if image_path is not None:
+        state.image_path = image_path
     
     create_config()
     restart_aria2c()

@@ -1,6 +1,5 @@
 import requests
 import asyncio
-import aiohttp
 from bs4 import BeautifulSoup
 from core.utils.data.state import state
 

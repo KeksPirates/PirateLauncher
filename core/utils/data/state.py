@@ -1,24 +1,38 @@
-from dataclasses import dataclass
+from PySide6.QtCore import QObject, Signal
 from typing import Optional, Any, List, Dict
 from pathlib import Path
 
-@dataclass
-class AppState:
-    posts: List[Dict[str, Any]]
-    post_titles: List[str]
-    post_urls: List[str]
-    post_author: List[str]
-    downloads: List[str]
-    version: str
-    ignore_updates: bool = False
-    debug: bool = False
-    tracker: str = "rutracker"
-    api_url: str = "https://api.michijackson.xyz"
-    download_path:  str = str(Path.home() / "Downloads")
-    speed_limit: int = 0
-    aria2process: Optional[Any] = None
-    aria2: Any = None
-    aria2p: Any = None
-    aria2_threads: int = 4
+class AppState(QObject):
+    image_changed = Signal(str)
 
-state = AppState(posts=[], post_titles=[], post_urls=[], post_author=[], downloads=[], download_path="", version="")
+    def __init__(self):
+        super().__init__()
+        self.posts: List[Dict[str, Any]] = []
+        self.post_titles: List[str] = []
+        self.post_urls: List[str] = []
+        self.post_author: List[str] = []
+        self.downloads: List[str] = []
+        self.version: str
+        self._image_path: str = ""
+        self.ignore_updates: bool = False
+        self.debug: bool = False
+        self.tracker: str = "rutracker"
+        self.api_url: str = "https://api.michijackson.xyz"
+        self.download_path: str = str(Path.home() / "Downloads")
+        self.speed_limit: int = 0
+        self.aria2process: Optional[Any] = None
+        self.aria2: Any = None
+        self.aria2p: Any = None
+        self.aria2_threads: int = 4
+
+    @property
+    def image_path(self) -> str:
+        return self._image_path
+
+    @image_path.setter
+    def image_path(self, new_path: str):
+        if new_path != self._image_path:
+            self._image_path = new_path
+            self.image_changed.emit(new_path)
+
+state = AppState()

@@ -115,6 +115,21 @@ def settings_dialog(self):
         dialog.layout().addWidget(speed_limit_container)
 
         ###############
+        # IMAGE PATH #
+        ###############
+
+        image_path_container = QWidget()
+        image_path_layout = QHBoxLayout()
+
+        image_path = QLineEdit()
+        image_path_layout.addWidget(QLabel("Image Path (requires restart):"))
+        image_path_layout.addWidget(image_path)
+        image_path_container.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
+        image_path_container.setLayout(image_path_layout)
+        image_path.setText(state.image_path)
+        dialog.layout().addWidget(image_path_container)
+
+        ###############
         # SAVE/CANCEL #
         ###############
 
@@ -122,8 +137,8 @@ def settings_dialog(self):
 
         save_btn = QPushButton("Save")
         cancel_btn = QPushButton("Cancel")
-        save_btn.clicked.connect(lambda: save_settings(thread_box.value(), close_settings, api_url.text(), download_path.text(), speed_limit.value()))
-    
+        save_btn.clicked.connect(lambda: save_settings(thread_box.value(), close_settings, api_url.text(), download_path.text(), speed_limit.value(), image_path.text()))
+
         cancel_btn.clicked.connect(dialog.reject)
         layout.addWidget(cancel_btn)
         layout.addWidget(save_btn)
