@@ -37,17 +37,17 @@ def read_config():
 
     config.read(config_file)
 
-    if state.debug is None:
+    if state.debug is not None:
         state.debug = config.getboolean("General", "debug")
-    if state.api_url is None:
+    if state.api_url is not None:
         state.api_url = config.get("General", "api_url")
-    if state.aria2_threads is None:
+    if state.aria2_threads is not None:
         state.aria2_threads = config.getint("General", "aria2_threads")
-    if state.download_path is None:
+    if state.download_path is not None:
         state.download_path = config.get("General", "download_path")
-    if state.speed_limit is None:
+    if state.speed_limit is not None:
         state.speed_limit = config.getint("General", "speed_limit")
-    if state.ignore_updates is None:
+    if state.ignore_updates is not None:
         state.ignore_updates = config.getboolean("General", "ignore_updates")
-    if state.image_path is None:
+    if state.image_path is not None:
         state.image_path = config.get("General", "image_path")
