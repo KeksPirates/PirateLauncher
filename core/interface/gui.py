@@ -40,13 +40,10 @@ from core.network.aria2_integration import dlprogress
 
 
 def download_update(latest_version):
-    old_filename = f"SoftwareManager-dev-{state.version.replace('-dev', '')}-windows.exe"
     new_filename = f"SoftwareManager-dev-{latest_version.replace('-dev', '')}-windows.exe"
     url = f"https://github.com/KeksPirates/SoftwareManager/releases/latest/download/SoftwareManager-dev-{latest_version.replace('-dev', '')}-windows.exe"
 
     print("Downloading update...")
-    if os.path.exists(old_filename):
-        os.remove(old_filename)
     response = r.get(url, allow_redirects=True)
     with open(new_filename, "wb") as f:
         f.write(response.content)
@@ -54,6 +51,14 @@ def download_update(latest_version):
         raise FileNotFoundError("Executable not found")
     subprocess.Popen([new_filename], shell=True)
     time.sleep(0.5)
+
+    msg = QMessageBox()
+    msg.setIcon(QMessageBox.Information)
+    msg.setWindowTitle("New Version")
+    msg.setText("New version installed.")
+    msg.setInformativeText("Please remove the old exe.")
+    msg.setStandardButtons(QMessageBox.Ok)
+
     sys.exit(0)
 
 
@@ -78,7 +83,7 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
                     msg.setIcon(QMessageBox.Information)
                     msg.setWindowTitle("Update Available")
                     msg.setText("A new version is available.")
-                    msg.setInformativeText("Please visit the GitHub releases page to download the latest version.")
+                    msg.setInformativeText("Press Ok to download the update.")
                     msg.setStandardButtons(QMessageBox.Ok | QMessageBox.Ignore)
 
                     response = msg.exec_()
