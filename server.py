@@ -36,5 +36,9 @@ def search_empty():
     err = SearchResponse(success=False, query="", data=[], count=0)
     return jsonify(err.to_dict()), 400
 
+@app.route("/ping/")
+def upping():
+    return jsonify({"message": "pong"}), 200
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=port)
