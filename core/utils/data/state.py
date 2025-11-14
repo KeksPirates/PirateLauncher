@@ -12,7 +12,7 @@ class AppState(QObject):
         self.post_urls: List[str] = []
         self.post_author: List[str] = []
         self.downloads: List[str] = []
-        self.version: str
+        self.version: str = "dev"
         self._image_path: str = ""
         self.ignore_updates: bool = False
         self.debug: bool = False

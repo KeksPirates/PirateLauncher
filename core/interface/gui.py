@@ -76,19 +76,20 @@ class MainWindow(QtWidgets.QMainWindow, QWidget):
         if state.ignore_updates is False:
             if platform.system() == "Windows":
                 result = check_for_updates()
-                assets, latest_version = result
+                if result != (None, None):
+                    assets, latest_version = result
 
-                if assets:
-                    msg = QMessageBox()
-                    msg.setIcon(QMessageBox.Information)
-                    msg.setWindowTitle("Update Available")
-                    msg.setText("A new version is available.")
-                    msg.setInformativeText("Press Ok to download the update.")
-                    msg.setStandardButtons(QMessageBox.Ok | QMessageBox.Ignore)
+                    if assets:
+                        msg = QMessageBox()
+                        msg.setIcon(QMessageBox.Information)
+                        msg.setWindowTitle("Update Available")
+                        msg.setText("A new version is available.")
+                        msg.setInformativeText("Press Ok to download the update.")
+                        msg.setStandardButtons(QMessageBox.Ok | QMessageBox.Ignore)
 
-                    response = msg.exec_()
-                    if response == QMessageBox.Ok:
-                        download_update(latest_version)
+                        response = msg.exec_()
+                        if response == QMessageBox.Ok:
+                            download_update(latest_version)
 
         self.setWindowTitle("Software Manager")
         self.setGeometry(100, 100, 800, 600)

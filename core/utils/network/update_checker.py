@@ -30,6 +30,8 @@ def check_for_updates():
                 for asset in assets:
                     print(f" - {asset['name']}: {asset['browser_download_url']}")
             return assets, latest_version
+        else: 
+            return None, None
     else:
         if state.debug:
             print("Already up-to-date.")
